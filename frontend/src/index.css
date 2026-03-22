@@ -1,0 +1,171 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Global red asterisk for required field labels */
+label {
+  position: relative;
+}
+
+label::after {
+  content: '';
+}
+
+label:has(input[required])::after,
+label:has(select[required])::after,
+label:has(textarea[required])::after {
+  content: ' *';
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* For labels that already have asterisk in text, make it red */
+label span,
+label *:not(svg) {
+  color: inherit;
+}
+
+/* Make any asterisk in label text red */
+label {
+  color: inherit;
+}
+
+label strong,
+label b,
+label span {
+  color: inherit;
+}
+
+/* App Main Container */
+.app-main {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gap between navbar and content on large screens */
+@media (min-width: 1200px) {
+  .app-main {
+    margin-top: 20px;
+  }
+}
+
+/* Ensure footer stays at bottom */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================================
+   COMPREHENSIVE DEVICE RESPONSIVENESS
+   ======================================== */
+
+/* iPhone SE (375x667) - Small Mobile */
+@media screen and (max-width: 375px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* iPhone XR/11 (414x896) - Medium Mobile */
+@media screen and (max-width: 414px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* iPhone 12 Pro/13 Pro (390x844) - Modern Mobile */
+@media screen and (max-width: 390px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* iPhone 14 Pro Max (428x926) - Large Mobile */
+@media screen and (max-width: 428px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* iPixel and similar small Android devices */
+@media screen and (max-width: 360px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Samsung Galaxy S8 (1440x2960, viewport ~360x740) */
+@media screen and (max-width: 360px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Samsung Galaxy S20 Ultra (1440x3200, viewport ~412x880) */
+@media screen and (max-width: 412px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Tablet Portrait (768x1024) */
+@media screen and (max-width: 768px) {
+  .app-main {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Tablet Landscape (1024x768) */
+@media screen and (max-width: 1024px) {
+  .app-main {
+    min-height: calc(100vh - 65px);
+  }
+}
+
+/* Small Laptop (1366x768) */
+@media screen and (max-width: 1366px) {
+  .app-main {
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* MacBook Pro 13" (1280x800) */
+@media screen and (max-width: 1280px) {
+  .app-main {
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* MacBook Pro 15" (1440x900) */
+@media screen and (min-width: 1440px) {
+  .app-main {
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* Desktop (1920x1080) */
+@media screen and (min-width: 1920px) {
+  .app-main {
+    min-height: calc(100vh - 70px);
+  }
+}
+
+/* Large Desktop (2560x1440 and above) */
+@media screen and (min-width: 2560px) {
+  .app-main {
+    min-height: calc(100vh - 70px);
+  }
+}

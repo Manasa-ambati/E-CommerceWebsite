@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #d63850;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛍️ Wishlist API Tester</h1>
+        
+        <div class="test-section">
+            <h2>Step 1: Check Authentication</h2>
+            <p>First, let's check if you're logged in:</p>
+            <button onclick="checkAuth()">Check Auth Status</button>
+            <div id="auth-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 2: Login (if needed)</h2>
+            <label>Email:</label>
+            <input type="email" id="email" placeholder="your-email@example.com">
+            <label>Password:</label>
+            <input type="password" id="password" placeholder="Your password">
+            <button onclick="login()">Login & Get Token</button>
+            <div id="login-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Step 3: Test Wishlist API</h2>
+            <button onclick="getWishlist()">Get Wishlist</button>
+            <button onclick="addToWishlist(1)">Add Product 1 to Wishlist</button>
+            <button onclick="removeFromWishlist(1)">Remove Product 1 from Wishlist</button>
+            <button onclick="checkWishlist(1)">Check if Product 1 in Wishlist</button>
+            <div id="wishlist-result" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Diagnostics</h2>
+            <button onclick="runDiagnostics()" style="background: #007bff;">Run Full Diagnostics</button>
+            <div id="diagnostic-result" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let authToken = localStorage.getItem('token');
+
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result ' + (isError ? 'error' : 'success');
+            element.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            const result = {
+                hasToken: !!token,
+                tokenPreview: token ? token.substring(0, 20) + '...' : null,
+                hasUser: !!user,
+                userData: user ? JSON.parse(user) : null
+            };
+            
+            showResult('auth-result', result);
+            
+            if (token) {
+                authToken = token;
+                console.log('✓ Token found:', authToken);
+            } else {
+                console.log('✗ No token found');
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.data) {
+                    const token = data.data.token || data.data.accessToken;
+                    const user = data.data.user || data.data;
+                    
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+                    authToken = token;
+                    
+                    showResult('login-result', {
+                        success: true,
+                        message: 'Login successful!',
+                        token: token.substring(0, 50) + '...',
+                        user: user
+                    });
+                } else {
+                    showResult('login-result', {
+                        success: false,
+                        error: data.message || 'Login failed'
+                    }, true);
+                }
+            } catch (error) {
+                showResult('login-result', {
+                    success: false,
+                    error: 'Cannot connect to server. Make sure backend is running on port 8080.',
+                    details: error.message
+                }, true);
+            }
+        }
+
+        async function getWishlist() {
+            try {
+                const response = await fetch(`${API_URL}/wishlist`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                showResult('wishlist-result', {
+                    status: response.status,
+                    data: data
+                }, !response.ok);
+            } catch (error) {
+                showResult('wishlist-result', {
+                    error: 'Request failed',
+                    details: error.message
+                }, true);
+            }
+        }
+
+        async function addToWishlist(productId) {
+            try {
+                const response = await fetch(`${API_URL}/wishlist/add?productId=${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                showResult('wishlist-result', {
+                    status: response.status,
+                    action: 'ADD to wishlist',
+                    productId: productId,
+                    data: data
+                }, !response.ok);
+            } catch (error) {
+                showResult('wishlist-result', {
+                    error: 'Request failed',
+                    details: error.message
+                }, true);
+            }
+        }
+
+        async function removeFromWishlist(productId) {
+            try {
+                const response = await fetch(`${API_URL}/wishlist/remove?productId=${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                showResult('wishlist-result', {
+                    status: response.status,
+                    action: 'REMOVE from wishlist',
+                    productId: productId,
+                    data: data
+                }, !response.ok);
+            } catch (error) {
+                showResult('wishlist-result', {
+                    error: 'Request failed',
+                    details: error.message
+                }, true);
+            }
+        }
+
+        async function checkWishlist(productId) {
+            try {
+                const response = await fetch(`${API_URL}/wishlist/check?productId=${productId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const data = await response.json();
+                showResult('wishlist-result', {
+                    status: response.status,
+                    action: 'CHECK wishlist',
+                    productId: productId,
+                    isInWishlist: data.data,
+                    fullResponse: data
+                }, !response.ok);
+            } catch (error) {
+                showResult('wishlist-result', {
+                    error: 'Request failed',
+                    details: error.message
+                }, true);
+            }
+        }
+
+        async function runDiagnostics() {
+            const results = [];
+            const resultElement = document.getElementById('diagnostic-result');
+            resultElement.style.display = 'block';
+            
+            // Step 1: Check server connectivity
+            results.push('🔍 Checking server connectivity...');
+            resultElement.textContent = results.join('\n');
+            
+            try {
+                await fetch(`${API_URL}/products`, { method: 'GET' });
+                results.push('✅ Backend server is reachable on port 8080');
+            } catch (error) {
+                results.push('❌ Cannot connect to backend server!');
+                results.push('   Error: ' + error.message);
+                results.push('   Solution: Start the backend server with: cd backend; mvn spring-boot:run');
+                resultElement.textContent = results.join('\n');
+                resultElement.className = 'result error';
+                return;
+            }
+            
+            // Step 2: Check authentication
+            results.push('\n🔑 Checking authentication...');
+            resultElement.textContent = results.join('\n');
+            
+            const token = localStorage.getItem('token');
+            if (token) {
+                results.push('✅ Token found in localStorage');
+                authToken = token;
+            } else {
+                results.push('❌ No token found in localStorage');
+                results.push('   Solution: Login using the form above or login to your app');
+                resultElement.textContent = results.join('\n');
+                resultElement.className = 'result error';
+                return;
+            }
+            
+            // Step 3: Test wishlist endpoint
+            results.push('\n🛍️ Testing wishlist API...');
+            resultElement.textContent = results.join('\n');
+            
+            try {
+                const response = await fetch(`${API_URL}/wishlist`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    results.push('✅ Wishlist API is working!');
+                    results.push(`   Found ${data.data?.length || 0} items in wishlist`);
+                } else if (response.status === 401) {
+                    results.push('❌ Authentication failed (401 Unauthorized)');
+                    results.push('   Solution: Token is invalid or expired. Login again.');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                } else {
+                    const data = await response.json();
+                    results.push(`⚠️ Unexpected response: ${response.status}`);
+                    results.push('   Response: ' + JSON.stringify(data));
+                }
+            } catch (error) {
+                results.push('❌ Wishlist API request failed');
+                results.push('   Error: ' + error.message);
+            }
+            
+            resultElement.textContent = results.join('\n');
+            resultElement.className = 'result ' + (results.some(r => r.includes('❌')) ? 'error' : 'success');
+        }
+
+        // Auto-check auth on page load
+        window.addEventListener('load', () => {
+            console.log('Wishlist API Tester loaded');
+            console.log('Backend URL:', API_URL);
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

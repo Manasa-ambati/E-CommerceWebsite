@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = ["jdk17", "maven", "nodejs-18_x"]
+
+[phases.install]
+cmds = [
+  "cd frontend && npm ci",
+  "cd frontend && npm run build",
+  "cp -r frontend/build/* backend/src/main/resources/static/",
+  "cd backend && mvn clean package -DskipTests"
+]
+
+[phases.build]
+cmds = ["echo 'Build completed'"]
+
+[start]
+cmd = "cd backend && java -jar target/ecommerce-backend-0.0.1-SNAPSHOT.jar"

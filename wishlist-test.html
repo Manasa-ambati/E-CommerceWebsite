@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wishlist API Testing</h1>
+    
+    <div class="test-section">
+        <h3>1. Login (Get Token)</h3>
+        <input type="email" id="email" placeholder="Email" value="test@example.com">
+        <input type="password" id="password" placeholder="Password" value="test123">
+        <button onclick="login()">Login</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Get Wishlist</h3>
+        <button onclick="getWishlist()">Fetch Wishlist</button>
+        <div id="wishlistResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Add to Wishlist</h3>
+        <input type="number" id="productId" placeholder="Product ID" value="1">
+        <button onclick="addToWishlist()">Add Product to Wishlist</button>
+        <div id="addResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Remove from Wishlist</h3>
+        <input type="number" id="removeProductId" placeholder="Product ID" value="1">
+        <button onclick="removeFromWishlist()">Remove Product from Wishlist</button>
+        <div id="removeResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>5. Check if Product in Wishlist</h3>
+        <input type="number" id="checkProductId" placeholder="Product ID" value="1">
+        <button onclick="checkWishlist()">Check Product</button>
+        <div id="checkResult" class="result"></div>
+    </div>
+
+    <script>
+        let token = '';
+        const API_BASE = 'http://localhost:8080/api';
+
+        async function login() {
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                document.getElementById('loginResult').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success && data.data) {
+                    token = data.data.token;
+                    localStorage.setItem('token', token);
+                    alert('Login successful! Token saved.');
+                }
+            } catch (error) {
+                document.getElementById('loginResult').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function getWishlist() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found. Please login first.');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/wishlist`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('wishlistResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('wishlistResult').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function addToWishlist() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found. Please login first.');
+                    return;
+                }
+
+                const productId = document.getElementById('productId').value;
+                
+                const response = await fetch(`${API_BASE}/wishlist/add?productId=${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('addResult').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    alert('Product added to wishlist!');
+                }
+            } catch (error) {
+                document.getElementById('addResult').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function removeFromWishlist() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found. Please login first.');
+                    return;
+                }
+
+                const productId = document.getElementById('removeProductId').value;
+                
+                const response = await fetch(`${API_BASE}/wishlist/remove?productId=${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('removeResult').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    alert('Product removed from wishlist!');
+                }
+            } catch (error) {
+                document.getElementById('removeResult').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function checkWishlist() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('No token found. Please login first.');
+                    return;
+                }
+
+                const productId = document.getElementById('checkProductId').value;
+                
+                const response = await fetch(`${API_BASE}/wishlist/check?productId=${productId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('checkResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('checkResult').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

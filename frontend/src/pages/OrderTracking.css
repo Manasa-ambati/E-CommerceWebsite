@@ -1,0 +1,237 @@
+.order-tracking-page {
+  padding: 20px 0;
+}
+
+.tracking-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.tracking-header h1 {
+  color: #333;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Progress Tracker */
+.progress-tracker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding: 20px 0;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.progress-step::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background-color: #ddd;
+  z-index: 0;
+}
+
+.progress-step:last-child::after {
+  display: none;
+}
+
+.progress-step.completed::after {
+  background-color: #27ae60;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #666;
+  z-index: 1;
+  position: relative;
+}
+
+.progress-step.completed .step-icon {
+  background-color: #27ae60;
+  color: white;
+}
+
+.progress-step.current .step-icon {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.3);
+}
+
+.progress-step span {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.progress-step.completed span,
+.progress-step.current span {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Tracking Sections */
+.tracking-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.tracking-section:last-child {
+  border-bottom: none;
+}
+
+.tracking-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-item span {
+  color: #666;
+  font-size: 14px;
+}
+
+.detail-item strong {
+  color: #333;
+  font-size: 16px;
+}
+
+.address-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  line-height: 1.8;
+}
+
+.address-box p {
+  color: #666;
+}
+
+/* Order Items */
+.order-items-list {
+  margin-bottom: 20px;
+}
+
+.order-item-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.item-qty {
+  color: #666;
+  font-size: 14px;
+}
+
+.item-price {
+  font-weight: 600;
+  color: #333;
+}
+
+.order-totals {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.total-row.grand-total {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.tracking-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tracking-container {
+    padding: 20px;
+  }
+  
+  .progress-tracker {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .progress-step {
+    flex: 0 0 30%;
+  }
+  
+  .progress-step::after {
+    display: none;
+  }
+}

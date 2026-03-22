@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist Auth Debug Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .status.info {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        button.danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        button.success {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+        .log-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .log-entry {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #667eea;
+            background: white;
+        }
+        .log-entry.error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+        .log-entry.success {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .test-result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .checkmark {
+            font-size: 20px;
+        }
+        .checkmark.pass { color: #28a745; }
+        .checkmark.fail { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Wishlist Authentication Debug Tool</h1>
+        <p>Use this tool to diagnose why wishlist is asking you to login</p>
+
+        <!-- Status Check -->
+        <div id="authStatus" class="status info">
+            Checking authentication status...
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="margin: 20px 0;">
+            <button onclick="checkAuth()">🔄 Re-check Auth</button>
+            <button onclick="testWishlistAPI()">🧪 Test Wishlist API</button>
+            <button class="danger" onclick="clearAndReload()">🗑️ Clear & Reload</button>
+            <button class="success" onclick="goToLogin()">🔐 Go to Login</button>
+        </div>
+
+        <!-- Detailed Logs -->
+        <div class="log-section">
+            <h3>📊 Authentication Details</h3>
+            <div id="authDetails"></div>
+        </div>
+
+        <!-- API Test Results -->
+        <div class="log-section">
+            <h3>🧪 API Test Results</h3>
+            <div id="apiResults">No tests run yet. Click "Test Wishlist API" above.</div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="log-section">
+            <h3>📝 Raw Data</h3>
+            <pre id="rawData">{}</pre>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        checkAuth();
+
+        function checkAuth() {
+            console.log('=== AUTH CHECK ===');
+            
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            const statusDiv = document.getElementById('authStatus');
+            const detailsDiv = document.getElementById('authDetails');
+            const rawDataPre = document.getElementById('rawData');
+            
+            const authData = {
+                hasToken: !!token,
+                tokenPreview: token ? token.substring(0, 50) + '...' : null,
+                hasUser: !!user,
+                userData: user ? JSON.parse(user) : null,
+                isAuthenticated: !!(token && user),
+                timestamp: new Date().toISOString()
+            };
+            
+            rawDataPre.textContent = JSON.stringify(authData, null, 2);
+            
+            if (authData.isAuthenticated) {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '✅ You are logged in! Token and user data found.';
+                
+                detailsDiv.innerHTML = `
+                    <div class="test-result">
+                        <span class="checkmark pass">✓</span>
+                        <strong>Token exists:</strong> Yes (${token.length} characters)
+                    </div>
+                    <div class="test-result">
+                        <span class="checkmark pass">✓</span>
+                        <strong>User data exists:</strong> Yes
+                    </div>
+                    <div class="test-result">
+                        <span class="checkmark pass">✓</span>
+                        <strong>Email:</strong> ${authData.userData.email}
+                    </div>
+                    <div class="test-result">
+                        <span class="checkmark pass">✓</span>
+                        <strong>Name:</strong> ${authData.userData.firstName} ${authData.userData.lastName}
+                    </div>
+                `;
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ Not logged in. No valid token or user data found.';
+                
+                detailsDiv.innerHTML = `
+                    <div class="test-result">
+                        <span class="checkmark fail">✗</span>
+                        <strong>Token exists:</strong> ${token ? 'Yes' : 'No'}
+                    </div>
+                    <div class="test-result">
+                        <span class="checkmark fail">✗</span>
+                        <strong>User data exists:</strong> ${user ? 'Yes' : 'No'}
+                    </div>
+                `;
+            }
+        }
+
+        async function testWishlistAPI() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML = '<div class="log-entry">Testing wishlist API...</div>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    resultsDiv.innerHTML = `
+                        <div class="log-entry error">
+                            ❌ Cannot test - No token found. Please login first.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                console.log('=== TESTING WISHLIST API ===');
+                const response = await fetch('http://localhost:8080/api/wishlist', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsDiv.innerHTML = `
+                        <div class="log-entry success">
+                            ✅ <strong>Success!</strong> Wishlist API is working correctly.
+                        </div>
+                        <div class="log-entry">
+                            <strong>Status:</strong> ${response.status} OK<br>
+                            <strong>Wishlist items:</strong> ${data.data?.length || 0}<br>
+                            <strong>Response data:</strong><br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    resultsDiv.innerHTML = `
+                        <div class="log-entry error">
+                            ❌ <strong>API Error:</strong> ${response.status}<br>
+                            <strong>Error message:</strong> ${errorData.message || 'Unknown error'}<br>
+                            <strong>Full response:</strong><br>
+                            <pre>${JSON.stringify(errorData, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Test error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="log-entry error">
+                        ❌ <strong>Request Failed:</strong><br>
+                        ${error.message}<br>
+                        <strong>Possible causes:</strong><br>
+                        <ul>
+                            <li>Backend not running on port 8080</li>
+                            <li>CORS blocking the request</li>
+                            <li>Network connectivity issue</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function clearAndReload() {
+            if (confirm('This will log you out and reload the page. Continue?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function goToLogin() {
+            window.location.href = '/login';
+        }
+
+        // Auto-refresh status every 5 seconds
+        setInterval(checkAuth, 5000);
+    </script>
+</body>
+</html>
