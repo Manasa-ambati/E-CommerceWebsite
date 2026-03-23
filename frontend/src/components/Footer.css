@@ -4,20 +4,22 @@
   padding: 40px 20px 15px;
   margin-top: auto;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .footer-container {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  padding: 0;
+  gap: 25px;
+  padding: 0 20px;
+  align-items: start;
 }
 
 /* Footer Sections */
 .footer-section {
-  padding: 0;
+  padding: 10px;
 }
 
 .footer-section h3,
@@ -290,7 +292,7 @@
 
 /* Footer Bottom */
 .footer-bottom {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 25px auto 0;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -338,14 +340,16 @@
   }
   
   .footer-container {
-    gap: 35px;
+    gap: 28px;
+    padding: 0 40px;
   }
 }
 
 /* Desktops (1200px - 1399px) */
 @media (max-width: 1399px) and (min-width: 1200px) {
   .footer-container {
-    gap: 35px;
+    gap: 25px;
+    padding: 0 30px;
   }
   
   .footer-section ul li a,
@@ -363,7 +367,8 @@
   
   .footer-container {
     grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    gap: 22px;
+    padding: 0 20px;
   }
   
   .footer-section h3,
@@ -380,7 +385,8 @@
 @media (max-width: 1023px) and (min-width: 960px) {
   .footer-container {
     grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    gap: 22px;
+    padding: 0 20px;
   }
   
   .footer-section h3,
@@ -401,21 +407,22 @@
   
   .footer-container {
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    gap: 25px;
+    padding: 0 20px;
   }
   
   .company-section {
     grid-column: span 2;
+    text-align: center;
+  }
+  
+  .social-links {
+    justify-content: center;
   }
   
   .footer-section h3,
   .footer-section h4 {
     font-size: 1.15rem;
-  }
-  
-  .social-icon {
-    width: 38px;
-    height: 38px;
   }
   
   .qr-code {
@@ -436,7 +443,8 @@
   
   .footer-container {
     grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+    gap: 22px;
+    padding: 0 15px;
   }
   
   .company-section {
@@ -450,10 +458,15 @@
   
   .newsletter-app-section {
     grid-column: span 2;
+    text-align: center;
   }
   
   .qr-code-container {
     justify-content: center;
+  }
+  
+  .app-stores {
+    align-items: center;
   }
   
   .footer-section h3,
@@ -470,10 +483,13 @@
   
   .footer-container {
     grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 22px;
+    padding: 0 10px;
   }
   
-  .company-section {
+  .company-section,
+  .links-section,
+  .newsletter-app-section {
     text-align: center;
   }
   
@@ -481,12 +497,14 @@
     justify-content: center;
   }
   
-  .newsletter-app-section {
-    text-align: center;
-  }
-  
   .qr-code-container {
     justify-content: center;
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .app-stores {
+    align-items: center;
   }
   
   .footer-section h3,
@@ -508,9 +526,12 @@
   .footer-container {
     grid-template-columns: 1fr;
     gap: 20px;
+    padding: 0 10px;
   }
   
-  .company-section {
+  .company-section,
+  .links-section,
+  .newsletter-app-section {
     text-align: center;
   }
   
@@ -518,13 +539,10 @@
     justify-content: center;
   }
   
-  .newsletter-app-section {
-    text-align: center;
-  }
-  
   .qr-code-container {
     flex-direction: column;
     align-items: center;
+    gap: 12px;
   }
   
   .app-stores {
@@ -571,6 +589,7 @@
   .footer-bottom-content {
     flex-direction: column;
     text-align: center;
+    gap: 15px;
   }
   
   .payment-methods {
@@ -581,6 +600,7 @@
   .footer-bottom-links {
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap;
   }
 }
 
@@ -592,6 +612,7 @@
   
   .footer-container {
     gap: 15px;
+    padding: 0 5px;
   }
   
   .footer-logo {
@@ -693,12 +714,17 @@
   .newsletter-form {
     max-width: 100%;
   }
+  
+  .footer-container {
+    padding: 0 8px;
+  }
 }
 
 /* Samsung Galaxy S8 (360px viewport) */
 @media screen and (max-width: 360px) {
   .footer-container {
     gap: 18px;
+    padding: 0 10px;
   }
 }
 

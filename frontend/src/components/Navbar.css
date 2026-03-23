@@ -32,7 +32,7 @@
 
 /* ===== MAIN NAVBAR ===== */
 .navbar-main-content{
-  max-width:1600px;
+  max-width:1800px;
   margin:auto;
   padding:0 40px;
   display:flex;
@@ -90,8 +90,8 @@
   border-radius:25px;
   padding:4px;
   border:2px solid transparent;
-  width:400px;
-  max-width: 500px;
+  width:500px;
+  max-width: 600px;
   transition:all .3s;
   flex-shrink: 0;
 }
@@ -183,7 +183,9 @@
   display:flex;
   align-items:center;
   gap:20px;
-  margin-left:30px;
+  margin-left:20px;
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-link{
@@ -326,61 +328,101 @@
 .navbar-auth {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  margin-left: 20px;
+  flex-shrink: 0;
 }
 
 /* Auth Buttons Container */
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 /* Login Button */
-.btn-login {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.navbar-auth .btn-login {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 20px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 25px !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
 }
 
-.btn-login:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+.navbar-auth .btn-login svg {
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.navbar-auth .btn-login span {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
 }
 
 /* Signup Button */
-.btn-signup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: white;
-  color: var(--primary);
-  border: 2px solid white;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.navbar-auth .btn-signup {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 20px !important;
+  background: white !important;
+  color: var(--primary) !important;
+  border: 2px solid white !important;
+  border-radius: 25px !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
 }
 
-.btn-signup:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+.navbar-auth .btn-signup svg {
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.navbar-auth .btn-signup span {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+.navbar-auth .btn-login:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Signup Button Hover */
+.navbar-auth .btn-signup:hover {
+  background: #f0f0f0 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3) !important;
 }
 
 /* User Menu (when logged in) */
@@ -565,8 +607,8 @@ button:focus,
   }
   
   .search-form {
-    width: 350px;
-    max-width: 400px;
+    width: 400px;
+    max-width: 500px;
   }
   
   /* Show hamburger when nav is hidden */
@@ -585,8 +627,8 @@ button:focus,
   }
   
   .search-form {
-    width: 280px;
-    max-width: 350px;
+    width: 320px;
+    max-width: 400px;
   }
   
   .navbar-nav {
@@ -1056,8 +1098,8 @@ button:focus,
   }
   
   .search-form {
-    width: 300px;
-    max-width: 350px;
+    width: 350px;
+    max-width: 400px;
   }
 }
 
@@ -1068,8 +1110,8 @@ button:focus,
   }
   
   .search-form {
-    width: 350px;
-    max-width: 400px;
+    width: 400px;
+    max-width: 450px;
   }
 }
 
@@ -1080,8 +1122,8 @@ button:focus,
   }
   
   .search-form {
-    width: 320px;
-    max-width: 380px;
+    width: 380px;
+    max-width: 420px;
   }
 }
 
@@ -1092,8 +1134,8 @@ button:focus,
   }
   
   .search-form {
-    width: 380px;
-    max-width: 450px;
+    width: 450px;
+    max-width: 550px;
   }
 }
 
@@ -1104,8 +1146,8 @@ button:focus,
   }
   
   .search-form {
-    width: 450px;
-    max-width: 550px;
+    width: 550px;
+    max-width: 650px;
   }
 }
 
@@ -1116,7 +1158,7 @@ button:focus,
   }
   
   .search-form {
-    width: 500px;
-    max-width: 600px;
+    width: 600px;
+    max-width: 700px;
   }
 }

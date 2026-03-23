@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { authAPI } from '../services/api';
 import { AuthResponse } from '../types/auth';
+import './Login.css';
 
 export const Login: React.FC = () => {
   // Step 1: Email/Phone input
@@ -165,26 +166,27 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="login-container">
       <h2>
         {showSignupForm ? 'Complete Registration' : showOtpForm ? 'Verify OTP' : 'Welcome Back'}
       </h2>
-      {error && <div className="error">{error}</div>}
+      {error && <div className="login-error">{error}</div>}
 
       {/* STEP 1: Email Input */}
       {!showSignupForm && !showOtpForm && (
-        <form onSubmit={handleSendOtp}>
+        <form className="login-form" onSubmit={handleSendOtp}>
           <input
             type="email"
+            className="login-input"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="login-btn-primary" disabled={loading}>
             {loading ? 'Sending OTP...' : 'Continue with Email'}
           </button>
-          <p style={{ fontSize: '0.9em', color: '#666', marginTop: '15px' }}>
+          <p className="login-terms-text">
             By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
         </form>
@@ -192,9 +194,10 @@ export const Login: React.FC = () => {
 
       {/* STEP 2: Signup Form (New Users) */}
       {showSignupForm && (
-        <form onSubmit={handleCompleteSignup}>
+        <form className="login-form" onSubmit={handleCompleteSignup}>
           <input
             type="text"
+            className="login-input"
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -202,6 +205,7 @@ export const Login: React.FC = () => {
           />
           <input
             type="text"
+            className="login-input"
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -209,12 +213,13 @@ export const Login: React.FC = () => {
           />
           <input
             type="email"
+            className="login-input"
             value={email}
             readOnly
-            style={{ backgroundColor: '#f0f0f0' }}
           />
           <input
             type="password"
+            className="login-input"
             placeholder="Create Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -223,12 +228,13 @@ export const Login: React.FC = () => {
           />
           <input
             type="text"
+            className="login-input"
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
           />
-          <button type="submit" disabled={otpLoading}>
+          <button type="submit" className="login-btn-primary" disabled={otpLoading}>
             {otpLoading ? 'Registering...' : 'Complete Registration'}
           </button>
         </form>
@@ -236,9 +242,10 @@ export const Login: React.FC = () => {
 
       {/* STEP 3: OTP Verification */}
       {showOtpForm && (
-        <form onSubmit={handleOtpVerification}>
+        <form className="login-form" onSubmit={handleOtpVerification}>
           <input
             type="text"
+            className="login-input"
             value={otp}
             ref={otpInputRef}
             onChange={(e) => setOtp(e.target.value)}
@@ -246,14 +253,15 @@ export const Login: React.FC = () => {
             maxLength={6}
             required
           />
-          <button type="submit" disabled={otpLoading}>
+          <button type="submit" className="login-btn-primary" disabled={otpLoading}>
             {otpLoading ? 'Verifying...' : 'Verify & Continue'}
           </button>
-          <button type="button" onClick={handleResendOtp} disabled={resendCooldown > 0}>
+          <button type="button" className="login-btn-secondary" onClick={handleResendOtp} disabled={resendCooldown > 0}>
             {resendCooldown > 0 ? `Resend OTP (${resendCooldown}s)` : 'Resend OTP'}
           </button>
           <button
             type="button"
+            className="login-btn-secondary"
             onClick={() => {
               setShowOtpForm(false);
               setShowSignupForm(false);
@@ -267,8 +275,8 @@ export const Login: React.FC = () => {
       )}
 
       {!showSignupForm && !showOtpForm && (
-        <p>
-          Don't have an account? <Link to="/signup">Signup here</Link>
+        <p className="login-footer-text">
+          Don't have an account? <Link to="/signup" className="login-link">Signup here</Link>
         </p>
       )}
     </div>

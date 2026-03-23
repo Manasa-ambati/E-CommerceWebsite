@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { authAPI } from '../services/api';
 import { AuthResponse } from '../types/auth';
+import './Signup.css';
 
 export const Signup: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -89,28 +90,30 @@ export const Signup: React.FC = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="signup-container">
       <h2>{showOtpForm ? 'Verify Email' : 'Signup'}</h2>
-      {error && <div className="error">{error}</div>}
+      {error && <div className="signup-error">{error}</div>}
 
       {showOtpForm ? (
-        <form onSubmit={handleOtpVerification}>
+        <form className="signup-form" onSubmit={handleOtpVerification}>
           <input
             type="text"
+            className="signup-input signup-otp-input"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             placeholder="Enter 6-digit OTP"
             maxLength={6}
             required
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="signup-btn-primary" disabled={loading}>
             {loading ? 'Verifying...' : 'Verify & Continue'}
           </button>
         </form>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form className="signup-form" onSubmit={handleSubmit}>
           <input
             type="text"
+            className="signup-input"
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -118,6 +121,7 @@ export const Signup: React.FC = () => {
           />
           <input
             type="text"
+            className="signup-input"
             placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -125,6 +129,7 @@ export const Signup: React.FC = () => {
           />
           <input
             type="email"
+            className="signup-input"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -132,6 +137,7 @@ export const Signup: React.FC = () => {
           />
           <input
             type="password"
+            className="signup-input"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -139,18 +145,19 @@ export const Signup: React.FC = () => {
           />
           <input
             type="text"
+            className="signup-input"
             placeholder="Phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" className="signup-btn-primary" disabled={loading}>
             {loading ? 'Signing up...' : 'Signup'}
           </button>
         </form>
       )}
-      <p>
-        Already have an account? <Link to="/login">Login here</Link>
+      <p className="signup-footer-text">
+        Already have an account? <Link to="/login" className="signup-link">Login here</Link>
       </p>
     </div>
   );

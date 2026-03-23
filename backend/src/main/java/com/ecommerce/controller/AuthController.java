@@ -3,6 +3,8 @@ package com.ecommerce.controller;
 import com.ecommerce.entity.User;
 import com.ecommerce.repository.UserRepository;
 import com.ecommerce.security.JwtUtil;
+import com.ecommerce.service.EmailService;
+import com.ecommerce.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +34,12 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private EmailService emailService;
+    
+    @Autowired
+    private OtpService otpService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody Map<String, String> request) {
@@ -69,7 +77,7 @@ public class AuthController {
                 return badRequest("Email already registered");
             }
 
-            // Create new user
+            // Create new user (email verification not required for login)
             User user = new User();
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -77,26 +85,27 @@ public class AuthController {
             user.setPassword(passwordEncoder.encode(password));
             user.setPhone(phone);
             user.setRole(User.Role.CUSTOMER);
-            user.setEmailVerified(false); // Require OTP verification
-            
-            // Generate OTP
-            String otp = String.format("%06d", (int)(Math.random() * 1000000));
-            user.setOtp(otp);
-            user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(10));
+            user.setEmailVerified(true); // Auto-verify since we're using OTP for signup only
 
             userRepository.save(user);
-            System.out.println("User created successfully: " + email);
-            System.out.println("OTP for " + email + ": " + otp); // For demo purposes
+            System.out.println("✅ User created successfully: " + email);
+
+            // Generate and store OTP in-memory (not in database)
+            String otp = String.format("%06d", (int)(Math.random() * 1000000));
+            otpService.storeOtp(email, otp, 10); // Store for 10 minutes
+            
+            // Send OTP via email (OTP will NOT be shown in console)
+            emailService.sendOtpEmail(email, firstName, otp);
 
             // Prepare response - don't send token yet, need OTP verification first
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("email", email);
             responseData.put("requiresOtp", true);
-            responseData.put("message", "Please verify your email with OTP");
+            responseData.put("message", "Please verify your email with OTP sent to your registered email");
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Signup successful. Please verify your email.");
+            response.put("message", "Signup successful. OTP sent to your email.");
             response.put("data", responseData);
 
             return ResponseEntity.ok(response);
@@ -141,23 +150,22 @@ public class AuthController {
             // Existing user - send OTP for login
             User user = existingUser.get();
             
-            // Generate OTP
+            // Generate and store OTP in-memory (not in database)
             String otp = String.format("%06d", (int)(Math.random() * 1000000));
-            user.setOtp(otp);
-            user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(10));
-            userRepository.save(user);
+            otpService.storeOtp(email, otp, 10); // Store for 10 minutes
             
-            System.out.println("OTP for " + email + ": " + otp); // For demo purposes
+            // Send OTP via email (OTP will NOT be shown in console)
+            emailService.sendOtpEmail(user.getFirstName(), email, otp);
             
             // Prepare response - ask for OTP
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("email", email);
             responseData.put("requiresOtp", true);
-            responseData.put("message", "Please enter OTP sent to your email");
+            responseData.put("message", "Please enter OTP sent to your registered email");
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "OTP sent successfully");
+            response.put("message", "OTP sent successfully to your email");
             response.put("data", responseData);
             
             System.out.println("OTP sent for: " + email);
@@ -183,21 +191,16 @@ public class AuthController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            // Verify OTP
-            if (otp == null || otp.length() != 6 || !otp.equals(user.getOtp())) {
-                return badRequest("Invalid OTP. Please enter correct 6-digit code.");
+            // Verify OTP using in-memory service
+            if (!otpService.verifyOtp(email, otp)) {
+                return badRequest("Invalid or expired OTP. Please enter correct 6-digit code or request a new one.");
             }
             
-            // Check OTP expiry
-            if (user.getOtpExpiry() != null && java.time.LocalDateTime.now().isAfter(user.getOtpExpiry())) {
-                return badRequest("OTP expired. Please request a new one.");
+            // Mark email as verified (if not already)
+            if (!user.isEmailVerified()) {
+                user.setEmailVerified(true);
+                userRepository.save(user);
             }
-            
-            // Mark email as verified
-            user.setEmailVerified(true);
-            user.setOtp(null);
-            user.setOtpExpiry(null);
-            userRepository.save(user);
             
             // Generate JWT token
             String token = jwtUtil.generateToken(email);
@@ -235,17 +238,16 @@ public class AuthController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            // Generate new OTP (6 digits)
+            // Generate new OTP (6 digits) and store in-memory
             String newOtp = String.format("%06d", (int)(Math.random() * 1000000));
-            user.setOtp(newOtp);
-            user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(10));
-            userRepository.save(user);
+            otpService.storeOtp(email, newOtp, 10); // Store for 10 minutes
             
-            System.out.println("New OTP for " + email + ": " + newOtp);
+            // Send OTP via email (OTP will NOT be shown in console)
+            emailService.sendOtpEmail(email, user.getFirstName(), newOtp);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "OTP resent successfully. Check your email.");
+            response.put("message", "OTP resent successfully. Check your registered email.");
             
             return ResponseEntity.ok(response);
             
@@ -271,6 +273,43 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return badRequest("Failed to enable users: " + e.getMessage());
+        }
+    }
+    
+    // Test email endpoint
+    @PostMapping("/debug/test-email")
+    public ResponseEntity<?> testEmail(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String name = request.getOrDefault("name", "Test User");
+            
+            if (email == null || email.trim().isEmpty()) {
+                return badRequest("Email is required");
+            }
+            
+            // Generate test OTP
+            String otp = String.format("%06d", (int)(Math.random() * 1000000));
+            
+            // Send test email
+            emailService.sendOtpEmail(email, name, otp);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Test email sent! Check console and your inbox.");
+            response.put("otp", otp); // Return OTP for testing
+            
+            System.out.println("\n=== TEST EMAIL INFO ===");
+            System.out.println("Recipient: " + email);
+            System.out.println("Name: " + name);
+            System.out.println("OTP: " + otp);
+            System.out.println("========================\n");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("Error in testEmail: " + e.getMessage());
+            e.printStackTrace();
+            return badRequest("Test email failed: " + e.getMessage());
         }
     }
 

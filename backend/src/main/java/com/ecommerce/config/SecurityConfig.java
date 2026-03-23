@@ -34,12 +34,20 @@ public class SecurityConfig {
       http
           .csrf(csrf -> csrf.disable())
          .cors(cors -> cors.configure(http))
+          // Disable form login to prevent Spring Boot's default login page
+         .formLogin(form -> form.disable())
          .authorizeHttpRequests(auth -> auth
              // Public APIs - must be before any authenticated rules
              .requestMatchers("/api/auth/**").permitAll()
              .requestMatchers("/api/products/**").permitAll()
              .requestMatchers("/api/categories/**").permitAll()
              .requestMatchers("/api/home/**").permitAll()
+             
+             // Static resources and frontend routes
+             .requestMatchers("/").permitAll()
+             .requestMatchers("/*.html", "/favicon.ico").permitAll()
+             .requestMatchers("/css/**", "/js/**", "/static/**").permitAll()
+             .requestMatchers("/*.js", "*.css", "*.ico", "*.png", "*.jpg", "*.svg").permitAll()
              
              // Protected APIs
              .requestMatchers("/api/cart/**").authenticated()

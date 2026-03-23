@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import Home from './pages/Home';
@@ -19,12 +19,27 @@ import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider } from './context/authContext';
 import { CartProvider } from './context/CartContext';
 
+// Layout component to conditionally render Footer based on route
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const showFooter = location.pathname === '/'; // Only show footer on home page
+
+  return (
+    <>
+      <Navbar />
+      <main className="app-main">
+        {children}
+      </main>
+      {showFooter && <Footer />}
+    </>
+  );
+};
+
 const App = () => (
   <AuthProvider>
     <CartProvider>
       <Router>
-        <Navbar />
-        <main className="app-main">
+        <Layout>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -41,8 +56,7 @@ const App = () => (
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           </Routes>
-        </main>
-        <Footer />
+        </Layout>
       </Router>
     </CartProvider>
   </AuthProvider>

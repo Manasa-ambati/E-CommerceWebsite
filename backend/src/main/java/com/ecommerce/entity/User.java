@@ -41,9 +41,7 @@ public class User {
     @Column(nullable = false)
     private boolean emailVerified = false;
     
-    private String otp;
-    
-    private LocalDateTime otpExpiry;
+    // Note: OTPs are stored in-memory via OtpService, not persisted to database
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
