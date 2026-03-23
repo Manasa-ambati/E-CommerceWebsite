@@ -2,9 +2,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 /* ----------------- API INSTANCE ----------------- */
-const API_URL = process.env.NODE_ENV === 'development'
+/*const API_URL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:8080/api'
-  : '/api';
+  : '/api';*/
+  const API_URL = process.env.REACT_APP_API_URL + "/api";
 
 const api = axios.create({
   baseURL: API_URL,
