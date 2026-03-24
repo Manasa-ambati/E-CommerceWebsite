@@ -19,6 +19,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                             "http://localhost:3000",
+                            "http://localhost:50581",
                             "https://e-commercewebsite-production-1e75.up.railway.app",
                             "https://alert-generosity-production-9b51.up.railway.app"
                         )
