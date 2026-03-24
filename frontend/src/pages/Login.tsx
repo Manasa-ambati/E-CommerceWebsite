@@ -3,23 +3,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { authAPI } from '../services/api';
-import { AuthResponse } from '../types/auth';
 import './Login.css';
 
 export const Login: React.FC = () => {
-  // Step 1: Email/Phone input
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Step 2: Signup form (for new users)
   const [showSignupForm, setShowSignupForm] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  // Step 3: OTP verification
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpLoading, setOtpLoading] = useState(false);
@@ -29,14 +25,10 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const otpInputRef = useRef<HTMLInputElement>(null);
 
-  // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
+    if (user) navigate('/');
   }, [user, navigate]);
 
-  // Countdown timer for OTP resend
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (resendCooldown > 0) {
@@ -49,7 +41,7 @@ export const Login: React.FC = () => {
     if (showOtpForm || showSignupForm) otpInputRef.current?.focus();
   }, [showOtpForm, showSignupForm]);
 
-  // Step 1: Send OTP or detect new user
+  // ✅ STEP 1: Send OTP
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -57,80 +49,59 @@ export const Login: React.FC = () => {
 
     try {
       const response = await authAPI.login({ email });
-      const data: AuthResponse = response.data.data || response.data;
+      const data = response.data.data;
 
-      if (data.isNewUser) {
-        // New user - show signup form
+      if (data?.isNewUser) {
         setShowSignupForm(true);
         setError('Please complete your registration');
-        setLoading(false);
         return;
       }
 
-      if (data.requiresOtp) {
-        // Existing user - show OTP form
+      if (data?.requiresOtp) {
         setShowOtpForm(true);
         setError('Enter OTP sent to your email');
         setResendCooldown(30);
-        setLoading(false);
         return;
       }
 
-      // Fallback: direct login (shouldn't happen in Meesho flow)
-      const token = data.token || data.accessToken;
-      const userData = data.user || data;
-      if (token) {
-        login(userData, token);
-        navigate('/');
-      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send OTP. Check email.');
+      setError(err.response?.data?.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Complete signup (for new users)
+  // ✅ STEP 2: Signup
   const handleCompleteSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setOtpLoading(true);
 
     try {
-      const signupData = {
+      const response = await authAPI.signup({
         name: firstName + ' ' + lastName,
         email,
         password,
         phone,
-      };
+      });
 
-      const response = await authAPI.signup(signupData);
-      const data: AuthResponse = response.data.data || response.data;
+      const data = response.data.data;
 
-      if (data.requiresOtp) {
-        // OTP required after signup
+      if (data?.requiresOtp) {
         setShowOtpForm(true);
         setError('Enter OTP sent to your email');
         setResendCooldown(30);
-        setOtpLoading(false);
         return;
       }
 
-      // Direct login after signup (fallback)
-      const token = data.token || data.accessToken;
-      const userData = data.user || data;
-      if (token) {
-        login(userData, token);
-        navigate('/');
-      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed.');
+      setError(err.response?.data?.message || 'Registration failed');
     } finally {
       setOtpLoading(false);
     }
   };
 
-  // Step 3: Verify OTP
+  // ✅ STEP 3: Verify OTP (🔥 MAIN FIX HERE)
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -138,16 +109,26 @@ export const Login: React.FC = () => {
 
     try {
       const response = await authAPI.verifyOtp(email, otp);
-      const data: AuthResponse = response.data.data || response.data;
-      const token = data.token || data.accessToken;
-      const userData = data.user || data;
 
-      if (!token) throw new Error('No token returned after OTP verification');
+      console.log("VERIFY RESPONSE:", response.data);
 
-      login(userData, token);
-      navigate('/'); // Redirect to Home
+      const data = response.data.data;
+
+      // 🔥 STRICT VALIDATION (fixes your bug)
+      if (!data || !data.token || !data.user) {
+        throw new Error('Invalid server response');
+      }
+
+      const token = data.token;
+      const userData = data.user;
+
+      console.log("LOGIN DATA:", userData, token);
+
+      login(userData, token); // ✅ saves to localStorage
+      navigate('/');
+
     } catch (err: any) {
-      setError(err.response?.data?.message || 'OTP verification failed.');
+      setError(err.response?.data?.message || err.message || 'OTP verification failed');
     } finally {
       setOtpLoading(false);
     }
@@ -158,125 +139,79 @@ export const Login: React.FC = () => {
 
     try {
       await authAPI.resendOtp(email);
-      alert('New OTP sent to your email!');
+      alert('New OTP sent!');
       setResendCooldown(30);
     } catch {
-      setError('Failed to resend OTP.');
+      setError('Failed to resend OTP');
     }
   };
 
   return (
     <div className="login-container">
       <h2>
-        {showSignupForm ? 'Complete Registration' : showOtpForm ? 'Verify OTP' : 'Welcome Back'}
+        {showSignupForm
+          ? 'Complete Registration'
+          : showOtpForm
+          ? 'Verify OTP'
+          : 'Welcome Back'}
       </h2>
+
       {error && <div className="login-error">{error}</div>}
 
-      {/* STEP 1: Email Input */}
+      {/* STEP 1 */}
       {!showSignupForm && !showOtpForm && (
-        <form className="login-form" onSubmit={handleSendOtp}>
+        <form onSubmit={handleSendOtp}>
           <input
             type="email"
-            className="login-input"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" className="login-btn-primary" disabled={loading}>
-            {loading ? 'Sending OTP...' : 'Continue with Email'}
+          <button disabled={loading}>
+            {loading ? 'Sending...' : 'Continue'}
           </button>
-          <p className="login-terms-text">
-            By continuing, you agree to our Terms of Service and Privacy Policy
-          </p>
         </form>
       )}
 
-      {/* STEP 2: Signup Form (New Users) */}
+      {/* STEP 2 */}
       {showSignupForm && (
-        <form className="login-form" onSubmit={handleCompleteSignup}>
-          <input
-            type="text"
-            className="login-input"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            className="login-input"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            className="login-input"
-            value={email}
-            readOnly
-          />
-          <input
-            type="password"
-            className="login-input"
-            placeholder="Create Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            required
-          />
-          <input
-            type="text"
-            className="login-input"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-          <button type="submit" className="login-btn-primary" disabled={otpLoading}>
-            {otpLoading ? 'Registering...' : 'Complete Registration'}
+        <form onSubmit={handleCompleteSignup}>
+          <input placeholder="First Name" value={firstName} onChange={(e)=>setFirstName(e.target.value)} required />
+          <input placeholder="Last Name" value={lastName} onChange={(e)=>setLastName(e.target.value)} required />
+          <input value={email} readOnly />
+          <input type="password" placeholder="Password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+          <input placeholder="Phone" value={phone} onChange={(e)=>setPhone(e.target.value)} required />
+          <button disabled={otpLoading}>
+            {otpLoading ? 'Registering...' : 'Register'}
           </button>
         </form>
       )}
 
-      {/* STEP 3: OTP Verification */}
+      {/* STEP 3 */}
       {showOtpForm && (
-        <form className="login-form" onSubmit={handleOtpVerification}>
+        <form onSubmit={handleOtpVerification}>
           <input
-            type="text"
-            className="login-input"
             value={otp}
             ref={otpInputRef}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter 6-digit OTP"
+            onChange={(e)=>setOtp(e.target.value)}
+            placeholder="Enter OTP"
             maxLength={6}
             required
           />
-          <button type="submit" className="login-btn-primary" disabled={otpLoading}>
-            {otpLoading ? 'Verifying...' : 'Verify & Continue'}
+          <button disabled={otpLoading}>
+            {otpLoading ? 'Verifying...' : 'Verify'}
           </button>
-          <button type="button" className="login-btn-secondary" onClick={handleResendOtp} disabled={resendCooldown > 0}>
-            {resendCooldown > 0 ? `Resend OTP (${resendCooldown}s)` : 'Resend OTP'}
-          </button>
-          <button
-            type="button"
-            className="login-btn-secondary"
-            onClick={() => {
-              setShowOtpForm(false);
-              setShowSignupForm(false);
-              setOtp('');
-              setError('');
-            }}
-          >
-            Back
+
+          <button type="button" onClick={handleResendOtp} disabled={resendCooldown > 0}>
+            {resendCooldown > 0 ? `Resend (${resendCooldown})` : 'Resend OTP'}
           </button>
         </form>
       )}
 
       {!showSignupForm && !showOtpForm && (
-        <p className="login-footer-text">
-          Don't have an account? <Link to="/signup" className="login-link">Signup here</Link>
+        <p>
+          Don't have an account? <Link to="/signup">Signup</Link>
         </p>
       )}
     </div>
