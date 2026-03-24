@@ -17,7 +17,11 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins(
+                            "http://localhost:3000",
+                            "https://e-commercewebsite-production-1e75.up.railway.app",
+                            "https://alert-generosity-production-9b51.up.railway.app"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type")
