@@ -151,12 +151,21 @@ public class AuthController {
             // Existing user - send OTP for login
             User user = existingUser.get();
             
+            System.out.println("📧 Preparing to send login OTP to: " + user.getEmail());
+            
             // Generate and store OTP in-memory (not in database)
             String otp = String.format("%06d", (int)(Math.random() * 1000000));
             otpService.storeOtp(email, otp, 10); // Store for 10 minutes
             
-            // Send OTP via email (OTP will NOT be shown in console)
-            emailService.sendOtpEmail(user.getFirstName(), email, otp);
+            try {
+                // Send OTP via email
+                emailService.sendOtpEmail(user.getFirstName(), email, otp);
+                System.out.println("✅ Login OTP sent to: " + email);
+            } catch (Exception emailError) {
+                System.err.println("❌ Failed to send email: " + emailError.getMessage());
+                emailError.printStackTrace();
+                // Continue anyway - user can retry
+            }
             
             // Prepare response - ask for OTP
             Map<String, Object> responseData = new HashMap<>();
