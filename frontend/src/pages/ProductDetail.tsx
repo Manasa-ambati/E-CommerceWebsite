@@ -307,7 +307,6 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const currentPrice = product.discountPrice || product.price;
   const discount = product.discountPrice
     ? Math.round((1 - product.discountPrice / product.price) * 100)
     : 0;

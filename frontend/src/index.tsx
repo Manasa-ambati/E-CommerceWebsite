@@ -36,8 +36,9 @@ console.log = (...args) => {
   if (logCache.has(hash)) return;
 logCache.add(hash);
   setTimeout(() => logCache.delete(hash), 5000);
-  }
- };
+  originalLog(...args); // Actually call the original logger
+ }
+};
 
  // Prevent ESC key from causing page refresh/blinking
  document.addEventListener('keydown', (e) => {
