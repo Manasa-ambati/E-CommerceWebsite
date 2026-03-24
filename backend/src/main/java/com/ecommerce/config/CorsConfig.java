@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
-    @Value("${cors.allowed-origins:*}")
+    @Value("${cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
 
     @Bean
@@ -20,13 +20,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
-                // Parse comma-separated origins from environment variable
-                String[] origins = allowedOrigins.equals("*") 
-                    ? new String[]{"*"} 
-                    : allowedOrigins.split(",");
+                // Convert comma-separated string to array
+                String[] origins = allowedOrigins.split(",");
 
                 registry.addMapping("/**")
-                        .allowedOrigins(origins)
+                        // 🔥 IMPORTANT: use allowedOriginPatterns instead of allowedOrigins
+                        .allowedOriginPatterns(origins)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type")
