@@ -91,18 +91,37 @@ public class EmailService {
             System.out.println("📬 Please check inbox (and spam folder)\n");
             
         } catch (MessagingException e) {
-            System.err.println("❌ EMAIL FAILED - MessagingException for: " + toEmail);
-            System.err.println("Error: " + e.getMessage());
-            System.err.println("\n⚠️  TROUBLESHOOTING:");
-            System.err.println("1. Check Gmail App Password (NOT regular password)");
-            System.err.println("2. Generate at: https://myaccount.google.com/apppasswords");
-            System.err.println("3. Ensure 2-Step Verification is enabled");
-            System.err.println("4. Current password in config: dyofqxocwcgzpcwk");
-            System.err.println("\n📝 For testing, you can disable email verification:\n   - Set user.email_verified=true in database\n");
+            System.err.println("\n❌ ╔═══════════════════════════════════════════════════════╗");
+            System.err.println("❌ ║  EMAIL FAILED - MessagingException                  ║");
+            System.err.println("❌ ╚═══════════════════════════════════════════════════════╝");
+            System.err.println("📧 To: " + toEmail);
+            System.err.println("👤 Name: " + firstName);
+            System.err.println("🔑 Error: " + e.getMessage());
+            System.err.println("\n⚠️  TROUBLESHOOTING STEPS:");
+            System.err.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.err.println("1. ✅ Check if SPRING_MAIL_USERNAME is set correctly");
+            System.err.println("   Current: manasaambati244@gmail.com");
+            System.err.println("2. ✅ Check if SPRING_MAIL_PASSWORD is valid");
+            System.err.println("   ⚠️  Must be Gmail APP PASSWORD (not regular password)");
+            System.err.println("3. 🔗 Generate App Password:");
+            System.err.println("   https://myaccount.google.com/apppasswords");
+            System.err.println("4. 🔐 Ensure 2-Step Verification is ENABLED");
+            System.err.println("5. 🌐 Check internet connectivity from Railway server");
+            System.err.println("6. 📬 Check if SMTP port 587 is accessible");
+            System.err.println("\n💡 QUICK FIX FOR DEVELOPMENT:");
+            System.err.println("   Call this endpoint to bypass OTP:");
+            System.err.println("   POST /api/auth/debug/verify-user");
+            System.err.println("   Body: {\"email\": \"" + toEmail + "\"}");
+            System.err.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("❌ EMAIL FAILED - Exception for: " + toEmail);
-            System.err.println("Error: " + e.getMessage());
+            System.err.println("\n❌ ╔═══════════════════════════════════════════════════════╗");
+            System.err.println("❌ ║  EMAIL FAILED - General Exception                    ║");
+            System.err.println("❌ ╚═══════════════════════════════════════════════════════╝");
+            System.err.println("📧 To: " + toEmail);
+            System.err.println("👤 Name: " + firstName);
+            System.err.println("🔑 Error: " + e.getMessage());
+            System.err.println("\n💡 Try the debug endpoint to bypass OTP verification\n");
             e.printStackTrace();
         }
     }

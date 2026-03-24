@@ -314,12 +314,43 @@ public class AuthController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "User " + email + " verified successfully (OTP bypassed)");
+            response.put("tip", "You can now login without OTP verification");
             
             System.out.println("🔧 DEBUG: Manually verified user: " + email);
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {
             return badRequest("Failed to verify user: " + e.getMessage());
+        }
+    }
+    
+    // Debug endpoint: Auto-verify ALL new signups (DEVELOPMENT ONLY!)
+    @PostMapping("/debug/auto-verify-all")
+    public ResponseEntity<?> autoVerifyAll() {
+        try {
+            List<User> users = userRepository.findAll();
+            int verifiedCount = 0;
+            
+            for (User user : users) {
+                if (!user.isEmailVerified()) {
+                    user.setEmailVerified(true);
+                    userRepository.save(user);
+                    verifiedCount++;
+                }
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Auto-verification enabled for all users");
+            response.put("verifiedCount", verifiedCount);
+            response.put("totalUsers", users.size());
+            response.put("warning", "⚠️ This is for DEVELOPMENT only! Remove in production.");
+            
+            System.out.println("🔧 DEBUG: Auto-verified " + verifiedCount + " users");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            return badRequest("Failed to auto-verify users: " + e.getMessage());
         }
     }
     
