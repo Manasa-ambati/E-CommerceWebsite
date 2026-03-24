@@ -25,7 +25,6 @@ return; // Don't log WebSocket errors at all
   originalError(...args);
  };
 
-const originalLog = console.log;
  const logCache = new Set();
 
 console.log = (...args) => {

@@ -1,5 +1,5 @@
 // src/services/api.ts
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /* ----------------- API INSTANCE ----------------- */
 /*const API_URL = process.env.NODE_ENV === 'development'

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { adminAPI } from '../services/api';
 import './AdminDashboard.css';
 
@@ -22,11 +22,7 @@ const AdminDashboard: React.FC = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  useEffect(() => {
-    fetchOrders();
-  }, [page]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const response = await adminAPI.getOrders({ page, size: 20 });
       setOrders(response.data.data.content);
@@ -36,7 +32,11 @@ const AdminDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const updateOrderStatus = async (orderId: number, status: string) => {
     try {
