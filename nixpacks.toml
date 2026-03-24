@@ -1,5 +1,8 @@
 [phases.setup]
-nixPkgs = ["jdk17", "maven"]
+nixPkgs = ["jdk17", "maven", "nodejs"]
+
+[phases.install]
+cmds = ["npm install"]
 
 [phases.build]
 cmds = ["mvn clean package -DskipTests"]
