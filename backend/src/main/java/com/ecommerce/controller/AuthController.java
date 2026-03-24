@@ -85,27 +85,28 @@ public class AuthController {
             user.setPassword(passwordEncoder.encode(password));
             user.setPhone(phone);
             user.setRole(User.Role.CUSTOMER);
-            user.setEmailVerified(true); // Auto-verify since we're using OTP for signup only
+            user.setEmailVerified(true); // Auto-verify
 
             userRepository.save(user);
             System.out.println("✅ User created successfully: " + email);
 
-            // Generate and store OTP in-memory (not in database)
-            String otp = String.format("%06d", (int)(Math.random() * 1000000));
-            otpService.storeOtp(email, otp, 10); // Store for 10 minutes
+            // TEMPORARY FIX: Skip OTP verification for testing
+            // Generate JWT token immediately
+            String token = jwtUtil.generateToken(email);
             
-            // Send OTP via email (OTP will NOT be shown in console)
-            emailService.sendOtpEmail(email, firstName, otp);
-
-            // Prepare response - don't send token yet, need OTP verification first
+            // Prepare response - send token directly (no OTP required)
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("email", email);
-            responseData.put("requiresOtp", true);
-            responseData.put("message", "Please verify your email with OTP sent to your registered email");
+            responseData.put("token", token);
+            responseData.put("user", new HashMap<String, Object>() {{
+                put("email", email);
+                put("name", firstName + " " + lastName);
+                put("role", "CUSTOMER");
+            }});
+            responseData.put("requiresOtp", false);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Signup successful. OTP sent to your email.");
+            response.put("message", "Signup successful. Welcome to ShopEase!");
             response.put("data", responseData);
 
             return ResponseEntity.ok(response);
