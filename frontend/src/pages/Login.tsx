@@ -41,13 +41,39 @@ export const Login: React.FC = () => {
     if (showOtpForm || showSignupForm) otpInputRef.current?.focus();
   }, [showOtpForm, showSignupForm]);
 
-  // ✅ STEP 1: Send OTP
+  // ✅ STEP 1: Send OTP (or verify directly if debug mode)
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // First, try to verify user via debug endpoint (bypasses OTP)
+      try {
+        const debugResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/debug/verify-user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        
+        const debugData = await debugResponse.json();
+        
+        if (debugData.success) {
+          // User verified! Now login normally without OTP
+          const loginResponse = await authAPI.login({ email, password });
+          const loginData = loginResponse.data.data;
+          
+          if (loginData?.token && loginData?.user) {
+            login(loginData.user, loginData.token);
+            navigate('/');
+            return;
+          }
+        }
+      } catch (debugErr) {
+        console.log('Debug verify failed, using normal OTP flow');
+      }
+
+      // Normal OTP flow
       const response = await authAPI.login({ email });
       const data = response.data.data;
 
@@ -59,7 +85,7 @@ export const Login: React.FC = () => {
 
       if (data?.requiresOtp) {
         setShowOtpForm(true);
-        setError('Enter OTP sent to your email');
+        setError('OTP not received? Check console for debug verification');
         setResendCooldown(30);
         return;
       }
@@ -157,6 +183,29 @@ export const Login: React.FC = () => {
       </h2>
 
       {error && <div className="login-error">{error}</div>}
+
+      {/* Debug Button - Verify User Instantly */}
+      {!showSignupForm && !showOtpForm && (
+        <button 
+          onClick={async () => {
+            try {
+              const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/debug/verify-user`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: 'manasaambati244@gmail.com' })
+              });
+              const data = await res.json();
+              alert(data.success ? '✅ Verified! Now login.' : 'Failed: ' + data.message);
+              console.log('Debug verify:', data);
+            } catch (err) {
+              alert('Error: ' + err);
+            }
+          }}
+          style={{ marginBottom: '10px', background: '#f97316', color: 'white' }}
+        >
+          🔧 Debug: Verify My Email
+        </button>
+      )}
 
       {/* STEP 1 */}
       {!showSignupForm && !showOtpForm && (
