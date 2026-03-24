@@ -22,8 +22,8 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 @CrossOrigin(
     origins = {
-        "http://localhost:3000",
-        "https://e-commercewebsite-production-1e75.up.railway.app"
+        "https://e-commercewebsite-production-cb69.up.railway.app", // Frontend URL
+        "http://localhost:3000" // Local development
     },
     allowCredentials = "true"
 )

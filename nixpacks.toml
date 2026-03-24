@@ -1,8 +1,17 @@
 [phases.setup]
-nixPkgs = ["jdk17", "maven"]
+nixPkgs = ["jdk17" "maven" "nodejs_20"]
+
+[phases.install]
+cmds = [
+  "cd backend && mvn dependency:go-offline",
+  "cd frontend && npm install"
+]
 
 [phases.build]
-cmds = ["cd backend && mvn clean package -DskipTests"]
+cmds = [
+  "cd backend && mvn clean package -DskipTests",
+  "cd frontend && npm run build"
+]
 
 [start]
 cmd = "cd backend && java -jar target/*.jar"
