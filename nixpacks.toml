@@ -1,11 +1,8 @@
 [phases.setup]
-nixPkgs = ["jdk17", "maven", "nodejs"]
-
-[phases.install]
-cmds = ["npm install"]
+nixPkgs = ["jdk17", "maven"]
 
 [phases.build]
-cmds = ["mvn clean package -DskipTests"]
+cmds = ["cd backend && mvn clean package -DskipTests"]
 
 [start]
-cmd = "java -jar target/*.jar"
+cmd = "cd backend && java -jar target/*.jar"
