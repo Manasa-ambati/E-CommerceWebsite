@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
+import { productAPI, wishlistAPI } from '../services/api';
 import './Home.css';
 
 interface Product {
@@ -12,15 +12,8 @@ interface Product {
   rating: number;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
-
 const Home: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
 
@@ -107,13 +100,9 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsRes, categoriesRes] = await Promise.all([
-          productAPI.getFeatured(),
-          categoryAPI.getRoot(),
-        ]);
+        const productsRes = await productAPI.getFeatured();
         setFeaturedProducts(productsRes.data.data);
         console.log('Featured products:', productsRes.data.data);
-        setCategories(categoriesRes.data.data);
       } catch (error) {
         console.error('Failed to fetch home data:', error);
       } finally {

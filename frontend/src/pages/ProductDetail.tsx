@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI, wishlistAPI, reviewAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
@@ -111,6 +111,20 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [id]);
 
+  const handlePreviousImage = useCallback(() => {
+    if (!product?.images || product.images.length === 0) return;
+    setSelectedImage((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    );
+  }, [product]);
+
+  const handleNextImage = useCallback(() => {
+    if (!product?.images || product.images.length === 0) return;
+    setSelectedImage((prev) =>
+      prev === product.images.length - 1 ? 0 : prev + 1
+    );
+  }, [product]);
+
   // Keyboard navigation for image zoom
   useEffect(() => {
     if (!showImageZoom) return;
@@ -129,7 +143,7 @@ const ProductDetail: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showImageZoom]);
+  }, [showImageZoom, handlePreviousImage, handleNextImage]);
 
   const handleAddToCart = async () => {
     try {
@@ -214,19 +228,7 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const handlePreviousImage = () => {
-    if (!product?.images || product.images.length === 0) return;
-    setSelectedImage((prev) => 
-      prev === 0 ? product.images.length - 1 : prev - 1
-    );
-  };
 
-  const handleNextImage = () => {
-    if (!product?.images || product.images.length === 0) return;
-    setSelectedImage((prev) => 
-      prev === product.images.length - 1 ? 0 : prev + 1
-    );
-  };
 
   const handleShare = async () => {
     const shareData = {
@@ -307,7 +309,6 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  const currentPrice = product.discountPrice || product.price;
   const discount = product.discountPrice
     ? Math.round((1 - product.discountPrice / product.price) * 100)
     : 0;

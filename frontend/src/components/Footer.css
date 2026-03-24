@@ -107,6 +107,37 @@
   transform: translateX(5px);
 }
 
+/* Button-styled links (replaces invalid href="#" anchors) */
+.footer-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #bdc3c7;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  display: inline-block;
+  font-family: inherit;
+  text-align: left;
+}
+
+.footer-link-btn:hover {
+  color: #f97316;
+  transform: translateX(5px);
+}
+
+.footer-bottom-links .footer-link-btn {
+  color: #95a5a6;
+  font-size: 0.9rem;
+  transform: none;
+}
+
+.footer-bottom-links .footer-link-btn:hover {
+  color: #f97316;
+  transform: none;
+}
+
 /* Contact List */
 .contact-list {
   list-style: none;
@@ -353,6 +384,7 @@
   }
   
   .footer-section ul li a,
+  .footer-section ul li .footer-link-btn,
   .footer-description,
   .contact-list li {
     font-size: 0.9rem;
@@ -582,6 +614,7 @@
   }
   
   .footer-section ul li a,
+  .footer-section ul li .footer-link-btn,
   .contact-list li {
     font-size: 0.9rem;
   }
@@ -634,6 +667,7 @@
   }
   
   .footer-section ul li a,
+  .footer-section ul li .footer-link-btn,
   .contact-list li {
     font-size: 0.85rem;
   }
@@ -642,7 +676,8 @@
     font-size: 0.8rem;
   }
   
-  .footer-bottom-links a {
+  .footer-bottom-links a,
+  .footer-bottom-links .footer-link-btn {
     font-size: 0.8rem;
   }
 }
