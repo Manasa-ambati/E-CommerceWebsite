@@ -1,16 +1,11 @@
 package com.ecommerce.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 public class CorsConfig {
-
-    @Value("${cors.allowed-origins:http://localhost:3000}")
-    private String allowedOrigins;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -20,17 +15,15 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
-                // Convert comma-separated string to array
-                String[] origins = allowedOrigins.split(",");
-
                 registry.addMapping("/**")
-                        // 🔥 IMPORTANT: use allowedOriginPatterns instead of allowedOrigins
-                        .allowedOriginPatterns(origins)
+                        .allowedOrigins(
+                                "https://e-commercewebsite-production-1e75.up.railway.app"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
-                        .exposedHeaders("Authorization", "Content-Type")
+                        .exposedHeaders("Authorization")
                         .allowCredentials(true)
-                        .maxAge(3600L);
+                        .maxAge(3600);
             }
         };
     }
