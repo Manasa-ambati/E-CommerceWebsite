@@ -37,7 +37,6 @@ console.log = (...args) => {
 logCache.add(hash);
   setTimeout(() => logCache.delete(hash), 5000);
   }
- // originalLog(...args);
  };
 
  // Prevent ESC key from causing page refresh/blinking

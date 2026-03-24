@@ -812,3 +812,20 @@
     height: 95px;
   }
 }
+
+/* Footer link buttons (replacing anchor tags with href="#") */
+.footer-link-button {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.footer-link-button:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}

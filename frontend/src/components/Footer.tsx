@@ -69,11 +69,11 @@ const Footer: React.FC = () => {
           <h4>Customer Service</h4>
           <ul>
             <li><Link to="/profile">My Account</Link></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Shipping Info</a></li>
-            <li><a href="#">Returns & Refunds</a></li>
-            <li><a href="#">Track Order</a></li>
+            <li><button type="button" className="footer-link-button">Contact Us</button></li>
+            <li><button type="button" className="footer-link-button">FAQ</button></li>
+            <li><button type="button" className="footer-link-button">Shipping Info</button></li>
+            <li><button type="button" className="footer-link-button">Returns & Refunds</button></li>
+            <li><button type="button" className="footer-link-button">Track Order</button></li>
           </ul>
         </div>
         
@@ -145,10 +145,10 @@ const Footer: React.FC = () => {
         <div className="footer-bottom-content">
           <p>&copy; 2026 ShopEase. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Cookie Policy</a>
-            <a href="#">Security</a>
+            <button type="button" className="footer-link-button">Privacy Policy</button>
+            <button type="button" className="footer-link-button">Terms of Service</button>
+            <button type="button" className="footer-link-button">Cookie Policy</button>
+            <button type="button" className="footer-link-button">Security</button>
           </div>
           <div className="payment-methods">
             <span>We Accept:</span>
