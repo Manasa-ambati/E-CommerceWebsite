@@ -20,6 +20,11 @@ public class EmailService {
         // Check if mail configuration is present
         if (mailSender == null) {
             System.err.println("⚠️  MailSender not configured - skipping email send");
+            System.err.println("💡 To enable email, add these Railway environment variables:");
+            System.err.println("   SPRING_MAIL_USERNAME=your-email@gmail.com");
+            System.err.println("   SPRING_MAIL_PASSWORD=your-app-password");
+            System.err.println("\n📝 For development/testing, you can manually verify users in database:");
+            System.err.println("   UPDATE user SET email_verified = true WHERE email = '" + toEmail + "';");
             return;
         }
         

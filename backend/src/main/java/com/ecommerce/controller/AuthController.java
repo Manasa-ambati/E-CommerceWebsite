@@ -159,7 +159,7 @@ public class AuthController {
             
             try {
                 // Send OTP via email
-                emailService.sendOtpEmail(user.getFirstName(), email, otp);
+                emailService.sendOtpEmail(email, user.getFirstName(), otp);
                 System.out.println("✅ Login OTP sent to: " + email);
             } catch (Exception emailError) {
                 System.err.println("❌ Failed to send email: " + emailError.getMessage());
@@ -283,6 +283,37 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return badRequest("Failed to enable users: " + e.getMessage());
+        }
+    }
+    
+    // Debug endpoint to verify a specific user's email (bypass OTP)
+    @PostMapping("/debug/verify-user")
+    public ResponseEntity<?> verifyUser(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            
+            if (email == null || email.trim().isEmpty()) {
+                return badRequest("Email is required");
+            }
+            
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (!userOpt.isPresent()) {
+                return badRequest("User not found with email: " + email);
+            }
+            
+            User user = userOpt.get();
+            user.setEmailVerified(true);
+            userRepository.save(user);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "User " + email + " verified successfully (OTP bypassed)");
+            
+            System.out.println("🔧 DEBUG: Manually verified user: " + email);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            return badRequest("Failed to verify user: " + e.getMessage());
         }
     }
     
