@@ -17,6 +17,12 @@ public class EmailService {
     public void sendOtpEmail(String toEmail, String firstName, String otp) {
         System.out.println("\n📧 Sending OTP email to: " + firstName + " <" + toEmail + ">");
         
+        // Check if mail configuration is present
+        if (mailSender == null) {
+            System.err.println("⚠️  MailSender not configured - skipping email send");
+            return;
+        }
+        
         try {
             // Create MIME message for better HTML formatting
             MimeMessage message = mailSender.createMimeMessage();
