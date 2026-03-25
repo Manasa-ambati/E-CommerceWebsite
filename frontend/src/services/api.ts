@@ -54,15 +54,6 @@ export const authAPI = {
   resendOtp: (email: string) => api.post('/auth/resend-otp', { email }),
 };
 
-export const cartAPI = {
-  get: () => api.get('/cart'),
-  add: (productId: number, quantity: number = 1) =>
-    api.post(`/cart/add?productId=${productId}&quantity=${quantity}`),
-  update: (productId: number, quantity: number) =>
-    api.put(`/cart/update?productId=${productId}&quantity=${quantity}`),
-  remove: (productId: number) => api.delete(`/cart/remove?productId=${productId}`),
-  clear: () => api.delete('/cart/clear'),
-};
  
 // Product API
 export  const productAPI = {
@@ -99,6 +90,16 @@ export const wishlistAPI = {
   check: (productId: number) => api.get(`/wishlist/check/${productId}`),
   add: (productId: number) => api.post(`/wishlist/add?productId=${productId}`),
   remove: (productId: number) => api.delete(`/wishlist/remove?productId=${productId}`),
+};
+
+export const cartAPI = {
+  get: () => api.get('/cart'),
+  add: (productId: number, quantity: number = 1) =>
+    api.post(`/cart/add?productId=${productId}&quantity=${quantity}`),
+  update: (productId: number, quantity: number) =>
+    api.put(`/cart/update?productId=${productId}&quantity=${quantity}`),
+  remove: (productId: number) => api.delete(`/cart/remove?productId=${productId}`),
+  clear: () => api.delete('/cart/clear'),
 };
 
 // Order API
