@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Responsive Test Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .breakpoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .breakpoint-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .breakpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .breakpoint-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .breakpoint-card .range {
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .breakpoint-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .breakpoint-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #333;
+        }
+
+        .breakpoint-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .test-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .test-steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .test-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .test-steps li:before {
+            content: counter(step-counter);
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .device-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .note strong {
+            color: #856404;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Navbar Responsive Design</h1>
+        <p class="subtitle">Complete Device Compatibility Guide</p>
+
+        <div class="breakpoint-grid">
+            <!-- Desktop -->
+            <div class="breakpoint-card">
+                <h2>🖥️ Desktop</h2>
+                <span class="range">≥ 1441px</span>
+                <ul>
+                    <li>Full horizontal navigation</li>
+                    <li>All links visible</li>
+                    <li>Large search bar (550-650px)</li>
+                    <li>Hamburger menu hidden</li>
+                    <li>Maximum spacing and padding</li>
+                </ul>
+            </div>
+
+            <!-- Laptop -->
+            <div class="breakpoint-card">
+                <h2>💻 Laptop</h2>
+                <span class="range">1025px - 1440px</span>
+                <ul>
+                    <li>Hamburger menu appears</li>
+                    <li>Nav links hidden</li>
+                    <li>Medium search bar (400-500px)</li>
+                    <li>Comfortable touch targets</li>
+                    <li>Optimized spacing</li>
+                </ul>
+            </div>
+
+            <!-- Tablet Landscape -->
+            <div class="breakpoint-card">
+                <h2>📱 Tablet Landscape</h2>
+                <span class="range">769px - 1024px</span>
+                <ul>
+                    <li>Hamburger menu visible</li>
+                    <li>Slide-out menu (320px width)</li>
+                    <li>Adjusted search bar (350-400px)</li>
+                    <li>Responsive layout</li>
+                    <li>Touch-optimized</li>
+                </ul>
+            </div>
+
+            <!-- Tablet Portrait -->
+            <div class="breakpoint-card">
+                <h2>📱 Tablet Portrait</h2>
+                <span class="range">481px - 768px</span>
+                <ul>
+                    <li>Logo + hamburger on top row</li>
+                    <li>Search bar full width (2nd row)</li>
+                    <li>Menu overlay (300px or 70vw)</li>
+                    <li>Stacked layout</li>
+                    <li>Larger touch targets</li>
+                </ul>
+            </div>
+
+            <!-- Large Mobile -->
+            <div class="breakpoint-card">
+                <h2>📱 Large Mobile</h2>
+                <span class="range">415px - 480px</span>
+                <ul>
+                    <li>Compact header layout</li>
+                    <li>Full-width search bar</li>
+                    <li>Menu overlay (75vw width)</li>
+                    <li>Logo: 22px</li>
+                    <li>Enhanced mobile UX</li>
+                </ul>
+            </div>
+
+            <!-- Small Mobile -->
+            <div class="breakpoint-card">
+                <h2>📱 Small Mobile</h2>
+                <span class="range">≤ 414px</span>
+                <ul>
+                    <li>Tight compact layout</li>
+                    <li>Search with extra padding</li>
+                    <li>Menu overlay (80-85vw)</li>
+                    <li>Logo: 18-20px</li>
+                    <li>iPhone SE optimized</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Testing Instructions</h2>
+            <ol class="test-steps">
+                <li>
+                    <strong>Open DevTools:</strong> Press <code>F12</code> or <code>Ctrl+Shift+I</code> in your browser
+                </li>
+                <li>
+                    <strong>Toggle Device Mode:</strong> Click the device icon or press <code>Ctrl+Shift+M</code>
+                </li>
+                <li>
+                    <strong>Test Each Breakpoint:</strong> Manually enter these widths: 1920px, 1440px, 1024px, 768px, 480px, 414px, 375px
+                </li>
+                <li>
+                    <strong>Click Hamburger:</strong> Verify menu slides smoothly from right at all breakpoints ≤ 1199px
+                </li>
+                <li>
+                    <strong>Test Navigation:</strong> Click each link - it should navigate AND close the menu
+                </li>
+                <li>
+                    <strong>Check Auth States:</strong> Test both logged-in and logged-out states
+                </li>
+                <li>
+                    <strong>Verify Badges:</strong> Add items to cart/wishlist and check badge counts appear
+                </li>
+                <li>
+                    <strong>Touch Test:</strong> If on mobile device, verify all buttons are easily tappable
+                </li>
+            </ol>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="device-icon">🎨</span>
+                <h3>Smooth Animations</h3>
+                <p>Cubic-bezier transitions for professional feel</p>
+            </div>
+            <div class="feature-card">
+                <span class="device-icon">📱</span>
+                <h3>Touch Optimized</h3>
+                <p>Minimum 44px touch targets for all buttons</p>
+            </div>
+            <div class="feature-card">
+                <span class="device-icon">♿</span>
+                <h3>Accessible</h3>
+                <p>ARIA labels and keyboard navigation support</p>
+            </div>
+            <div class="feature-card">
+                <span class="device-icon">🚀</span>
+                <h3>Performance</h3>
+                <p>Hardware-accelerated CSS transforms</p>
+            </div>
+            <div class="feature-card">
+                <span class="device-icon">🔄</span>
+                <h3>Dynamic Content</h3>
+                <p>Changes based on authentication state</p>
+            </div>
+            <div class="feature-card">
+                <span class="device-icon">🎯</span>
+                <h3>Smart Scroll</h3>
+                <p>Body scroll prevention when menu is open</p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Important Note:</strong> The hamburger menu appears automatically at viewport widths ≤ 1199px. On desktop (> 1199px), the full navigation links are displayed instead.
+        </div>
+
+        <div class="success-box">
+            <strong>✅ Success Criteria:</strong>
+            <ul style="margin-top: 10px; padding-left: 20px;">
+                <li>Hamburger menu toggles smoothly at all mobile/tablet sizes</li>
+                <li>All navigation links are accessible and functional</li>
+                <li>Menu closes when clicking any link</li>
+                <li>Layout adapts properly at all breakpoints</li>
+                <li>Cart and wishlist badges display correctly</li>
+                <li>Authentication states render appropriate links</li>
+                <li>All interactive elements are touch-friendly</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

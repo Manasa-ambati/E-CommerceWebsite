@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import Toast from '../components/Toast';
 import './Auth.css';
+import { useAuth } from "../context/authContext";
+
 
 interface ToastMessage {
   id: number;
@@ -189,7 +191,7 @@ const Login: React.FC = () => {
           {/* Login Method Tabs */}
           <div className="auth-tabs">
             <button
-              type="button"
+             type="button"
               className={`auth-tab ${loginMethod === 'password' ? 'active' : ''}`}
               onClick={() => setLoginMethod('password')}
             >
