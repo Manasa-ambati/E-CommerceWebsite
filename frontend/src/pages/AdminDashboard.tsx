@@ -29,9 +29,9 @@ const AdminDashboard: React.FC = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await adminAPI.getOrders({ page, size: 20 });
-      setOrders(response.data.data.content);
-      setTotalPages(response.data.data.totalPages);
+      const response = await adminAPI.getAllOrders();
+      setOrders(response.data.data.content || response.data.data);
+      setTotalPages(response.data.data.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     } finally {

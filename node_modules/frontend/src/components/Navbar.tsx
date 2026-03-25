@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/authContext";
+import { wishlistAPI } from "../services/api";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
-  const { user, logout } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Compute login state directly from context
-  const isLoggedIn = !!user;
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  
+  // Check if user is logged in
+  const isLoggedIn = !!localStorage.getItem('token');
+  
+  // Get current user info safely
+  const getCurrentUser = () => {
+    if (isLoggedIn) {
+      try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          return JSON.parse(userStr);
+        }
+      } catch (error) {
+        console.error('Failed to parse user info:', error);
+      }
+    }
+    return null;
+                                                                                                                               };
+  
+  const currentUser = getCurrentUser();
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -26,7 +43,7 @@ const Navbar: React.FC = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showProfileDropdown]);
+  }, []); // Removed showProfileDropdown from dependencies - it's not needed
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -35,13 +52,38 @@ const Navbar: React.FC = () => {
       document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
-
-  const handleLogout = () => {
-    logout();
-    setShowProfileDropdown(false);
-    navigate("/");
-  };
-
+  
+  // Fetch wishlist count when logged in
+  useEffect(() => {
+    const fetchWishlistCount = async () => {
+      if (isLoggedIn) {
+        try {
+          // Try to fetch from backend first
+          const response = await wishlistAPI.get();
+          const items = response.data?.data || [];
+          setWishlistCount(Array.isArray(items) ? items.length : 0);
+        } catch (error) {
+          // Fallback to localStorage
+          const localWishlist = localStorage.getItem('wishlist');
+          if (localWishlist) {
+            try {
+              const items = JSON.parse(localWishlist);
+              setWishlistCount(Array.isArray(items) ? items.length : 0);
+            } catch (e) {
+              setWishlistCount(0);
+            }
+          } else {
+            setWishlistCount(0);
+          }
+        }
+      } else {
+        setWishlistCount(0);
+      }
+    };
+    
+    fetchWishlistCount();
+  }, [isLoggedIn]);
+  
   /* ---------------- SEARCH HANDLER ---------------- */
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,21 +182,37 @@ const Navbar: React.FC = () => {
 
           {/* SEARCH BAR */}
           <form className="search-form" onSubmit={handleSearch}>
+            <div className="search-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </div>
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search for products, brands and more..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <div className="search-actions">
-              <button type="button" onClick={handleCameraSearch} title="Search with Camera">
-                📷
+              <button type="button" onClick={handleCameraSearch} title="Search with Camera" className="camera-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                  <circle cx="12" cy="13" r="3"></circle>
+                </svg>
               </button>
-              <button type="button" onClick={handleVoiceSearch} title="Search with Voice">
-                🎤
+              <button type="button" onClick={handleVoiceSearch} title="Search with Voice" className="voice-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" x2="12" y1="19" y2="22"></line>
+                </svg>
               </button>
-              <button type="submit" title="Search">
-                🔍
+              <button type="submit" title="Search" className="search-submit-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
               </button>
             </div>
           </form>
@@ -162,32 +220,89 @@ const Navbar: React.FC = () => {
           {/* NAV LINKS */}
           <div className="navbar-nav">
             {isLoggedIn ? (
+              // Logged In Navigation
               <>
                 <Link to="/" className="nav-link">Home</Link>
                 <Link to="/products" className="nav-link">Products</Link>
-                <Link to="/wishlist" className="nav-link">Wishlist</Link>
-                <Link to="/cart" className="nav-link">Cart ({cartCount})</Link>
+                <Link to="/wishlist" className="nav-link nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                  </svg>
+                  <span className="nav-text">Wishlist</span>
+                  {wishlistCount > 0 && <span className="nav-badge">{wishlistCount}</span>}
+                </Link>
+                <Link to="/cart" className="nav-link nav-link-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="8" cy="21" r="1"></circle>
+                    <circle cx="19" cy="21" r="1"></circle>
+                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                  </svg>
+                  <span className="nav-text">Cart</span>
+                  {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
+                </Link>
                 <Link to="/orders" className="nav-link">Orders</Link>
-
                 <div className="profile-dropdown-container">
-                  <button
-                    className="profile-dropdown-toggle"
+                  <button 
+                    className="nav-link nav-link-icon profile-trigger"
                     onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   >
-                    {user?.firstName || "User"} ▼
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span className="nav-text">Profile</span>
                   </button>
                   {showProfileDropdown && (
                     <div className="profile-dropdown-menu">
-                      <button onClick={handleLogout}>Logout</button>
+                      <div className="dropdown-user-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span className="dropdown-username">{currentUser?.firstName || currentUser?.name || currentUser?.email || "User"}
+</span>
+                      </div>
+                      <Link to="/orders" className="dropdown-item" onClick={() => setShowProfileDropdown(false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                          <path d="M3 6h18"></path>
+                          <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        My Orders
+                      </Link>
+                      <Link to="/profile" className="dropdown-item" onClick={() => setShowProfileDropdown(false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Profile Settings
+                      </Link>
+                      <div className="dropdown-divider"></div>
+                      <button 
+                        className="dropdown-item logout-item"
+                        onClick={() => {
+                          localStorage.removeItem('token');
+                          localStorage.removeItem('user');
+                          window.location.reload();
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                          <polyline points="16 17 21 12 16 7"></polyline>
+                          <line x1="21" x2="9" y1="12" y2="12"></line>
+                        </svg>
+                        Logout
+                      </button>
                     </div>
                   )}
                 </div>
               </>
             ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="btn-login">Login</Link>
-                <Link to="/signup" className="btn-signup">Sign Up</Link>
-              </div>
+              // Not Logged In - Only Login & Signup
+              <>
+                <Link to="/login" className="nav-link btn-login">Login</Link>
+                <Link to="/signup" className="nav-link btn-signup">Sign Up</Link>
+              </>
             )}
           </div>
         </div>

@@ -1,152 +1,276 @@
-// src/pages/Signup.tsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import { storageService } from '../services/storageService';
-import './Signup.css';
+import Toast from '../components/Toast';
+import './Auth.css';
 
-export const Signup: React.FC = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showOtpForm, setShowOtpForm] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [resendCooldown, setResendCooldown] = useState(0);
+interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+}
 
-  const { login, user } = useAuth();
+interface ToastMessage {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+}
+
+const Signup: React.FC = () => {
   const navigate = useNavigate();
+  const [step, setStep] = useState<'signup' | 'otp'>('signup');
+  const [formData, setFormData] = useState<SignupData>({
+    name: '',
+    email: '',
+    password: '',
+    phone: ''
+  });
+  const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) navigate('/');
-  }, [user, navigate]);
+  // Add toast notification
+  const addToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  // Remove toast notification
+  const removeToast = (id: number) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
 
   // Countdown timer for resend OTP
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (resendCooldown > 0) {
-      timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setResendDisabled(false);
     }
-    return () => clearTimeout(timer);
-  }, [resendCooldown]);
+  }, [countdown]);
 
-  // Step 1: Submit Signup
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    console.log('Sending signup request with data:', formData);
+
     try {
-      const signupData = { name: firstName + ' ' + lastName, email, phone };
-      const response = await authAPI.signup(signupData);
-      const data = response.data.data;
+      const response = await authAPI.signup(formData);
+      console.log('Signup response:', response.data);
+      const data = response.data;
 
-      if (data?.requiresOtp) {
-        setShowOtpForm(true);
-        setResendCooldown(30);
-        storageService.set('pending_signup', { firstName, lastName, email, phone });
-        return;
+      if (data.requiresOtp) {
+        // OTP sent successfully
+        addToast('Account created! Please check your email for verification code.', 'success');
+        setStep('otp');
+        setResendDisabled(true);
+        setCountdown(30);
+      } else {
+        // Direct signup (fallback)
+        addToast('Account created successfully! Redirecting to login...', 'success');
+        setTimeout(() => navigate('/login'), 2000);
       }
-
-      login(data.user, data.token);
-      storageService.set('last_login', Date.now());
-      navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
+      console.error('Signup error:', err);
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      
+      const errorMessage = err.response?.data?.message || err.message || 'Signup failed. Please try again.';
+      setError(errorMessage);
+      addToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify OTP
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
-      const response = await authAPI.verifyOtp(email, otp);
-      const data = response.data.data;
-      login(data.user, data.token);
-      storageService.set('last_login', Date.now());
-      storageService.remove('pending_signup');
-      navigate('/');
+      const response = await authAPI.verifyOtp(formData.email, otp);
+      const data = response.data;
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify({
+        id: data.id,
+        email: data.email,
+        firstName: data.firstName || formData.name.split(' ')[0],
+        lastName: data.lastName || formData.name.split(' ')[1] || '',
+        role: data.role
+      }));
+      
+      addToast('Email verified successfully! Welcome to ShopEase!', 'success');
+      setTimeout(() => navigate('/'), 1500);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'OTP verification failed');
+      const errorMessage = err.response?.data?.message || 'Invalid OTP. Please try again.';
+      setError(errorMessage);
+      addToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Resend OTP
   const handleResendOtp = async () => {
-    if (resendCooldown > 0) return;
+    if (resendDisabled) return;
+
+    setError('');
+    setLoading(true);
+
     try {
-      await authAPI.resendOtp(email);
-      alert('✅ New OTP sent!');
-      setResendCooldown(30);
-    } catch {
-      setError('Failed to resend OTP');
+      await authAPI.resendOtp(formData.email);
+      setResendDisabled(true);
+      setCountdown(30);
+      addToast('OTP resent to your email!', 'info');
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to resend OTP.';
+      setError(errorMessage);
+      addToast(errorMessage, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-card">
-        <h2>{showOtpForm ? 'Verify OTP' : 'Create Account'}</h2>
-        {error && <div className="signup-error">{error}</div>}
-
-        {showOtpForm ? (
-          <form onSubmit={handleOtpVerification} className="signup-form">
-            <div className="form-group">
-              <label>Enter 6-Digit OTP</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
-                placeholder="000000"
-                maxLength={6}
-                inputMode="numeric"
-                required
-              />
-            </div>
-            <button type="submit" className="signup-btn-primary" disabled={loading}>
-              {loading ? 'Verifying...' : 'Verify & Create Account'}
-            </button>
-            <button type="button" className="signup-btn-secondary" onClick={handleResendOtp} disabled={resendCooldown > 0}>
-              {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : 'Resend OTP'}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleSubmit} className="signup-form">
-            <div className="form-group">
-              <label>First Name</label>
-              <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} required />
-            </div>
-            <div className="form-group">
-              <label>Last Name</label>
-              <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} required />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-            </div>
-            <div className="form-group">
-              <label>Phone</label>
-              <input type="text" value={phone} onChange={e => setPhone(e.target.value)} required />
-            </div>
-            <button type="submit" className="signup-btn-primary" disabled={loading}>
-              {loading ? 'Creating...' : 'Sign Up'}
-            </button>
-          </form>
-        )}
-
-        <p className="signup-footer-text">
-          Already have an account? <Link to="/login">Login here</Link>
-        </p>
+    <div className="auth-container signup-container">
+      {/* Toast Notifications */}
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
       </div>
+
+      <h2>Create Your Account</h2>
+      
+      {step === 'signup' ? (
+        <form onSubmit={handleSignup}>
+          <div className="form-group">
+            <label>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your full name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create a strong password"
+              value={formData.password}
+              onChange={handleInputChange}
+              minLength={6}
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter your phone number"
+              value={formData.phone}
+              onChange={handleInputChange}
+              title="Please enter a valid phone number (numbers, +, -, spaces, parentheses)"
+              required
+            />
+          </div>
+          
+          <button type="submit" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </button>
+          
+          <p className="terms-text">
+            By signing up, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </form>
+      ) : (
+        <form onSubmit={handleOtpVerification}>
+          <div className="otp-info">
+            <p>We've sent a verification code to:</p>
+            <p className="email-highlight">{formData.email}</p>
+            <p className="otp-instruction">Enter the 6-digit OTP from your email</p>
+          </div>
+          
+          <input
+            type="text"
+            placeholder="Enter 6-digit OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            maxLength={6}
+            className="otp-input"
+            required
+          />
+          
+          <button type="submit" disabled={loading}>
+            {loading ? 'Verifying...' : 'Verify & Create Account'}
+          </button>
+          
+          <button 
+            type="button" 
+            onClick={handleResendOtp}
+            disabled={resendDisabled || loading}
+            className="resend-btn"
+          >
+            {resendDisabled ? `Resend in ${countdown}s` : 'Resend OTP'}
+          </button>
+          
+          <button 
+            type="button"
+            onClick={() => setStep('signup')}
+            className="back-btn"
+          >
+            ← Back to Signup
+          </button>
+        </form>
+      )}
+
+      <p>
+        Already have an account?{' '}
+        <Link to="/login">Login here</Link>
+      </p>
+
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };
+
+export default Signup;

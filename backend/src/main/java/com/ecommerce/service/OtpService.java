@@ -31,7 +31,12 @@ public class OtpService {
             System.out.println("✅ Deleted " + deletedCount + " existing OTP record(s)");
             
             // Small delay to ensure delete completes
-            Thread.sleep(50);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.err.println("⚠️ Thread interrupted during sleep: " + e.getMessage());
+            }
             
             // Create new OTP entry
             OtpVerification otpVerification = new OtpVerification();

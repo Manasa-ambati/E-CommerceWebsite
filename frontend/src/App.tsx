@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Categories from './pages/Categories';
@@ -11,12 +9,11 @@ import Checkout from './pages/Checkout';
 import { Orders } from './pages/Orders';
 import OrderTracking from './pages/OrderTracking';
 import ProductDetail from './pages/ProductDetail';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
 import AdminDashboard from './pages/AdminDashboard';
-import { AuthProvider } from './context/authContext';
 import { CartProvider } from './context/CartContext';
 
 // Layout component to conditionally render Footer based on route
@@ -36,30 +33,27 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <AuthProvider>
-    <CartProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-            <Route path="/product/:id" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
-            <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-            <Route path="/track-order/:orderNumber" element={<ProtectedRoute><OrderTracking /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-          </Routes>
-        </Layout>
-      </Router>
-    </CartProvider>
-  </AuthProvider>
+  <CartProvider>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/track-order/:orderNumber" element={<OrderTracking />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
+      </Layout>
+    </Router>
+  </CartProvider>
 );
 
 export default App;

@@ -40,24 +40,46 @@ const Products: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        console.log('Fetching products with params:', { page, search, categoryId, minPrice, maxPrice, sortBy, sortDir });
+        
         const [productsRes, categoriesRes] = await Promise.all([
           productAPI.filter({
             page,
             size: 12,
-            categoryId: categoryId || undefined,
-            minPrice: minPrice || undefined,
-            maxPrice: maxPrice || undefined,
+            categoryId: categoryId ? Number(categoryId) : undefined,
+            minPrice: minPrice ? Number(minPrice) : undefined,
+            maxPrice: maxPrice ? Number(maxPrice) : undefined,
             search: search || undefined,
             sortBy,
             sortDir,
           }),
           categoryAPI.getAll(),
         ]);
-        setProducts(productsRes.data.data.content);
-        setTotalPages(productsRes.data.data.totalPages);
-        setCategories(categoriesRes.data.data);
-      } catch (error) {
+        
+        console.log('Products response:', productsRes.data);
+        console.log('Categories response:', categoriesRes.data);
+        
+        const productsData = productsRes.data.data;
+        const categoriesData = categoriesRes.data.data;
+        
+        if (!productsData) {
+          console.error('No products data in response!');
+          setProducts([]);
+        } else {
+          setProducts(productsData.content || []);
+          setTotalPages(productsData.totalPages || 0);
+        }
+        
+        if (!categoriesData) {
+          console.error('No categories data in response!');
+          setCategories([]);
+        } else {
+          setCategories(categoriesData);
+        }
+      } catch (error: any) {
         console.error('Failed to fetch products:', error);
+        console.error('Error details:', error.response?.data || error.message);
+        alert('Failed to load products. Please check your connection or try again later.');
       } finally {
         setLoading(false);
       }

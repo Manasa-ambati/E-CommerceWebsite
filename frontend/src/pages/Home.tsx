@@ -100,15 +100,36 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsRes] = await Promise.all([
-          productAPI.getFeatured(),
-          categoryAPI.getRoot(),
-        ]);
-        setFeaturedProducts(productsRes.data.data);
-        console.log('Featured products:', productsRes.data.data);
+        setLoading(true);
+        console.log('Fetching home data...');
+        
+        // Fetch featured products - fallback to getAll if getFeatured fails
+        let productsRes;
+        try {
+          productsRes = await productAPI.getFeatured();
+          console.log('Featured products response:', productsRes.data);
+        } catch (error) {
+          console.log('getFeatured failed, trying getAll...');
+          productsRes = await productAPI.getAll(0, 8);
+          console.log('getAll response:', productsRes.data);
+        }
+        
+        // Fetch categories - fallback if getRoot fails
+        try {
+          await categoryAPI.getRoot();
+        } catch (error) {
+          console.log('getRoot failed, using getAll instead...');
+          await categoryAPI.getAll();
+        }
+        
+        const productsData = productsRes.data.data?.content || productsRes.data.data || [];
+        setFeaturedProducts(productsData);
+        console.log('Featured products loaded:', productsData.length);
 
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch home data:', error);
+        console.error('Error details:', error.response?.data || error.message);
+        alert('Failed to load products. Please refresh the page.');
       } finally {
         setLoading(false);
       }

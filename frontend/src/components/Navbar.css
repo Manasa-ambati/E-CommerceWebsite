@@ -88,20 +88,22 @@
   align-items:center;
   background:var(--bg-light);
   border-radius:25px;
-  padding:4px;
+  padding:4px 12px;
   border:2px solid transparent;
   width:500px;
   max-width: 600px;
   transition:all .3s;
   flex-shrink: 0;
+  gap: 8px;
 }
 
 .search-icon-wrapper{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:8px 12px;
+  padding:4px;
   color:var(--text-gray);
+  flex-shrink: 0;
 }
 
 .search-icon-wrapper svg{
@@ -117,17 +119,19 @@
   outline:none;
   flex:1;
   color:var(--text-dark);
+  min-width: 0;
 }
 
 .search-form input::placeholder{
   color:var(--text-gray);
+  font-size:13px;
 }
 
 .search-actions{
   display:flex;
   align-items:center;
   gap:4px;
-  padding-right:4px;
+  padding-left:4px;
 }
 
 .search-actions button{
@@ -191,14 +195,91 @@
 .nav-link{
   color:white;
   text-decoration:none;
-  font-size:14px;
-  font-weight:600;
+  font-size:16px;
+  font-weight:800;
   padding:8px 12px;
   border-radius:8px;
   transition:all .2s;
   background:transparent;
   border:none;
   cursor:pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* Nav link with icon layout */
+.nav-link.nav-link-icon {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  min-width: 60px;
+}
+
+.nav-link svg {
+  flex-shrink: 0;
+}
+
+.nav-link .nav-text {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Badge for cart and wishlist counts */
+.nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4);
+}
+
+/* Login and Signup buttons styling */
+.btn-login {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 20px;
+  transition: all 0.3s;
+}
+
+.btn-login:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.btn-signup {
+  background: linear-gradient(135deg, var(--primary), #ec4899);
+  border: 2px solid transparent;
+  padding: 8px 20px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.btn-signup:hover {
+  background: linear-gradient(135deg, var(--primary-dark), #db2777);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+}
+
+/* Profile trigger button */
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .nav-link:hover{
@@ -211,25 +292,34 @@
   position:relative;
 }
 
-.profile-dropdown-toggle{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:8px;
-  background:rgba(255,255,255,0.15);
-  color:white;
-  border:2px solid rgba(255,255,255,0.3);
-  border-radius:50%;
-  transition:all .3s;
-  cursor:pointer;
-  width:40px;
-  height:40px;
+/* Profile trigger button - matches cart/wishlist style */
+.profile-trigger {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  min-width: 60px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.profile-dropdown-toggle:hover{
-  background:rgba(255,255,255,0.25);
-  border-color:rgba(255,255,255,0.5);
-  transform:translateY(-2px);
+.profile-trigger svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.profile-trigger .nav-text {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-trigger:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .profile-dropdown-menu{

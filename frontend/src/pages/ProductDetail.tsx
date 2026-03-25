@@ -265,7 +265,7 @@ const ProductDetail: React.FC = () => {
         return;
       }
 
-      await reviewAPI.add(Number(id), {
+      await reviewAPI.create(Number(id), {
         rating: userRating,
         comment: reviewComment
       });
