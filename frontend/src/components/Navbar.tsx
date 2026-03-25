@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { wishlistAPI } from "../services/api";
+import { useAuth } from "../context/authContext";
+
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
