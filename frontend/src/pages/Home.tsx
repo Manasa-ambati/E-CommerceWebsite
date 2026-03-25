@@ -102,6 +102,7 @@ const Home: React.FC = () => {
       try {
         setLoading(true);
         console.log('Fetching home data...');
+
         
         // Fetch featured products - fallback to getAll if getFeatured fails
         let productsRes;
@@ -113,7 +114,10 @@ const Home: React.FC = () => {
           productsRes = await productAPI.getAll(0, 8);
           console.log('getAll response:', productsRes.data);
         }
-        
+
+        console.log("FULL RESPONSE:", productsRes);
+        console.log("DATA:", productsRes?.data);
+
         // Fetch categories - fallback if getRoot fails
         try {
           await categoryAPI.getRoot();
@@ -122,7 +126,11 @@ const Home: React.FC = () => {
           await categoryAPI.getAll();
         }
         
-        const productsData = productsRes.data?.data?.content || [];
+        const productsData =
+          productsRes?.data?.data?.content ||
+          productsRes?.data?.content ||
+          productsRes?.data?.data ||
+          [];
         setFeaturedProducts(productsData);
         console.log('Featured products loaded:', productsData.length);
 
