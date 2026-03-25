@@ -26,23 +26,46 @@ export const Signup: React.FC = () => {
   useEffect(()=>{let t:NodeJS.Timeout;if(resendCooldown>0) t=setTimeout(()=>setResendCooldown(resendCooldown-1),1000); return()=>clearTimeout(t);}, [resendCooldown]);
   useEffect(()=>{if(showOtpForm) otpInputRef.current?.focus();}, [showOtpForm]);
 
-  const handleSubmit=async(e:React.FormEvent)=>{
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setError('');
     try{
       const data = {name:firstName+' '+lastName,email,password,phone};
       const res = await authAPI.signup(data);
-      if(res.data.data?.requiresOtp){ setShowOtpForm(true); setResendCooldown(30); storageService.set('pending_signup',data); return; }
-      login(res.data.data.user,res.data.data.token); navigate('/');
-    }catch(err:any){ setError(err.response?.data?.message||'Signup failed'); } finally{ setLoading(false);}
+      if(res.data.data?.requiresOtp){ 
+        setShowOtpForm(true); 
+        setResendCooldown(30); 
+        storageService.set('pending_signup',data); 
+        return; 
+      }
+      if (res.data.data?.user && res.data.data?.token) {
+        login(res.data.data.user, res.data.data.token); 
+        navigate('/');
+      } else {
+        setError('Invalid response from server');
+      }
+    }catch(err:any){ 
+      setError(err.response?.data?.message||'Signup failed'); 
+    } finally{ 
+      setLoading(false);
+    }
   };
 
   const handleOtpVerification=async(e:React.FormEvent)=>{
     e.preventDefault(); setLoading(true); setError('');
     try{
       const res=await authAPI.verifyOtp(email,otp);
-      login(res.data.data.user,res.data.data.token);
-      storageService.remove('pending_signup'); navigate('/');
-    }catch(err:any){setError(err.response?.data?.message||'OTP verification failed');} finally{setLoading(false);}
+      if (res.data.data?.user && res.data.data?.token) {
+        login(res.data.data.user,res.data.data.token);
+        storageService.remove('pending_signup'); 
+        navigate('/');
+      } else {
+        setError('Invalid response from server');
+      }
+    }catch(err:any){
+      setError(err.response?.data?.message||'OTP verification failed');
+    } finally{
+      setLoading(false);
+    }
   };
 
   const handleResendOtp=async()=>{

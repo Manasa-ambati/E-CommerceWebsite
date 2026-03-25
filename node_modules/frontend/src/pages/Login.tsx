@@ -31,15 +31,22 @@ export const Login: React.FC = () => {
   useEffect(() => { if (showOtpForm) otpInputRef.current?.focus(); }, [showOtpForm]);
 
   const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault(); setLoading(true); setError('');
     try {
       storageService.set('saved_email', email, 43200);
       const res = await authAPI.login({ email });
       const data = res.data.data;
-      if (data?.requiresOtp) { setShowOtpForm(true); setResendCooldown(30); }
-      else login(data.user, data.token);
-    } catch (err: any) { setError(err.response?.data?.message || 'Failed to send OTP'); }
-    finally { setLoading(false); }
+      if (data?.requiresOtp) { 
+        setShowOtpForm(true); 
+        setResendCooldown(30); 
+      } else if (data?.user && data?.token) {
+        login(data.user, data.token);
+      }
+    } catch (err: any) { 
+      setError(err.response?.data?.message || 'Failed to send OTP'); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const handleOtpVerification = async (e: React.FormEvent) => {
@@ -47,10 +54,17 @@ export const Login: React.FC = () => {
     try {
       const res = await authAPI.verifyOtp(email, otp);
       const data = res.data.data;
-      login(data.user, data.token);
-      navigate('/');
-    } catch (err: any) { setError(err.response?.data?.message || 'OTP verification failed'); }
-    finally { setOtpLoading(false); }
+      if (data?.user && data?.token) {
+        login(data.user, data.token);
+        navigate('/');
+      } else {
+        setError('Invalid response from server');
+      }
+    } catch (err: any) { 
+      setError(err.response?.data?.message || 'OTP verification failed'); 
+    } finally { 
+      setOtpLoading(false); 
+    }
   };
 
   const handleResendOtp = async () => {
