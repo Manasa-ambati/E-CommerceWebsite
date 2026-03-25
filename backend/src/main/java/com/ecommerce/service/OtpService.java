@@ -1,29 +1,41 @@
 package com.ecommerce.service;
 
+import com.ecommerce.entity.OtpVerification;
+import com.ecommerce.repository.OtpVerificationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 /**
- * In-memory OTP storage service.
- * OTPs are stored in memory with automatic expiration - not persisted to database.
+ * Database-backed OTP storage service.
+ * OTPs are stored in database with automatic expiration.
  */
 @Service
 public class OtpService {
     
-    // Thread-safe map to store OTPs: email -> OtpData
-    private final Map<String, OtpData> otpStore = new ConcurrentHashMap<>();
+    @Autowired
+    private OtpVerificationRepository otpRepository;
     
     /**
-     * Store OTP in memory with expiry time.
+     * Store OTP in database with expiry time.
      */
+    @Transactional
     public void storeOtp(String email, String otp, int expiryMinutes) {
-        OtpData otpData = new OtpData(otp, LocalDateTime.now().plusMinutes(expiryMinutes));
-        otpStore.put(email, otpData);
+        // Delete existing OTP if any
+        otpRepository.deleteByEmail(email);
         
-        // Schedule cleanup after expiry
-        scheduleCleanup(email, expiryMinutes);
+        // Create new OTP entry
+        OtpVerification otpVerification = new OtpVerification();
+        otpVerification.setEmail(email);
+        otpVerification.setOtp(otp);
+        otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(expiryMinutes));
+        otpVerification.setVerified(false);
+        
+        otpRepository.save(otpVerification);
+        System.out.println("✅ OTP stored in database for: " + email);
     }
     
     /**
@@ -31,25 +43,33 @@ public class OtpService {
      * Returns null if OTP doesn't exist or is expired.
      */
     public String getOtp(String email) {
-        OtpData otpData = otpStore.get(email);
+        Optional<OtpVerification> otpOpt = otpRepository.findByEmail(email);
         
-        if (otpData == null) {
+        if (!otpOpt.isPresent()) {
             return null;
         }
+        
+        OtpVerification otpVerification = otpOpt.get();
         
         // Check if OTP is expired
-        if (LocalDateTime.now().isAfter(otpData.expiryTime)) {
-            otpStore.remove(email);
+        if (LocalDateTime.now().isAfter(otpVerification.getExpiryTime())) {
+            otpRepository.deleteByEmail(email);
             return null;
         }
         
-        return otpData.otp;
+        // Check if already used
+        if (otpVerification.isVerified()) {
+            return null;
+        }
+        
+        return otpVerification.getOtp();
     }
     
     /**
      * Verify OTP for email.
      * Returns true if OTP matches and is not expired.
      */
+    @Transactional
     public boolean verifyOtp(String email, String otp) {
         String storedOtp = getOtp(email);
         
@@ -59,9 +79,13 @@ public class OtpService {
         
         boolean isValid = storedOtp.equals(otp);
         
-        // Remove OTP after verification (one-time use)
+        // Mark OTP as used after successful verification
         if (isValid) {
-            otpStore.remove(email);
+            otpRepository.findByEmail(email).ifPresent(otpVerification -> {
+                otpVerification.setVerified(true);
+                otpVerification.setUsedAt(LocalDateTime.now());
+                otpRepository.save(otpVerification);
+            });
         }
         
         return isValid;
@@ -70,62 +94,32 @@ public class OtpService {
     /**
      * Remove OTP from storage (used after successful verification).
      */
+    @Transactional
     public void removeOtp(String email) {
-        otpStore.remove(email);
+        otpRepository.deleteByEmail(email);
     }
     
     /**
      * Check if OTP exists for email (regardless of validity).
      */
     public boolean hasOtp(String email) {
-        return otpStore.containsKey(email);
-    }
-    
-    /**
-     * Schedule automatic cleanup of expired OTP.
-     */
-    private void scheduleCleanup(String email, int delayMinutes) {
-        // Use a simple delayed task to clean up expired OTPs
-        new Thread(() -> {
-            try {
-                Thread.sleep(delayMinutes * 60 * 1000L + 1000); // Add 1 second buffer
-                OtpData otpData = otpStore.get(email);
-                if (otpData != null && LocalDateTime.now().isAfter(otpData.expiryTime)) {
-                    otpStore.remove(email);
-                    System.out.println("Cleaned up expired OTP for: " + email);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }).start();
+        return otpRepository.existsByEmail(email);
     }
     
     /**
      * Get count of active OTPs (for monitoring/debugging).
      */
     public int getActiveOtpCount() {
-        return (int) otpStore.entrySet().stream()
-            .filter(entry -> LocalDateTime.now().isBefore(entry.getValue().expiryTime))
+        return (int) otpRepository.findAll().stream()
+            .filter(otp -> !otp.isVerified() && LocalDateTime.now().isBefore(otp.getExpiryTime()))
             .count();
     }
     
     /**
      * Clear all OTPs (for testing purposes).
      */
+    @Transactional
     public void clearAll() {
-        otpStore.clear();
-    }
-    
-    /**
-     * Internal class to hold OTP data.
-     */
-    private static class OtpData {
-        String otp;
-        LocalDateTime expiryTime;
-        
-        OtpData(String otp, LocalDateTime expiryTime) {
-            this.otp = otp;
-            this.expiryTime = expiryTime;
-        }
+        otpRepository.deleteAll();
     }
 }

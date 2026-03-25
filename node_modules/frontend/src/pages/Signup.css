@@ -10,26 +10,40 @@
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
 }
 
-.signup-container h2 {
-  color: white !important;
-  font-size: 32px !important;
-  margin-bottom: 30px !important;
-  font-weight: 700 !important;
-  text-align: center !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-.signup-form {
+.signup-card {
   background: white !important;
   border-radius: 16px !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
   padding: 40px !important;
   width: 100% !important;
   max-width: 450px !important;
+  animation: slideUp 0.4s ease-out !important;
+}
+
+.signup-container h2 {
+  color: #333 !important;
+  font-size: 32px !important;
+  margin-bottom: 10px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+.signup-form {
   display: flex !important;
   flex-direction: column !important;
   gap: 20px !important;
-  animation: slideUp 0.4s ease-out !important;
+}
+
+.form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.form-group label {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
 }
 
 @keyframes slideUp {
@@ -61,7 +75,15 @@
 }
 
 .signup-input::placeholder {
-  color: #999 !important;
+  color: #aaa !important;
+}
+
+.signup-otp-input {
+  text-align: center !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: 12px !important;
+  font-family: 'Courier New', monospace !important;
 }
 
 .signup-btn-primary {
@@ -111,6 +133,26 @@
   75% { transform: translateX(10px); }
 }
 
+.signup-help-text {
+  font-size: 13px !important;
+  color: #666 !important;
+  text-align: center !important;
+  margin-top: 10px !important;
+  line-height: 1.5 !important;
+}
+
+.signup-help-text strong {
+  color: #10b981 !important;
+}
+
+.signup-terms-text {
+  font-size: 12px !important;
+  color: #999 !important;
+  text-align: center !important;
+  margin-top: 15px !important;
+  line-height: 1.4 !important;
+}
+
 .signup-footer-text {
   color: #666;
   font-size: 14px;
@@ -131,12 +173,31 @@
   text-decoration: underline;
 }
 
-/* OTP Form Specific */
-.signup-otp-input {
-  text-align: center;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 8px;
+/* Secondary button for resend OTP */
+.signup-btn-secondary {
+  background: white !important;
+  color: #10b981 !important;
+  border: 2px solid #10b981 !important;
+  padding: 12px 24px !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin-top: 10px !important;
+}
+
+.signup-btn-secondary:hover:not(:disabled) {
+  background: #10b981 !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
+}
+
+.signup-btn-secondary:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
 }
 
 /* Responsive Design */

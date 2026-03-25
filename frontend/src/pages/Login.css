@@ -10,26 +10,74 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }
 
-.login-container h2 {
-  color: white !important;
-  font-size: 32px !important;
-  margin-bottom: 30px !important;
-  font-weight: 700 !important;
-  text-align: center !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-.login-form {
+.login-card {
   background: white !important;
   border-radius: 16px !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
   padding: 40px !important;
   width: 100% !important;
   max-width: 450px !important;
+  animation: slideUp 0.4s ease-out !important;
+}
+
+.login-container h2 {
+  color: #333 !important;
+  font-size: 32px !important;
+  margin-bottom: 10px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+/* Login Method Tabs */
+.login-tabs {
+  display: flex !important;
+  gap: 10px !important;
+  margin-bottom: 25px !important;
+  background: #f5f5f5 !important;
+  padding: 5px !important;
+  border-radius: 12px !important;
+}
+
+.login-tab {
+  flex: 1 !important;
+  padding: 10px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #666 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+}
+
+.login-tab:hover:not(.active) {
+  background: rgba(102, 126, 234, 0.1) !important;
+  color: #667eea !important;
+}
+
+.login-form {
   display: flex !important;
   flex-direction: column !important;
   gap: 20px !important;
-  animation: slideUp 0.4s ease-out !important;
+}
+
+.form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.form-group label {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
 }
 
 @keyframes slideUp {
@@ -61,12 +109,21 @@
 }
 
 .login-input::placeholder {
-  color: #999 !important;
+  color: #aaa !important;
 }
 
 .login-input:read-only {
-  background: #f0f0f0 !important;
+  background: #f5f5f5 !important;
   cursor: not-allowed !important;
+  color: #666 !important;
+}
+
+.login-otp-input {
+  text-align: center !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: 12px !important;
+  font-family: 'Courier New', monospace !important;
 }
 
 .login-btn-primary {
@@ -114,6 +171,37 @@
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-10px); }
   75% { transform: translateX(10px); }
+}
+
+.login-help-text {
+  font-size: 13px !important;
+  color: #666 !important;
+  text-align: center !important;
+  margin-top: 10px !important;
+  line-height: 1.5 !important;
+}
+
+.login-success-text {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9);
+  color: #2e7d32;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border-left: 4px solid #2e7d32;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-footer-text {

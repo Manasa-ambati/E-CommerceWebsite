@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { authAPI } from '../services/api';
+import { storageService } from '../services/storageService';
 import { AuthResponse } from '../types/auth';
 import './Signup.css';
 
@@ -17,6 +18,7 @@ export const Signup: React.FC = () => {
   
   const [showOtpForm, setShowOtpForm] = useState(false);
   const [otp, setOtp] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const { login, user } = useAuth();
   const navigate = useNavigate();
@@ -28,6 +30,14 @@ export const Signup: React.FC = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -35,7 +45,7 @@ export const Signup: React.FC = () => {
 
     try {
       const signupData = {
-        name: firstName + ' ' + lastName, // name required by API
+        name: firstName + ' ' + lastName,
         email,
         password,
         phone,
@@ -47,8 +57,9 @@ export const Signup: React.FC = () => {
       // Check if OTP verification is required
       if (data.requiresOtp) {
         setShowOtpForm(true);
-        setError('Please enter the OTP sent to your email');
-        setLoading(false);
+        setResendCooldown(30);
+        // Save signup data to localStorage temporarily
+        storageService.set('pending_signup', { firstName, lastName, email, phone });
         return;
       }
 
@@ -59,7 +70,8 @@ export const Signup: React.FC = () => {
       if (!token) throw new Error('No token returned from server');
 
       login(userData, token);
-      navigate('/'); // Redirect to Home
+      storageService.set('last_login', Date.now());
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Signup failed.');
     } finally {
@@ -81,7 +93,13 @@ export const Signup: React.FC = () => {
       if (!token) throw new Error('No token returned after OTP verification');
 
       login(userData, token);
-      navigate('/'); // Redirect to Home
+      
+      // Store user data in localStorage
+      storageService.set('last_login', Date.now());
+      storageService.set('user_email', email);
+      storageService.remove('pending_signup');
+      
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'OTP verification failed.');
     } finally {
@@ -89,76 +107,134 @@ export const Signup: React.FC = () => {
     }
   };
 
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+
+    try {
+      await authAPI.resendOtp(email);
+      alert('✅ New OTP sent to your email!');
+      setResendCooldown(30);
+    } catch (err: any) {
+      setError('Failed to resend OTP');
+    }
+  };
+
   return (
     <div className="signup-container">
-      <h2>{showOtpForm ? 'Verify Email' : 'Signup'}</h2>
-      {error && <div className="signup-error">{error}</div>}
+      <div className="signup-card">
+        <h2>{showOtpForm ? 'Verify Your Email' : 'Create Account'}</h2>
+        
+        {error && <div className="signup-error">{error}</div>}
 
-      {showOtpForm ? (
-        <form className="signup-form" onSubmit={handleOtpVerification}>
-          <input
-            type="text"
-            className="signup-input signup-otp-input"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter 6-digit OTP"
-            maxLength={6}
-            required
-          />
-          <button type="submit" className="signup-btn-primary" disabled={loading}>
-            {loading ? 'Verifying...' : 'Verify & Continue'}
-          </button>
-        </form>
-      ) : (
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="signup-input"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            className="signup-input"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            className="signup-input"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            className="signup-input"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            className="signup-input"
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-          <button type="submit" className="signup-btn-primary" disabled={loading}>
-            {loading ? 'Signing up...' : 'Signup'}
-          </button>
-        </form>
-      )}
-      <p className="signup-footer-text">
-        Already have an account? <Link to="/login" className="signup-link">Login here</Link>
-      </p>
+        {showOtpForm ? (
+          <form className="signup-form" onSubmit={handleOtpVerification}>
+            <div className="form-group">
+              <label>Enter 6-Digit OTP</label>
+              <input
+                type="text"
+                className="signup-input signup-otp-input"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                placeholder="000000"
+                maxLength={6}
+                inputMode="numeric"
+                required
+              />
+              <p className="signup-help-text">
+                We've sent a verification code to <strong>{email}</strong>
+              </p>
+            </div>
+            
+            <button type="submit" className="signup-btn-primary" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify & Create Account'}
+            </button>
+            
+            <button 
+              type="button" 
+              className="signup-btn-secondary" 
+              onClick={handleResendOtp} 
+              disabled={resendCooldown > 0}
+            >
+              {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : 'Resend OTP'}
+            </button>
+          </form>
+        ) : (
+          <form className="signup-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                className="signup-input"
+                placeholder="Enter first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                className="signup-input"
+                placeholder="Enter last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                className="signup-input"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                className="signup-input"
+                placeholder="Create a strong password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="text"
+                className="signup-input"
+                placeholder="+91 XXXXX XXXXX"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+            
+            <button type="submit" className="signup-btn-primary" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Sign Up'}
+            </button>
+            
+            <p className="signup-terms-text">
+              By signing up, you agree to our Terms of Service and Privacy Policy
+            </p>
+          </form>
+        )}
+        
+        <p className="signup-footer-text">
+          Already have an account? <Link to="/login" className="signup-link">Login here</Link>
+        </p>
+      </div>
     </div>
   );
 };
