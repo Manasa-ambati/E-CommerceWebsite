@@ -2,10 +2,14 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL + '/api';
 
-const api = axios.create({
+/*const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 30000, // Increased to 30 seconds for email operations
+});*/
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL + "/api",
+  timeout: 10000, // 10 seconds
 });
 
 api.interceptors.request.use((config) => {
@@ -47,11 +51,19 @@ export interface OtpPayload {
   otp: string;
 }
 
-export const authAPI = {
+/*export const authAPI = {
   signup: (data: SignupPayload) => api.post('/auth/signup', data),
   login: (data: LoginPayload) => api.post('/auth/login', data),
   verifyOtp: (email: string, otp: string) => api.post('/auth/verify-otp', { email, otp }),
   resendOtp: (email: string) => api.post('/auth/resend-otp', { email }),
+};*/
+export const authAPI = {
+  login: (data: any) => api.post("/auth/login", data),
+  signup: (data: any) => api.post("/auth/signup", data),
+  verifyOtp: (email: string, otp: string) =>
+    api.post("/auth/verify-otp", { email, otp }),
+  resendOtp: (email: string) =>
+    api.post("/auth/resend-otp", { email }),
 };
 
  
@@ -92,15 +104,7 @@ export const wishlistAPI = {
   remove: (productId: number) => api.delete(`/wishlist/remove?productId=${productId}`),
 };
 
-export const cartAPI = {
-  get: () => api.get('/cart'),
-  add: (productId: number, quantity: number = 1) =>
-    api.post(`/cart/add?productId=${productId}&quantity=${quantity}`),
-  update: (productId: number, quantity: number) =>
-    api.put(`/cart/update?productId=${productId}&quantity=${quantity}`),
-  remove: (productId: number) => api.delete(`/cart/remove?productId=${productId}`),
-  clear: () => api.delete('/cart/clear'),
-};
+
 
 // Order API
 export const orderAPI = {
