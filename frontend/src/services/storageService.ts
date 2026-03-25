@@ -1,22 +1,19 @@
-// src/services/storageService.ts
 export const storageService = {
-  set: (key: string, value: any, ttlHours?: number) => {
-    const data = { value, expiry: ttlHours ? Date.now() + ttlHours * 3600 * 1000 : null };
-    localStorage.setItem(key, JSON.stringify(data));
+  set: (key: string, value: any, ttlInMinutes?: number) => {
+    const item = { value, expiry: ttlInMinutes ? Date.now() + ttlInMinutes * 60000 : null };
+    localStorage.setItem(key, JSON.stringify(item));
   },
   get: (key: string) => {
-    const dataStr = localStorage.getItem(key);
-    if (!dataStr) return null;
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
     try {
-      const data = JSON.parse(dataStr);
-      if (data.expiry && Date.now() > data.expiry) {
+      const item = JSON.parse(itemStr);
+      if (item.expiry && Date.now() > item.expiry) {
         localStorage.removeItem(key);
         return null;
       }
-      return data.value;
-    } catch {
-      return null;
-    }
+      return item.value;
+    } catch { return null; }
   },
   remove: (key: string) => localStorage.removeItem(key),
 };
