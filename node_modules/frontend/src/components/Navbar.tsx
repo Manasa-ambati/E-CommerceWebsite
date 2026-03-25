@@ -35,15 +35,20 @@ const Navbar: React.FC = () => {
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (showProfileDropdown && !target.closest(".profile-dropdown-container")) {
-        setShowProfileDropdown(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []); // Removed showProfileDropdown from dependencies - it's not needed
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest(".profile-dropdown-container")) {
+      setShowProfileDropdown(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);  // Removed showProfileDropdown from dependencies - it's not needed
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
