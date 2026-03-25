@@ -17,7 +17,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         // List all frontend URLs that will call this backend
                         .allowedOrigins(
-                                "https://e-commercewebsite-production-cb69.up.railway.app ",
+                                "https://e-commercewebsite-production-40de.up.railway.app",
                                 "https://web-production-bef07.up.railway.app",
                                 "http://localhost:3000"
                         )
