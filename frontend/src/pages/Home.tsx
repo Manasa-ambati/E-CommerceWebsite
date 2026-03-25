@@ -122,7 +122,7 @@ const Home: React.FC = () => {
           await categoryAPI.getAll();
         }
         
-        const productsData = productsRes.data.data?.content || productsRes.data.data || [];
+        const productsData = productsRes.data?.data?.content || [];
         setFeaturedProducts(productsData);
         console.log('Featured products loaded:', productsData.length);
 
