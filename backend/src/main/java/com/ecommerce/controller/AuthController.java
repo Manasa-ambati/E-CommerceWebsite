@@ -129,8 +129,10 @@ public class AuthController {
         try {
             System.out.println("=== POST /api/auth/login ===");
             System.out.println("Email: " + request.get("email"));
+            System.out.println("Has password: " + (request.containsKey("password") && !request.get("password").isEmpty()));
 
             String email = request.get("email");
+            String password = request.get("password");
 
             if (email == null || email.trim().isEmpty()) {
                 return badRequest("Email is required");
@@ -154,12 +156,44 @@ public class AuthController {
                 return ResponseEntity.ok(response);
             }
             
-            // Existing user - send OTP for login
             User user = existingUser.get();
             
+            // Check if password was provided for traditional login
+            if (password != null && !password.isEmpty()) {
+                System.out.println("🔑 Attempting password-based login for: " + email);
+                
+                // Verify password
+                if (!passwordEncoder.matches(password, user.getPassword())) {
+                    return badRequest("Invalid credentials");
+                }
+                
+                // Password verified - generate JWT token directly
+                System.out.println("✅ Password verified for: " + email);
+                
+                // Generate JWT token
+                String token = jwtUtil.generateToken(user.getEmail());
+                
+                Map<String, Object> userData = new HashMap<>();
+                userData.put("id", user.getId());
+                userData.put("email", user.getEmail());
+                userData.put("firstName", user.getFirstName());
+                userData.put("lastName", user.getLastName());
+                userData.put("role", user.getRole().name());
+                
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("message", "Login successful");
+                response.put("token", token);
+                response.put("data", userData);
+                
+                System.out.println("✅ Password login successful for: " + email);
+                return ResponseEntity.ok(response);
+            }
+            
+            // No password provided - send OTP for login
             System.out.println("📧 Preparing to send login OTP to: " + user.getEmail());
             
-            // Generate and store OTP in-memory (not in database)
+            // Generate and store OTP in database
             String otp = String.format("%06d", (int)(Math.random() * 1000000));
             otpService.storeOtp(email, otp, 10); // Store for 10 minutes
             

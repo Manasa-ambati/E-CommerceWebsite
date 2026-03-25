@@ -24,18 +24,29 @@ public class OtpService {
      */
     @Transactional
     public void storeOtp(String email, String otp, int expiryMinutes) {
-        // Delete existing OTP if any
-        otpRepository.deleteByEmail(email);
-        
-        // Create new OTP entry
-        OtpVerification otpVerification = new OtpVerification();
-        otpVerification.setEmail(email);
-        otpVerification.setOtp(otp);
-        otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(expiryMinutes));
-        otpVerification.setVerified(false);
-        
-        otpRepository.save(otpVerification);
-        System.out.println("✅ OTP stored in database for: " + email);
+        try {
+            // Delete existing OTP if any
+            System.out.println("🗑️ Deleting existing OTP for: " + email);
+            long deletedCount = otpRepository.deleteByEmail(email);
+            System.out.println("✅ Deleted " + deletedCount + " existing OTP record(s)");
+            
+            // Small delay to ensure delete completes
+            Thread.sleep(50);
+            
+            // Create new OTP entry
+            OtpVerification otpVerification = new OtpVerification();
+            otpVerification.setEmail(email);
+            otpVerification.setOtp(otp);
+            otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(expiryMinutes));
+            otpVerification.setVerified(false);
+            
+            otpRepository.save(otpVerification);
+            System.out.println("✅ New OTP stored in database for: " + email);
+        } catch (Exception e) {
+            System.err.println("❌ Error storing OTP: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
     
     /**
