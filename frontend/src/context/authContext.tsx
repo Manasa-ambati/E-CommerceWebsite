@@ -16,15 +16,12 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Initialize BOTH user and token from localStorage immediately
   const [user, setUser] = useState<any>(() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
 
-  // Sync user and token - update localStorage when they change
   useEffect(() => {
     if (token && user) {
       localStorage.setItem('token', token);
