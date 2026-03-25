@@ -9,7 +9,7 @@ const API_URL = process.env.REACT_APP_API_URL + '/api';
 });*/
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL + "/api",
-  timeout: 10000, // 10 seconds
+  timeout: 30000, // 10 seconds
 });
 
 api.interceptors.request.use((config) => {
@@ -104,7 +104,16 @@ export const wishlistAPI = {
   remove: (productId: number) => api.delete(`/wishlist/remove?productId=${productId}`),
 };
 
-
+export const cartAPI = {
+  get: () => api.get('/cart'),
+  add: (productId: number, quantity: number = 1) =>
+    api.post(`/cart/add?productId=${productId}&quantity=${quantity}`),
+  update: (productId: number, quantity: number) =>
+    api.put(`/cart/update?productId=${productId}&quantity=${quantity}`),
+  remove: (productId: number) =>
+    api.delete(`/cart/remove?productId=${productId}`),
+  clear: () => api.delete('/cart/clear'),
+};
 
 // Order API
 export const orderAPI = {
