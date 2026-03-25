@@ -713,7 +713,7 @@ button:focus,
 
 .mobile-toggle.active span:nth-child(2) {
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateX(10px);
 }
 
 .mobile-toggle.active span:nth-child(3) {
@@ -780,14 +780,15 @@ button:focus,
     width: 100%;
     justify-content: space-between;
     padding: 10px 0;
+    order: 1;
   }
   
   /* Search bar on second row */
   .search-form {
-    display: flex;
+    display: flex !important;
     width: 100%;
     max-width: 100%;
-    order: 3;
+    order: 2;
     margin-top: 8px;
   }
   
@@ -811,10 +812,10 @@ button:focus,
   
   /* Search bar full width on second row */
   .search-form {
-    display: flex;
+    display: flex !important;
     width: 100%;
     max-width: 100%;
-    order: 3;
+    order: 2;
     margin-top: 8px;
     padding: 4px 8px;
   }

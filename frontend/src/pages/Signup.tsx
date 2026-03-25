@@ -110,8 +110,7 @@ const Signup: React.FC = () => {
       localStorage.setItem('user', JSON.stringify({
         id: data.id,
         email: data.email,
-        firstName: data.firstName || formData.name.split(' ')[0],
-        lastName: data.lastName || formData.name.split(' ')[1] || '',
+        name: data.name || formData.name,
         role: data.role
       }));
       
@@ -270,6 +269,7 @@ const Signup: React.FC = () => {
 
       {error && <div className="error">{error}</div>}
     </div>
+    
   );
 };
 
