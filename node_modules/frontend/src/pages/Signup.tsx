@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import { validateSignupForm, validateOtp, getPasswordStrength } from '../utils/validation';
-import './BeautifulAuth.css';
+import './AuthModern.css';
 
 interface SignupData {
   firstName: string;
@@ -220,205 +220,197 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="auth-container signup-container">
-      <h2>Create Your Account</h2>
-      <p className="subtitle">Join our community today</p>
-      
-      {step === 'signup' ? (
-        <form onSubmit={handleSignup}>
-          <div className="name-row">
-            <div className="form-group">
-              <label>
-                First Name <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                name="firstName"
-                placeholder="John"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur('firstName')}
-                required
-              />
-              {touched.firstName && validationErrors.firstName && (
-                <span className="field-error">{validationErrors.firstName}</span>
-              )}
-            </div>
-            
-            <div className="form-group">
-              <label>
-                Last Name <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Doe"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur('lastName')}
-                required
-              />
-              {touched.lastName && validationErrors.lastName && (
-                <span className="field-error">{validationErrors.lastName}</span>
-              )}
-            </div>
-          </div>
-          
-          <div className="form-group">
-            <label>
-              Email Address <span className="required">*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="john.doe@example.com"
-              value={formData.email}
-              onChange={handleInputChange}
-              onBlur={() => handleBlur('email')}
-              required
-            />
-            {touched.email && validationErrors.email && (
-              <span className="field-error">{validationErrors.email}</span>
-            )}
-          </div>
-          
-          <div className="form-group password-field">
-            <label>
-              Password <span className="required">*</span>
-            </label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                placeholder="Create a strong password"
-                value={formData.password}
-                onChange={handleInputChange}
-                onBlur={() => handleBlur('password')}
-                minLength={8}
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                tabIndex={-1}
-              >
-                {showPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                )}
-              </button>
-            </div>
-            
-            {/* Password Strength Indicator */}
-            {formData.password && (
-              <div className="password-strength">
-                <div className="strength-bar">
-                  <div 
-                    className={`strength-fill strength-${Math.min(passwordStrength, 5)}`}
-                    style={{ width: `${(passwordStrength / 5) * 100}%` }}
-                  ></div>
+    <div className="auth-wrapper">
+      <div className="auth-card">
+        {/* LEFT SIDE */}
+        <div className="auth-left">
+          <h2>Create Account ✨</h2>
+          <p>Join ShopEase today</p>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="auth-right">
+          {step === 'signup' ? (
+            <>
+              <h2>Sign Up</h2>
+              <form onSubmit={handleSignup}>
+                <div className="name-row">
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    onBlur={() => handleBlur('firstName')}
+                    required
+                  />
+                  {touched.firstName && validationErrors.firstName && (
+                    <span className="field-error">{validationErrors.firstName}</span>
+                  )}
                 </div>
-                <span className={`strength-text strength-${passwordStrength}`}>
-                  {passwordStrength <= 2 ? 'Weak' : passwordStrength <= 4 ? 'Medium' : 'Strong'}
-                </span>
-              </div>
-            )}
-            
-            {touched.password && validationErrors.password && (
-              <span className="field-error">{validationErrors.password}</span>
-            )}
-          </div>
-          
-          <div className="form-group">
-            <label>
-              Phone Number <span className="required">*</span>
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Enter your phone number"
-              value={formData.phone}
-              onChange={handleInputChange}
-              onBlur={() => handleBlur('phone')}
-              title="Please enter a valid phone number (numbers, +, -, spaces, parentheses)"
-              required
-            />
-            {touched.phone && validationErrors.phone && (
-              <span className="field-error">{validationErrors.phone}</span>
-            )}
-          </div>
-          
-          <button 
-            type="submit" 
-            disabled={loading || Object.keys(validationErrors).length > 0}
-            className={loading ? 'loading' : ''}
-          >
-            {loading ? 'Creating Account...' : 'Sign Up'}
-          </button>
-          
-          <p className="terms-text">
-            By signing up, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </form>
-      ) : (
-        <form onSubmit={handleOtpVerification}>
-          <div className="otp-info">
-            <p>We've sent a verification code to:</p>
-            <p className="email-highlight">{formData.email}</p>
-            <p className="otp-instruction">Enter the 6-digit OTP from your email</p>
-          </div>
-          
-          <input
-            type="text"
-            placeholder="Enter 6-digit OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            maxLength={6}
-            className="otp-input"
-            required
-          />
-          
-          <button 
-            type="submit" 
-            disabled={loading || otp.length !== 6}
-          >
-            {loading ? 'Verifying...' : 'Verify & Create Account'}
-          </button>
-          
-          <button 
-            type="button" 
-            onClick={handleResendOtp}
-            disabled={resendDisabled || loading}
-            className="resend-btn"
-          >
-            {resendDisabled ? `Resend in ${countdown}s` : 'Resend OTP'}
-          </button>
-          
-          <button 
-            type="button"
-            onClick={() => setStep('signup')}
-            className="back-btn"
-          >
-            ← Back to Signup
-          </button>
-        </form>
-      )}
-
-      <p>
-        Already have an account?{' '}
-        <Link to="/login">Login here</Link>
-      </p>
-
-      {error && <div className="error-message">{error}</div>}
+                
+                <div className="name-row">
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    onBlur={() => handleBlur('lastName')}
+                    required
+                  />
+                  {touched.lastName && validationErrors.lastName && (
+                    <span className="field-error">{validationErrors.lastName}</span>
+                  )}
+                </div>
+                
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('email')}
+                  required
+                />
+                {touched.email && validationErrors.email && (
+                  <span className="field-error">{validationErrors.email}</span>
+                )}
+                
+                <div className="password-field">
+                  <div className="password-input-wrapper">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      onBlur={() => handleBlur('password')}
+                      minLength={8}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                  
+                  {/* Password Strength Indicator */}
+                  {formData.password && (
+                    <div className="password-strength">
+                      <div className="strength-bar">
+                        <div 
+                          className={`strength-fill strength-${Math.min(passwordStrength, 5)}`}
+                          style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                        ></div>
+                      </div>
+                      <span className={`strength-text strength-${passwordStrength}`}>
+                        {passwordStrength <= 2 ? 'Weak' : passwordStrength <= 4 ? 'Medium' : 'Strong'}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {touched.password && validationErrors.password && (
+                    <span className="field-error">{validationErrors.password}</span>
+                  )}
+                </div>
+                
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('phone')}
+                  title="Please enter a valid phone number (numbers, +, -, spaces, parentheses)"
+                  required
+                />
+                {touched.phone && validationErrors.phone && (
+                  <span className="field-error">{validationErrors.phone}</span>
+                )}
+                
+                <button 
+                  type="submit" 
+                  disabled={loading || Object.keys(validationErrors).length > 0}
+                  className={loading ? 'loading' : ''}
+                >
+                  {loading ? 'Creating Account...' : 'Sign Up'}
+                </button>
+                
+                <p className="terms-text">
+                  By signing up, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </form>
+              
+              <p className="auth-link">
+                Already have an account? <Link to="/login">Login</Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <h2>Verify Email 🔐</h2>
+              <form onSubmit={handleOtpVerification}>
+                <div className="otp-info">
+                  <p>We've sent a verification code to:</p>
+                  <p className="email-highlight">{formData.email}</p>
+                  <p className="otp-instruction">Enter the 6-digit OTP from your email</p>
+                </div>
+                
+                <input
+                  type="text"
+                  placeholder="Enter 6-digit OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  maxLength={6}
+                  className="otp-input"
+                  required
+                />
+                
+                <button 
+                  type="submit" 
+                  disabled={loading || otp.length !== 6}
+                >
+                  {loading ? 'Verifying...' : 'Verify & Create Account'}
+                </button>
+                
+                <button 
+                  type="button" 
+                  onClick={handleResendOtp}
+                  disabled={resendDisabled || loading}
+                  className="resend-btn"
+                >
+                  {resendDisabled ? `Resend in ${countdown}s` : 'Resend OTP'}
+                </button>
+                
+                <button 
+                  type="button"
+                  onClick={() => setStep('signup')}
+                  className="back-btn"
+                >
+                  ← Back to Signup
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+      
+      {error && <div className="error-message-toast">{error}</div>}
     </div>
   );
 };
