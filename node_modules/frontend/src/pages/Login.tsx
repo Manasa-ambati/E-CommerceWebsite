@@ -1,35 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import { useToast } from '../context/ToastContext';
+import { toast } from 'react-toastify';
 import './Auth.css';
-
-interface ToastMessage {
-  id: number;
-  message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
-}
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { addToast } = useToast(); // Use global toast context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
-  // Add toast notification (local - for backward compatibility)
-  const addLocalToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-  };
-
-  // Remove toast notification
-  const removeToast = (id: number) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +47,7 @@ const Login: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(userObject));
       console.log('✅ User stored in localStorage:', userObject);
       
-      addToast('Login successful!', 'success');
+      toast.success('Login successful! Welcome back.');
       setTimeout(() => navigate('/'), 1000);
     } catch (err: any) {
       console.error('❌ Password login failed:', err);
@@ -75,7 +56,7 @@ const Login: React.FC = () => {
       
       const errorMessage = err.response?.data?.message || err.message || 'Login failed. Please check your credentials.';
       setError(errorMessage);
-      addToast(errorMessage, 'error');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
