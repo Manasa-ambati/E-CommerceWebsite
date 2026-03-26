@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
+import { useCart } from '../context/CartContext';
 import './Home.css';
 
 interface Product {
@@ -16,6 +17,7 @@ const Home: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const savedWishlist = localStorage.getItem('wishlist');
@@ -98,6 +100,11 @@ const Home: React.FC = () => {
         console.error('Failed to copy:', err);
       }
     }
+  };
+
+  const handleAddToCart = (product: Product) => {
+    const quantity = 1;
+    addToCart(product.id, quantity);
   };
 
   useEffect(() => {
@@ -239,6 +246,17 @@ const Home: React.FC = () => {
                 <Link to={`/product/${product.id}`}>
                   <img src={product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop'} alt={product.name} />
                 </Link>
+                <button 
+                  className="cart-icon-btn" 
+                  title="Add to Cart" 
+                  onClick={() => handleAddToCart(product)}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                </button>
                 <button className="share-icon-btn" title="Share Product" onClick={() => shareProduct(product)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="18" cy="5" r="3"/>
