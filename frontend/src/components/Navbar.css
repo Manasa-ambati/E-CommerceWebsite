@@ -42,6 +42,7 @@
   position: relative;
   gap: 20px;
   flex-wrap: nowrap; /* Prevent wrapping on desktop */
+  box-sizing: border-box;
 }
 
 /* Left side container for logo and toggle */
@@ -782,22 +783,29 @@ button:focus,
     justify-content: space-between;
     padding: 10px 0;
     order: 1;
+    display: flex !important; /* Ensure it's always visible */
   }
   
   /* Search bar on second row - Reduced size */
   .search-form {
-    display: flex;
+    display: flex !important;
     width: 95%;
     max-width: 500px;
     order: 2;
     margin-top: 9px;
     margin-left: auto;
     margin-right: auto;
+    box-sizing: border-box;
   }
   
   /* Hide desktop auth buttons */
   .navbar-auth {
-    display: none;
+    display: none !important;
+  }
+  
+  /* Hide cart/wishlist icons on mobile (shown in mobile menu) */
+  .navbar-icons {
+    display: none !important;
   }
 }
 
@@ -811,6 +819,7 @@ button:focus,
   .navbar-left {
     width: 100%;
     justify-content: space-between;
+    display: flex !important;
   }
   
   /* Search bar full width but smaller - Reduced size */
@@ -824,6 +833,7 @@ button:focus,
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
+    box-sizing: border-box;
   }
   
   .logo-text {
@@ -833,6 +843,15 @@ button:focus,
   .navbar-logo svg {
     width: 30px;
     height: 30px;
+  }
+  
+  /* Hide desktop auth buttons */
+  .navbar-auth {
+    display: none !important;
+  }
+  
+  .navbar-icons {
+    display: none !important;
   }
 }
 
