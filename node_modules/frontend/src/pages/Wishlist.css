@@ -2,6 +2,20 @@
   padding: 40px 20px;
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  margin-top: 100px; /* Gap between fixed navbar and wishlist content */
+}
+
+/* Mobile Responsive - Adjust gap for all devices */
+@media (max-width: 768px) {
+  .wishlist-page {
+    margin-top: 120px; /* Larger gap for mobile navbar */
+  }
+}
+
+@media (max-width: 480px) {
+  .wishlist-page {
+    margin-top: 130px; /* Extra gap for small mobile devices */
+  }
 }
 
 .wishlist-container {

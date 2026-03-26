@@ -203,7 +203,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <CartContext.Provider
       value={{
         cart,
-        cartCount: cart?.totalItems || 0,
+        cartCount: cart?.items?.length || 0, // Fix: Count items in array, not totalItems
         loading,
         fetchCart,
         addToCart,
