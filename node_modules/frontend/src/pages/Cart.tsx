@@ -11,6 +11,8 @@ interface CartItem {
   productImage: string;
   quantity: number;
   price: number;
+  productPrice?: number;  // Backend might return this
+  discountPrice?: number; // Or this
 }
 
 export const Cart: React.FC = () => {
@@ -76,7 +78,13 @@ export const Cart: React.FC = () => {
           cartItems = [response.data.data];
         }
         
-        setCart(Array.isArray(cartItems) ? cartItems : []);
+        // Map backend fields to frontend interface
+        const mappedCartItems = cartItems.map((item: any) => ({
+          ...item,
+          price: item.productPrice || item.discountPrice || item.price || 0
+        }));
+        
+        setCart(Array.isArray(mappedCartItems) ? mappedCartItems : []);
         setLoading(false);
         return;
       } catch (err: any) {
@@ -92,7 +100,12 @@ export const Cart: React.FC = () => {
         const cartData = JSON.parse(localCart);
         // guest_cart structure: { id: number, items: [...], totalPrice: number, totalItems: number }
         if (cartData && Array.isArray(cartData.items)) {
-          setCart(cartData.items);
+          // Map localStorage fields to frontend interface
+          const mappedCartItems = cartData.items.map((item: any) => ({
+            ...item,
+            price: item.productPrice || item.productDiscountPrice || item.price || 0
+          }));
+          setCart(mappedCartItems);
         } else {
           setCart([]);
         }
