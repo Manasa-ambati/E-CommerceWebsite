@@ -14,6 +14,9 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
   const [touched, setTouched] = useState<{[key: string]: boolean}>({});
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
 
   // Handle field blur for validation
   const handleBlur = (field: string) => {
@@ -130,8 +133,18 @@ const Login: React.FC = () => {
   // Handle Google Login
   const handleGoogleLogin = async () => {
     try {
-      toast.info('Google login coming soon...');
       // TODO: Implement Google OAuth
+      // For now, show a more engaging message
+      toast.info('🚀 Redirecting to Google...', { autoClose: 2000 });
+      
+      // Simulate redirect (remove this in production)
+      setTimeout(() => {
+        toast.warning('Google OAuth integration coming soon! Please use email login.', { 
+          autoClose: 4000 
+        });
+      }, 2000);
+      
+      // Production code:
       // const response = await authAPI.loginWithGoogle();
       // window.location.href = response.data.authUrl;
     } catch (err: any) {
@@ -143,8 +156,17 @@ const Login: React.FC = () => {
   // Handle Apple Login
   const handleAppleLogin = async () => {
     try {
-      toast.info('Apple login coming soon...');
       // TODO: Implement Apple OAuth
+      toast.info('🍎 Redirecting to Apple...', { autoClose: 2000 });
+      
+      // Simulate redirect (remove this in production)
+      setTimeout(() => {
+        toast.warning('Apple OAuth integration coming soon! Please use email login.', { 
+          autoClose: 4000 
+        });
+      }, 2000);
+      
+      // Production code:
       // const response = await authAPI.loginWithApple();
       // window.location.href = response.data.authUrl;
     } catch (err: any) {
@@ -155,15 +177,47 @@ const Login: React.FC = () => {
 
   // Handle Forgot Password
   const handleForgotPassword = () => {
-    if (!email || !validateLoginForm(email, '').email) {
-      toast.error('Please enter your email address first');
-      setTouched({ email: true });
+    setShowForgotPasswordModal(true);
+    if (email) {
+      setResetEmail(email);
+    }
+  };
+
+  // Handle Password Reset Submission
+  const handlePasswordResetSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate email
+    const emailError = validateLoginForm(resetEmail, '').email;
+    if (emailError) {
+      toast.error(emailError);
       return;
     }
     
-    toast.info(`Password reset link sent to ${email}`);
-    // TODO: Implement password reset API call
-    // await authAPI.forgotPassword({ email });
+    setResetLoading(true);
+    
+    try {
+      // TODO: Implement actual password reset API call
+      // await authAPI.forgotPassword({ email: resetEmail });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast.success(`Password reset link sent to ${resetEmail}!`);
+      setShowForgotPasswordModal(false);
+      setResetEmail('');
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to send reset link. Please try again.';
+      toast.error(errorMessage);
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // Close modal
+  const closeForgotPasswordModal = () => {
+    setShowForgotPasswordModal(false);
+    setResetEmail('');
   };
 
   return (
@@ -297,6 +351,72 @@ const Login: React.FC = () => {
       </p>
 
       {error && <div className="error-message">{error}</div>}
+
+      {/* Forgot Password Modal */}
+      {showForgotPasswordModal && (
+        <div className="modal-overlay" onClick={closeForgotPasswordModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeForgotPasswordModal}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            
+            <div className="modal-header">
+              <div className="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h3>Reset Your Password</h3>
+              <p>Enter your email address and we'll send you a link to reset your password.</p>
+            </div>
+            
+            <form onSubmit={handlePasswordResetSubmit}>
+              <div className="form-group">
+                <label>
+                  Email Address <span className="required">*</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+              
+              <div className="modal-actions">
+                <button 
+                  type="button" 
+                  className="modal-btn cancel-btn"
+                  onClick={closeForgotPasswordModal}
+                  disabled={resetLoading}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="modal-btn submit-btn"
+                  disabled={resetLoading}
+                >
+                  {resetLoading ? (
+                    <>
+                      <span className="spinner-small"></span>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Reset Link'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

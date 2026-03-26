@@ -92,7 +92,7 @@ const App = () => (
       {/* React Toastify Container - positioned below navbar */}
       <ToastContainer 
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}  // Reduced from 5000ms to 3000ms for better UX
         hideProgressBar={false}
         newestOnTop={true}
         closeOnClick
