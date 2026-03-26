@@ -111,7 +111,8 @@ const Signup: React.FC = () => {
         id: data.id,
         email: data.email,
         name: formData.name || data.name,
-        role: data.role
+        role: data.role,
+        emailVerified: true // OTP verified during signup
       }));
       
       addToast('Email verified successfully! Welcome to ShopEase!', 'success');

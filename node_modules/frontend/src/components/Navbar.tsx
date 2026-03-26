@@ -176,7 +176,11 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* MOBILE MENU OVERLAY */}
-          <div className={`mobile-menu-overlay ${mobileMenuOpen ? "open" : ""}`}>
+          <div className={`mobile-menu-overlay ${mobileMenuOpen ? "open" : ""}`} onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setMobileMenuOpen(false);
+            }
+          }}>
             <div className="mobile-menu-content">
               {/* Mobile Menu Header */}
               <div className="mobile-menu-header">
@@ -191,7 +195,7 @@ const Navbar: React.FC = () => {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  >
+                  > 
                     <defs>
                       <linearGradient id="mobile-logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style={{ stopColor: "#f97316" }} />

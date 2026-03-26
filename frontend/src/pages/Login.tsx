@@ -48,7 +48,8 @@ const Login: React.FC = () => {
         id: data.id,
         email: data.email,
         name: data.name || data.firstName,
-        role: data.role
+        role: data.role,
+        emailVerified: data.emailVerified || true // Assume verified if coming from backend
       }));
       addToast('Login successful!', 'success');
       setTimeout(() => navigate('/'), 1000);

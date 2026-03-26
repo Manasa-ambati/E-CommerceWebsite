@@ -41,6 +41,7 @@
   height:70px;
   position: relative;
   gap: 20px;
+  flex-wrap: nowrap; /* Prevent wrapping on desktop */
 }
 
 /* Left side container for logo and toggle */
@@ -846,13 +847,49 @@ button:focus,
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
+  z-index: 9999;
   overflow-y: auto;
   overflow-x: hidden;
+  visibility: hidden;
 }
 
 .mobile-menu-overlay.open {
   right: 0;
+  visibility: visible;
+}
+
+/* Backdrop overlay when menu is open */
+.mobile-menu-overlay::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(100vw - 280px);
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.mobile-menu-overlay.open::before {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-overlay::before {
+    width: calc(100vw - 280px);
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-menu-overlay::before {
+    width: calc(100vw - 80vw);
+  }
 }
 
 .mobile-menu-content {

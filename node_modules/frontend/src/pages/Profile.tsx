@@ -82,10 +82,10 @@ const Profile: React.FC = () => {
         <div className="profile-card">
           <div className="profile-header">
             <div className="profile-avatar">
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
+              {user?.name?.[0] || user?.email?.[0]}
             </div>
             <div className="profile-info">
-              <h2>{user?.firstName} {user?.lastName}</h2>
+              <h2>{user?.name || user?.email}</h2>
               <span className="profile-role">{user?.role}</span>
             </div>
           </div>
@@ -98,7 +98,7 @@ const Profile: React.FC = () => {
             <div className="detail-row">
               <span className="label">Account Status</span>
               <span className={`value status-${user?.emailVerified ? 'verified' : 'pending'}`}>
-                {user?.emailVerified ? 'Verified' : 'Pending Verification'}
+                {user?.emailVerified ? 'Verified ✅' : 'Pending Verification ⏳'}
               </span>
             </div>
           </div>
