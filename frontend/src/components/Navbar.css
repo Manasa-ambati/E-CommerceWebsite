@@ -727,7 +727,7 @@ button:focus,
 /* Large Tablets & Small Desktops (992px - 1199px) */
 @media (max-width: 1199px) {
   .navbar-nav {
-    display: none;
+    display: none !important;
   }
   
   .search-form {
@@ -755,7 +755,11 @@ button:focus,
   }
   
   .navbar-nav {
-    display: none;
+    display: none !important;
+  }
+  
+  .navbar-auth {
+    display: none !important;
   }
   
   /* Hamburger always visible */

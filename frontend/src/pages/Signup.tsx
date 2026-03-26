@@ -68,10 +68,18 @@ const Signup: React.FC = () => {
     setError('');
     setLoading(true);
 
-    console.log('Sending signup request with data:', formData);
+    // Combine firstName and lastName into name for backend
+    const signupPayload = {
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone
+    };
+
+    console.log('Sending signup request with data:', signupPayload);
 
     try {
-      const response = await authAPI.signup(formData);
+      const response = await authAPI.signup(signupPayload);
       console.log('Signup response:', response.data);
       const data = response.data;
 
