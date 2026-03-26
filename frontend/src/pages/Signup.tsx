@@ -228,7 +228,7 @@ const Signup: React.FC = () => {
             </label>
             <div className="password-input-wrapper">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Create a strong password"
                 value={formData.password}

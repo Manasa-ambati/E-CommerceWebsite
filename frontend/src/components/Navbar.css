@@ -23,7 +23,7 @@
 
 /* ===== NAVBAR CONTAINER ===== */
 .navbar {
-  background: linear-gradient(135deg,#2e8219 0%,#d85ec1 100%);
+  background: linear-gradient(135deg,#2e8219 50%,#d85ec1 50%);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -763,7 +763,7 @@ button:focus,
     padding: 0 16px;
     height: auto;
     min-height: 60px;
-    gap: 10px;
+    gap: 0;
     flex-wrap: wrap;
   }
   
@@ -783,7 +783,7 @@ button:focus,
     order: 2;
     margin:0;
     padding:0;
-    margin-top: 5px;
+    margin-top: 0;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
@@ -808,7 +808,7 @@ button:focus,
   
   .navbar-main-content {
     padding: 0 12px;
-    gap: 8px;
+    gap: 0;
   }
   
   .navbar-left {
@@ -823,7 +823,7 @@ button:focus,
     width: 100%;
     max-width: 100%;
     order: 2;
-    margin-top: 5px;
+    margin-top: 0;
     padding: 4px 8px;
     max-width: 400px;
     margin-left: auto;
@@ -1327,6 +1327,7 @@ button:focus,
   
   .navbar-main-content {
     padding: 0 10px;
+    gap: 0;
   }
   
   .logo-text {
@@ -1340,7 +1341,7 @@ button:focus,
   
   .search-form {
     padding: 4px 8px;
-    margin-top: 5px;
+    margin-top: 0;
   }
   
   .search-form input {
@@ -1364,6 +1365,7 @@ button:focus,
   
   .navbar-main-content {
     padding: 0 12px;
+    gap: 0;
   }
   
   .logo-text {
@@ -1376,7 +1378,7 @@ button:focus,
   }
   
   .search-form {
-    margin-top: 5px;
+    margin-top: 0;
   }
   
   .mobile-menu-overlay {
@@ -1392,6 +1394,7 @@ button:focus,
   
   .navbar-main-content {
     padding: 0 14px;
+    gap: 0;
   }
   
   .logo-text {
@@ -1399,7 +1402,7 @@ button:focus,
   }
   
   .search-form {
-    margin-top: 5px;
+    margin-top: 0;
   }
   
   .mobile-menu-overlay {
@@ -1411,12 +1414,13 @@ button:focus,
 @media screen and (min-width: 481px) and (max-width: 768px) {
   .navbar-main-content {
     padding: 0 16px;
+    gap: 0;
   }
   
   .search-form {
     width: 100%;
     max-width: 100%;
-    margin-top: 12px;
+    margin-top: 0;
   }
   
   .mobile-menu-overlay {

@@ -465,6 +465,19 @@
   color: #059669;
 }
 
+/* Enhanced Signup/Login Link Text */
+.auth-footer p, .signup-footer p {
+  font-weight: 600;
+  font-size: 15px;
+  color: #374151;
+}
+
+.auth-footer p a, .signup-footer p a {
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
 /* Enhanced Responsive Design */
 @media (max-width: 768px) {
   .auth-container {

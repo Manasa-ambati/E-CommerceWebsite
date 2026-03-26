@@ -274,50 +274,51 @@ const Navbar: React.FC = () => {
                       </svg>
                       Orders
                     </Link>
-                      <div className="mobile-user-section">
-                        <div className="mobile-user-info">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                          </svg>
-                          <span>
-                            {(() => {
-                              if (currentUser?.firstName) {
-                                return currentUser.firstName;
-                              }
-                              if (currentUser?.name) {
-                                // Extract first name from full name
-                                const firstName = currentUser.name.split(' ')[0];
-                                return firstName;
-                              }
-                              return currentUser?.email || 'Guest';
-                            })()}
-                          </span>
-                        </div>
-                      <Link to="/profile" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="mobile-user-section">
+                      <div className="mobile-user-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                           <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        Profile Settings
-                      </Link>
-                      <button 
-                        className="mobile-logout-btn"
-                        onClick={() => {
-                          logout();   // from AuthContext
-                          navigate("/login");
-                        }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                          <polyline points="16 17 21 12 16 7"></polyline>
-                          <line x1="21" x2="9" y1="12" y2="12"></line>
-                        </svg>
-                        Logout
-                      </button>
+                        <span>
+                          {(() => {
+                            if (currentUser?.firstName) {
+                              return currentUser.firstName;
+                            }
+                            if (currentUser?.name) {
+                              // Extract first name from full name
+                              const firstName = currentUser.name.split(' ')[0];
+                              return firstName;
+                            }
+                            return currentUser?.email || '';
+                          })()}
+                        </span>
+                      </div>
                     </div>
-                  </>
-                ) : (
+                    <Link to="/profile" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                      Profile Settings
+                    </Link>
+                    <button 
+                      className="mobile-logout-btn"
+                      onClick={() => {
+                        logout();   // from AuthContext
+                        navigate("/login");
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" x2="9" y1="12" y2="12"></line>
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                </>
+              ) : (
                   <>
                     <Link to="/" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
