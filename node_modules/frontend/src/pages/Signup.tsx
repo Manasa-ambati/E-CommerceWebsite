@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import Toast from '../components/Toast';
+import { toast } from 'react-toastify';
+import { validateSignupForm, validateOtp, getPasswordStrength } from '../utils/validation';
 import './Auth.css';
 
 interface SignupData {
@@ -33,18 +34,57 @@ const Signup: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
+  const [touched, setTouched] = useState<{[key: string]: boolean}>({});
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
-  // Add toast notification
-  const addToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
+  // Handle field blur for validation
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    
+    const errors = validateSignupForm(formData);
+    if (errors[field]) {
+      setValidationErrors(prev => ({ ...prev, [field]: errors[field] }));
+    } else {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
-  // Remove toast notification
-  const removeToast = (id: number) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+  // Handle input changes with validation
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    
+    // Update password strength in real-time
+    if (name === 'password') {
+      setPasswordStrength(getPasswordStrength(value));
+    }
+    
+    // Real-time validation if field is touched
+    if (touched[name]) {
+      const updatedData = { ...formData, [name]: value };
+      const errors = validateSignupForm(updatedData);
+      
+      if (errors[name]) {
+        setValidationErrors(prev => ({ ...prev, [name]: errors[name] }));
+      } else {
+        setValidationErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[name];
+          return newErrors;
+        });
+      }
+    }
   };
 
   // Countdown timer for resend OTP
@@ -57,16 +97,28 @@ const Signup: React.FC = () => {
     }
   }, [countdown]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Validate entire form before submission
+    const errors = validateSignupForm(formData);
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      setTouched({
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: true,
+        phone: true
+      });
+      
+      // Show first error as toast
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError);
+      return;
+    }
+    
     setLoading(true);
 
     // Combine firstName and lastName into name for backend
@@ -86,13 +138,13 @@ const Signup: React.FC = () => {
 
       if (data.requiresOtp) {
         // OTP sent successfully
-        addToast('Account created! Please check your email for verification code.', 'success');
+        toast.success('Account created! Please check your email for verification code.');
         setStep('otp');
         setResendDisabled(true);
         setCountdown(30);
       } else {
         // Direct signup (fallback)
-        addToast('Account created successfully! Redirecting to login...', 'success');
+        toast.success('Account created successfully! Redirecting to login...');
         setTimeout(() => navigate('/login'), 2000);
       }
     } catch (err: any) {
@@ -102,7 +154,7 @@ const Signup: React.FC = () => {
       
       const errorMessage = err.response?.data?.message || err.message || 'Signup failed. Please try again.';
       setError(errorMessage);
-      addToast(errorMessage, 'error');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -111,6 +163,14 @@ const Signup: React.FC = () => {
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Validate OTP
+    const otpError = validateOtp(otp);
+    if (otpError) {
+      toast.error(otpError);
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -128,12 +188,12 @@ const Signup: React.FC = () => {
         emailVerified: true // OTP verified during signup
       }));
       
-      addToast('Email verified successfully! Welcome to ShopEase!', 'success');
+      toast.success('Email verified successfully! Welcome to ShopEase!');
       setTimeout(() => navigate('/'), 1500);
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Invalid OTP. Please try again.';
       setError(errorMessage);
-      addToast(errorMessage, 'error');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -149,11 +209,11 @@ const Signup: React.FC = () => {
       await authAPI.resendOtp(formData.email);
       setResendDisabled(true);
       setCountdown(30);
-      addToast('OTP resent to your email!', 'info');
+      toast.info('OTP resent to your email!');
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to resend OTP.';
       setError(errorMessage);
-      addToast(errorMessage, 'error');
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -161,18 +221,6 @@ const Signup: React.FC = () => {
 
   return (
     <div className="auth-container signup-container">
-      {/* Toast Notifications */}
-      <div className="toast-container">
-        {toasts.map(toast => (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            onClose={() => removeToast(toast.id)}
-          />
-        ))}
-      </div>
-
       <h2>Create Your Account</h2>
       <p className="subtitle">Join our community today</p>
       
@@ -189,8 +237,12 @@ const Signup: React.FC = () => {
                 placeholder="John"
                 value={formData.firstName}
                 onChange={handleInputChange}
+                onBlur={() => handleBlur('firstName')}
                 required
               />
+              {touched.firstName && validationErrors.firstName && (
+                <span className="field-error">{validationErrors.firstName}</span>
+              )}
             </div>
             
             <div className="form-group">
@@ -203,8 +255,12 @@ const Signup: React.FC = () => {
                 placeholder="Doe"
                 value={formData.lastName}
                 onChange={handleInputChange}
+                onBlur={() => handleBlur('lastName')}
                 required
               />
+              {touched.lastName && validationErrors.lastName && (
+                <span className="field-error">{validationErrors.lastName}</span>
+              )}
             </div>
           </div>
           
@@ -218,8 +274,12 @@ const Signup: React.FC = () => {
               placeholder="john.doe@example.com"
               value={formData.email}
               onChange={handleInputChange}
+              onBlur={() => handleBlur('email')}
               required
             />
+            {touched.email && validationErrors.email && (
+              <span className="field-error">{validationErrors.email}</span>
+            )}
           </div>
           
           <div className="form-group password-field">
@@ -233,7 +293,8 @@ const Signup: React.FC = () => {
                 placeholder="Create a strong password"
                 value={formData.password}
                 onChange={handleInputChange}
-                minLength={6}
+                onBlur={() => handleBlur('password')}
+                minLength={8}
                 required
               />
               <button
@@ -256,6 +317,25 @@ const Signup: React.FC = () => {
                 )}
               </button>
             </div>
+            
+            {/* Password Strength Indicator */}
+            {formData.password && (
+              <div className="password-strength">
+                <div className="strength-bar">
+                  <div 
+                    className={`strength-fill strength-${Math.min(passwordStrength, 5)}`}
+                    style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                  ></div>
+                </div>
+                <span className={`strength-text strength-${passwordStrength}`}>
+                  {passwordStrength <= 2 ? 'Weak' : passwordStrength <= 4 ? 'Medium' : 'Strong'}
+                </span>
+              </div>
+            )}
+            
+            {touched.password && validationErrors.password && (
+              <span className="field-error">{validationErrors.password}</span>
+            )}
           </div>
           
           <div className="form-group">
@@ -268,12 +348,20 @@ const Signup: React.FC = () => {
               placeholder="Enter your phone number"
               value={formData.phone}
               onChange={handleInputChange}
+              onBlur={() => handleBlur('phone')}
               title="Please enter a valid phone number (numbers, +, -, spaces, parentheses)"
               required
             />
+            {touched.phone && validationErrors.phone && (
+              <span className="field-error">{validationErrors.phone}</span>
+            )}
           </div>
           
-          <button type="submit" disabled={loading}>
+          <button 
+            type="submit" 
+            disabled={loading || Object.keys(validationErrors).length > 0}
+            className={loading ? 'loading' : ''}
+          >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
           
@@ -299,7 +387,10 @@ const Signup: React.FC = () => {
             required
           />
           
-          <button type="submit" disabled={loading}>
+          <button 
+            type="submit" 
+            disabled={loading || otp.length !== 6}
+          >
             {loading ? 'Verifying...' : 'Verify & Create Account'}
           </button>
           
@@ -327,9 +418,8 @@ const Signup: React.FC = () => {
         <Link to="/login">Login here</Link>
       </p>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="error-message">{error}</div>}
     </div>
-    
   );
 };
 

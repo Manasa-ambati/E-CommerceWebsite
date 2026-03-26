@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'react-toastify';
+import { validateLoginForm } from '../utils/validation';
 import './Auth.css';
 
 const Login: React.FC = () => {
@@ -11,10 +12,69 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
+  const [touched, setTouched] = useState<{[key: string]: boolean}>({});
+
+  // Handle field blur for validation
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    
+    // Validate on blur
+    const errors = validateLoginForm(email, password);
+    if (errors[field]) {
+      setValidationErrors(prev => ({ ...prev, [field]: errors[field] }));
+    } else {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Real-time validation on change
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    
+    if (touched.email) {
+      const error = validateLoginForm(value, password).email;
+      setValidationErrors(prev => ({
+        ...prev,
+        email: error || ''
+      }));
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    
+    if (touched.password) {
+      const error = validateLoginForm(email, value).password;
+      setValidationErrors(prev => ({
+        ...prev,
+        password: error || ''
+      }));
+    }
+  };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Validate entire form before submission
+    const errors = validateLoginForm(email, password);
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      setTouched({ email: true, password: true });
+      
+      // Show first error as toast
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError);
+      return;
+    }
+    
     setLoading(true);
 
     console.log('📤 Sending password login request:', { email, password: '***' });
@@ -76,9 +136,13 @@ const Login: React.FC = () => {
             type="email"
             placeholder="john.doe@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
+            onBlur={() => handleBlur('email')}
             required
           />
+          {touched.email && validationErrors.email && (
+            <span className="field-error">{validationErrors.email}</span>
+          )}
         </div>
         <div className="form-group password-field">
           <label>
@@ -89,7 +153,8 @@ const Login: React.FC = () => {
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              onBlur={() => handleBlur('password')}
               required
             />
             <button
@@ -112,8 +177,14 @@ const Login: React.FC = () => {
               )}
             </button>
           </div>
+          {touched.password && validationErrors.password && (
+            <span className="field-error">{validationErrors.password}</span>
+          )}
         </div>
-        <button type="submit" disabled={loading}>
+        <button 
+          type="submit" 
+          disabled={loading || Object.keys(validationErrors).length > 0}
+        >
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
