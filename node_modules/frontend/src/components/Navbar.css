@@ -786,11 +786,11 @@ button:focus,
   
   /* Search bar on second row - Reduced size */
   .search-form {
-    display: flex !important;
+    display: flex;
     width: 95%;
     max-width: 500px;
     order: 2;
-    margin-top: 8px;
+    margin-top: 9px;
     margin-left: auto;
     margin-right: auto;
   }
