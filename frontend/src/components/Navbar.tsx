@@ -182,7 +182,7 @@ const Navbar: React.FC = () => {
             }
           }}>
             <div className="mobile-menu-content">
-              {/* Mobile Menu Header */}
+              {/* Mobile Menu Header - Simplified, no close button */}
               <div className="mobile-menu-header">
                 <Link to="/" className="mobile-logo" onClick={() => setMobileMenuOpen(false)}>
                   <svg
@@ -207,16 +207,6 @@ const Navbar: React.FC = () => {
                   </svg>
                   <span className="mobile-logo-text">ShopEase</span>
                 </Link>
-                <button 
-                  className="mobile-menu-close"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Close menu"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
               </div>
 
               {/* Mobile Navigation Links */}
@@ -266,7 +256,16 @@ const Navbar: React.FC = () => {
                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                           </svg>
-                          <span>{currentUser?.name || currentUser?.email || "Guest"}</span>
+                          <span>
+                            {(() => {
+                              if (currentUser?.name) {
+                                // Extract first name from full name
+                                const firstName = currentUser.name.split(' ')[0];
+                                return firstName;
+                              }
+                              return currentUser?.email || 'Guest';
+                            })()}
+                          </span>
                         </div>
                       <Link to="/profile" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -397,8 +396,16 @@ const Navbar: React.FC = () => {
                           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                           <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <span className="dropdown-username">{currentUser?.name || currentUser?.email || "Guest"}
-</span>
+                        <span className="dropdown-username">
+                          {(() => {
+                            if (currentUser?.name) {
+                              // Extract first name from full name
+                              const firstName = currentUser.name.split(' ')[0];
+                              return firstName;
+                            }
+                            return currentUser?.email || 'Guest';
+                          })()}
+                        </span>
                       </div>
                       <Link to="/orders" className="dropdown-item" onClick={() => setShowProfileDropdown(false)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

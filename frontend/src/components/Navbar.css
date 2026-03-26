@@ -925,7 +925,7 @@ button:focus,
 /* Mobile Menu Header */
 .mobile-menu-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Align logo to left (no close button) */
   align-items: center;
   padding-bottom: 20px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
