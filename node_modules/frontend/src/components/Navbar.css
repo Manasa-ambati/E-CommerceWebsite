@@ -24,8 +24,10 @@
 /* ===== NAVBAR CONTAINER ===== */
 .navbar {
   background: linear-gradient(135deg,#2e8219 50%,#d85ec1 50%);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }

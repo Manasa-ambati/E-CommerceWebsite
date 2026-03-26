@@ -17,6 +17,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Add padding to prevent content from hiding behind fixed navbar */
+  padding-top: 70px; /* Same as navbar height */
 }
 
 .main-content {
