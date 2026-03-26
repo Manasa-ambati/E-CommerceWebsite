@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import { validateLoginForm } from '../utils/validation';
-import './Auth.css';
+import './Login.css';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
