@@ -216,6 +216,9 @@ const ProductDetail: React.FC = () => {
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
         console.log('Guest wishlist updated:', wishlist);
       }
+      
+      // Dispatch custom event to update navbar count
+      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
     } catch (error: any) {
       console.error('Wishlist error:', error);
       console.error('Error details:', {

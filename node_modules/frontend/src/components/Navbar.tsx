@@ -49,34 +49,57 @@ const Navbar: React.FC = () => {
   }, [mobileMenuOpen]);
   
   // Fetch wishlist count when logged in
-  useEffect(() => {
-    const fetchWishlistCount = async () => {
-      if (isLoggedIn) {
-        try {
-          // Try to fetch from backend first
-          const response = await wishlistAPI.get();
-          const items = response.data?.data || [];
-          setWishlistCount(Array.isArray(items) ? items.length : 0);
-        } catch (error) {
-          // Fallback to localStorage
-          const localWishlist = localStorage.getItem('wishlist');
-          if (localWishlist) {
-            try {
-              const items = JSON.parse(localWishlist);
-              setWishlistCount(Array.isArray(items) ? items.length : 0);
-            } catch (e) {
-              setWishlistCount(0);
-            }
-          } else {
+  const fetchWishlistCount = async () => {
+    if (isLoggedIn) {
+      try {
+        // Try to fetch from backend first
+        const response = await wishlistAPI.get();
+        const items = response.data?.data || [];
+        setWishlistCount(Array.isArray(items) ? items.length : 0);
+      } catch (error) {
+        // Fallback to localStorage
+        const localWishlist = localStorage.getItem('wishlist');
+        if (localWishlist) {
+          try {
+            const items = JSON.parse(localWishlist);
+            setWishlistCount(Array.isArray(items) ? items.length : 0);
+          } catch (e) {
             setWishlistCount(0);
           }
+        } else {
+          setWishlistCount(0);
         }
-      } else {
-        setWishlistCount(0);
+      }
+    } else {
+      setWishlistCount(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchWishlistCount();
+  }, [isLoggedIn]);
+
+  // Listen for storage events to update wishlist count
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'wishlist') {
+        fetchWishlistCount();
       }
     };
+
+    window.addEventListener('storage', handleStorageChange);
     
-    fetchWishlistCount();
+    // Also listen for custom wishlist update events
+    const handleCustomWishlistUpdate = () => {
+      fetchWishlistCount();
+    };
+    
+    window.addEventListener('wishlistUpdated', handleCustomWishlistUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('wishlistUpdated', handleCustomWishlistUpdate);
+    };
   }, [isLoggedIn]);
   
   /* ---------------- SEARCH HANDLER ---------------- */
@@ -323,12 +346,6 @@ const Navbar: React.FC = () => {
 
           {/* SEARCH BAR */}
           <form className="search-form" onSubmit={handleSearch}>
-            <div className="search-icon-wrapper">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-              </svg>
-            </div>
             <input
               type="text"
               placeholder="Search for products,categories, brands and more..."

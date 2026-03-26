@@ -1,6 +1,7 @@
 .home {
   padding: 0;
   background-color: #eaedef;
+  margin-top: 10px; /* Gap between navbar and hero section */
 }
 
 /* ===== SHARED ===== */

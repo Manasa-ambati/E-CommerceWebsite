@@ -92,6 +92,9 @@ export const Wishlist: React.FC = () => {
     
     // Update UI
     setWishlist((prev) => prev.filter((item) => item.productId !== productId));
+    
+    // Dispatch custom event to update navbar
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
   };
 
   const moveToCart = async (productId: number) => {

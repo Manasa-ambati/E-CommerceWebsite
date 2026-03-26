@@ -70,6 +70,9 @@ const Home: React.FC = () => {
       
       localStorage.setItem('wishlist', JSON.stringify(wishlistIds));
     }
+    
+    // Dispatch custom event to update navbar count
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
   };
 
   const shareProduct = async (product: Product) => {
