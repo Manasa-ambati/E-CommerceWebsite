@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import { validateSignupForm, validateOtp, getPasswordStrength } from '../utils/validation';
-import './Auth.css';
+import './Login.css';
 
 interface SignupData {
   firstName: string;

@@ -798,3 +798,193 @@
 .form-group input:valid:not(:placeholder-shown):focus {
   animation: successPulse 1.5s ease-in-out;
 }
+
+/* ========================================
+   SIGNUP PAGE SPECIFIC STYLES
+   ======================================== */
+
+/* OTP Input Container */
+.otp-input-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.otp-input {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #2d3748;
+}
+
+.otp-input:focus {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Password Strength Meter */
+.password-strength {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.strength-bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.strength-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 10px;
+}
+
+.strength-text {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Strength Colors */
+.strength-0 { background: #fc8181; }   /* Very weak - red */
+.strength-1 { background: #f687b3; }   /* Weak - pink */
+.strength-2 { background: #f6ad55; }   /* Fair - orange */
+.strength-3 { background: #68d391; }   /* Good - green */
+.strength-4 { background: #4299e1; }   /* Strong - blue */
+.strength-5 { background: #9f7aea; }   /* Very strong - purple */
+
+/* Step Indicator for Multi-step Signup */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a0aec0;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  color: #667eea;
+}
+
+.step.completed {
+  color: #48bb78;
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+  background: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.step.completed .step-number {
+  background: #48bb78;
+  color: white;
+}
+
+.step-divider {
+  width: 40px;
+  height: 2px;
+  background: #e2e8f0;
+  transition: background 0.3s ease;
+}
+
+.step-divider.active {
+  background: #667eea;
+}
+
+.step-divider.completed {
+  background: #48bb78;
+}
+
+/* Resend OTP Link */
+.resend-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.resend-btn {
+  background: transparent;
+  border: none;
+  color: #667eea;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.resend-btn:hover:not(:disabled) {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Countdown Timer */
+.countdown-timer {
+  color: #718096;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Name Fields Row */
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 480px) {
+  .name-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .otp-input {
+    width: 40px;
+    height: 50px;
+    font-size: 18px;
+  }
+}
