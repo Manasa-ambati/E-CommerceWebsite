@@ -45,10 +45,16 @@ const Login: React.FC = () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify({
-        id: data.id,
+       /* id: data.id,
         email: data.email,
         name: data.name || data.firstName,
-        role: data.role,
+        role: data.role,*/
+        id: data.id,
+  email: data.email,
+  firstName: data.firstName,   // ✅ ADD THIS
+  lastName: data.lastName,     // ✅ ADD THIS
+  name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+  role: data.role,
         emailVerified: data.emailVerified || true // Assume verified if coming from backend
       }));
       addToast('Login successful!', 'success');
