@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import Toast from '../components/Toast';
+import { useToast } from '../context/ToastContext';
 import './Auth.css';
-
 
 interface ToastMessage {
   id: number;
@@ -13,6 +12,7 @@ interface ToastMessage {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { addToast } = useToast(); // Use global toast context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +20,8 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Add toast notification
-  const addToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+  // Add toast notification (local - for backward compatibility)
+  const addLocalToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
   };
@@ -41,22 +41,31 @@ const Login: React.FC = () => {
     try {
       const response = await authAPI.login({ email, password });
       console.log('📥 Login response received:', response.data);
-      const data = response.data;
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({
-       /* id: data.id,
-        email: data.email,
-        name: data.name || data.firstName,
-        role: data.role,*/
-        id: data.id,
-  email: data.email,
-  firstName: data.firstName,   // ✅ ADD THIS
-  lastName: data.lastName,     // ✅ ADD THIS
-  name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
-  role: data.role,
-        emailVerified: data.emailVerified || true // Assume verified if coming from backend
-      }));
+      
+      // Backend returns: { success: true, message: "...", token: "...", data: { userData } }
+      const loginData = response.data;
+      const userData = loginData.data; // Extract the actual user data from nested 'data' field
+      
+      console.log('Extracted userData:', userData);
+      console.log('Token:', loginData.token);
+      
+      if (!userData) {
+        throw new Error('No user data received from server');
+      }
+      
+      localStorage.setItem('token', loginData.token || '');
+      const userObject = {
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
+        role: userData.role,
+        emailVerified: userData.emailVerified ?? true // Assume verified if coming from backend
+      };
+      localStorage.setItem('user', JSON.stringify(userObject));
+      console.log('✅ User stored in localStorage:', userObject);
+      
       addToast('Login successful!', 'success');
       setTimeout(() => navigate('/'), 1000);
     } catch (err: any) {
@@ -74,18 +83,6 @@ const Login: React.FC = () => {
 
   return (
     <div className="auth-container">
-      {/* Toast Notifications */}
-      <div className="toast-container">
-        {toasts.map(toast => (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            onClose={() => removeToast(toast.id)}
-          />
-        ))}
-      </div>
-
       <h2>Welcome Back</h2>
       <p className="subtitle">Sign in to continue shopping</p>
       

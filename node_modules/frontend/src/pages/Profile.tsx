@@ -11,22 +11,34 @@ const Profile: React.FC = () => {
       const token = localStorage.getItem('token');
       const userData = localStorage.getItem('user');
       
-      console.log('Profile - Token exists:', !!token);
-      console.log('Profile - User data:', userData);
+      console.log('=== PROFILE DEBUG INFO ===');
+      console.log('Token exists:', !!token);
+      console.log('Raw user data from localStorage:', userData);
       
       if (userData) {
         try {
           const parsedUser = JSON.parse(userData);
+          console.log('Parsed user object:', parsedUser);
+          console.log('User fields breakdown:');
+          console.log('  - id:', parsedUser.id);
+          console.log('  - email:', parsedUser.email);
+          console.log('  - firstName:', parsedUser.firstName, `(type: ${typeof parsedUser.firstName})`);
+          console.log('  - lastName:', parsedUser.lastName, `(type: ${typeof parsedUser.lastName})`);
+          console.log('  - name:', parsedUser.name);
+          console.log('  - role:', parsedUser.role);
+          console.log('  - emailVerified:', parsedUser.emailVerified);
+          
           setUser(parsedUser);
-          console.log('Profile - User parsed successfully:', parsedUser);
+          console.log('✅ User parsed successfully:', parsedUser);
         } catch (error) {
-          console.error('Error parsing user data:', error);
+          console.error('❌ Error parsing user data:', error);
           localStorage.removeItem('user');
           localStorage.removeItem('token');
         }
       } else if (!token) {
-        console.log('Profile - No token found, user not logged in');
+        console.log('⚠️ No token found, user not logged in');
       }
+      console.log('========================');
       setLoading(false);
     };
 

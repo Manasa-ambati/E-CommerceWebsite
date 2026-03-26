@@ -4,16 +4,22 @@
   margin-top: 80px; /* Gap between fixed navbar and hero section - accounts for navbar height (70px) + spacing (10px) */
 }
 
-/* Mobile Responsive - Adjust gap for taller 2-row navbar */
+/* Mobile Responsive - Enhanced gap for all mobile dimensions */
 @media (max-width: 767px) {
   .home {
-    margin-top: 90px; /* Larger gap for mobile - navbar wraps to 2 rows (60px+) + spacing */
+    margin-top: 110px; /* Increased gap for mobile - navbar wraps to 2 rows (60px+) + extra spacing */
   }
 }
 
 @media (max-width: 480px) {
   .home {
-    margin-top: 95px; /* Extra space for smallest devices with 2-row navbar */
+    margin-top: 120px; /* Extra large gap for smallest devices with 2-row navbar to prevent overlap */
+  }
+}
+
+@media (max-width: 375px) {
+  .home {
+    margin-top: 125px; /* Maximum gap for very small screens like iPhone SE */
   }
 }
 

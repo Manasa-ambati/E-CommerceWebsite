@@ -1,20 +1,54 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import Categories from './pages/Categories';
-import { Wishlist } from './pages/Wishlist';
-import { Cart } from './pages/Cart';
-import Profile from './pages/Profile';
-import Checkout from './pages/Checkout';
-import { Orders } from './pages/Orders';
-import OrderTracking from './pages/OrderTracking';
-import ProductDetail from './pages/ProductDetail';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import { Suspense, lazy } from 'react';
+import { CartProvider } from './context/CartContext';
+import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import AdminDashboard from './pages/AdminDashboard';
-import { CartProvider } from './context/CartContext';
+
+// Lazy load all page components for better performance
+const Home = lazy(() => import('./pages/Home'));
+const Products = lazy(() => import('./pages/Products'));
+const Categories = lazy(() => import('./pages/Categories'));
+const Wishlist = lazy(() => import('./pages/Wishlist').then(module => ({ default: module.Wishlist })));
+const Cart = lazy(() => import('./pages/Cart').then(module => ({ default: module.Cart })));
+const Profile = lazy(() => import('./pages/Profile'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const Orders = lazy(() => import('./pages/Orders').then(module => ({ default: module.Orders })));
+const OrderTracking = lazy(() => import('./pages/OrderTracking'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+
+// Loading component
+const PageLoader = () => (
+  <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+  }}>
+    <div style={{ textAlign: 'center' }}>
+      <div className="loading-spinner" style={{
+        width: '50px',
+        height: '50px',
+        border: '4px solid #f3f3f3',
+        borderTop: '4px solid #f97316',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        margin: '0 auto 20px'
+      }}></div>
+      <p style={{ color: '#282c3f', fontSize: '16px', fontWeight: 600 }}>Loading...</p>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  </div>
+);
 
 // Layout component to conditionally render Footer based on route
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -25,7 +59,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Navbar />
       <main className="app-main">
-        {children}
+        <Suspense fallback={<PageLoader />}>
+          {children}
+        </Suspense>
       </main>
       {showFooter && <Footer />}
     </>
@@ -33,27 +69,29 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <CartProvider>
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/track-order/:orderNumber" element={<OrderTracking />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
-      </Layout>
-    </Router>
-  </CartProvider>
+  <ToastProvider>
+    <CartProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/track-order/:orderNumber" element={<OrderTracking />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </CartProvider>
+  </ToastProvider>
 );
 
 export default App;

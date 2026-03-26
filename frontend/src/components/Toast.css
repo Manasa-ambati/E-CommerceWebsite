@@ -1,14 +1,18 @@
-/* Toast Container */
-.toast-container {
+/* Global Toast Container - Below Navbar on Right */
+.global-toast-container {
   position: fixed;
-  top: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
+  top: 100px; /* Below navbar with gap */
+  right: 20px;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-width: 400px;
   pointer-events: none;
+}
+
+.global-toast-container > * {
+  pointer-events: auto;
 }
 
 /* Individual Toast */
@@ -20,30 +24,21 @@
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   min-width: 320px;
-  max-width: 500px;
-  animation: slideDown 0.4s ease-out, fadeIn 0.3s ease-out;
+  max-width: 100%;
+  animation: slideInRight 0.4s ease-out, fadeIn 0.3s ease-out;
   pointer-events: auto;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@keyframes slideDown {
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateX(400px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -134,16 +129,31 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .toast-container {
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 32px);
+  .global-toast-container {
+    top: 120px; /* Adjust for mobile navbar height */
+    right: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
   }
 
   .toast {
     min-width: unset;
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-toast-container {
+    top: 130px;
+  }
+  
+  .toast {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+  
+  .toast-message {
+    font-size: 13px;
   }
 }
 
