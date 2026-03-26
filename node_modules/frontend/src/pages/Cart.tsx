@@ -176,11 +176,28 @@ export const Cart: React.FC = () => {
         <h1>Shopping Cart</h1>
         
         <div className="cart-header-actions">
-          <button className="clear-cart-btn" onClick={() => {
+          <button className="clear-cart-btn" onClick={async () => {
             if (window.confirm('Are you sure you want to clear your entire cart?')) {
-              // Clear all items
-              localStorage.removeItem('guest_cart');
-              setCart([]);
+              try {
+                const token = localStorage.getItem('token');
+                
+                // Clear from backend if authenticated
+                if (token) {
+                  await cartAPI.clear();
+                }
+                
+                // Always clear from localStorage (for guests and sync)
+                localStorage.removeItem('guest_cart');
+                
+                // Update local state
+                setCart([]);
+                
+                // Dispatch custom event to update navbar count
+                window.dispatchEvent(new CustomEvent('cartUpdated'));
+              } catch (err: any) {
+                console.error(err);
+                alert(err.response?.data?.message || 'Failed to clear cart.');
+              }
             }
           }}>
             Clear Cart

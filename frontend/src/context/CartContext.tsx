@@ -153,6 +153,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       const response = await cartAPI.update(productId, quantity);
       setCart(response.data.data);
+      
+      // Dispatch custom event to update navbar
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (error) {
       console.error('Failed to update cart:', error);
       throw error;
@@ -166,6 +169,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       const response = await cartAPI.remove(productId);
       setCart(response.data.data);
+      
+      // Dispatch custom event to update navbar
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (error) {
       console.error('Failed to remove from cart:', error);
       throw error;
@@ -179,6 +185,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       await cartAPI.clear();
       setCart(null);
+      
+      // Also clear localStorage for guests
+      localStorage.removeItem('guest_cart');
+      
+      // Dispatch custom event to update navbar
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (error) {
       console.error('Failed to clear cart:', error);
       throw error;

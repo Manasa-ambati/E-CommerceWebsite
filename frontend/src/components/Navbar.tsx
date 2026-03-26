@@ -79,11 +79,14 @@ const Navbar: React.FC = () => {
     fetchWishlistCount();
   }, [isLoggedIn]);
 
-  // Listen for storage events to update wishlist count
+  // Listen for storage events to update wishlist and cart counts
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'wishlist') {
         fetchWishlistCount();
+      }
+      if (e.key === 'guest_cart') {
+        // Cart count will update automatically via CartContext
       }
     };
 
@@ -94,11 +97,18 @@ const Navbar: React.FC = () => {
       fetchWishlistCount();
     };
     
+    // Listen for custom cart update events
+    const handleCustomCartUpdate = () => {
+      // Cart count will update automatically via CartContext
+    };
+    
     window.addEventListener('wishlistUpdated', handleCustomWishlistUpdate);
+    window.addEventListener('cartUpdated', handleCustomCartUpdate);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('wishlistUpdated', handleCustomWishlistUpdate);
+      window.removeEventListener('cartUpdated', handleCustomCartUpdate);
     };
   }, [isLoggedIn]);
   
