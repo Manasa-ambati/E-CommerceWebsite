@@ -199,3 +199,150 @@
   border-color: #e53e3e;
   transform: translateY(-2px);
 }
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Medium Tablets (768px - 991px) */
+@media (max-width: 991px) {
+  .wishlist-page {
+    padding: 30px 16px;
+  }
+  
+  .wishlist-container h1 {
+    font-size: 28px;
+  }
+  
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+}
+
+/* Tablets Portrait & Large Mobiles (481px - 767px) */
+@media (max-width: 767px) {
+  .wishlist-page {
+    padding: 20px 12px;
+  }
+  
+  .wishlist-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .wishlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  
+  .wishlist-card {
+    border-radius: 12px;
+  }
+  
+  .wishlist-info {
+    padding: 20px;
+  }
+  
+  .wishlist-info h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    min-height: 48px;
+  }
+  
+  .wishlist-price .current-price {
+    font-size: 20px;
+  }
+  
+  .wishlist-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .move-to-cart-btn,
+  .remove-btn {
+    width: 100%;
+    min-width: auto;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+/* Small Mobiles (≤ 480px) */
+@media (max-width: 480px) {
+  .wishlist-page {
+    padding: 15px 10px;
+  }
+  
+  .wishlist-container {
+    padding: 0;
+  }
+  
+  .wishlist-container h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .wishlist-empty {
+    padding: 60px 15px;
+    border-radius: 12px;
+  }
+  
+  .wishlist-empty h2 {
+    font-size: 22px;
+  }
+  
+  .wishlist-empty p {
+    font-size: 14px;
+  }
+  
+  .wishlist-empty a {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .wishlist-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .wishlist-card {
+    border-radius: 10px;
+  }
+  
+  .wishlist-info {
+    padding: 16px;
+  }
+  
+  .wishlist-info h3 {
+    font-size: 15px;
+    line-height: 1.3;
+    min-height: 42px;
+  }
+  
+  .wishlist-price {
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+  }
+  
+  .wishlist-price .current-price {
+    font-size: 18px;
+  }
+  
+  .wishlist-price .original-price {
+    font-size: 13px;
+  }
+  
+  .wishlist-actions {
+    gap: 6px;
+  }
+  
+  .move-to-cart-btn,
+  .remove-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .move-to-cart-btn {
+    font-size: 14px;
+    padding: 11px 14px;
+  }
+}

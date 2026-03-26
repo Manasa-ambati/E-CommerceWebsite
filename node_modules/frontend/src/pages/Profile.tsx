@@ -82,10 +82,14 @@ const Profile: React.FC = () => {
         <div className="profile-card">
           <div className="profile-header">
             <div className="profile-avatar">
-              {user?.firstName?.[0] || user?.name?.[0] || user?.email?.[0]}
+              {user?.firstName?.[0] || user?.name?.[0] || user?.email?.[0] || 'U'}
             </div>
             <div className="profile-info">
-              <h2>{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.name || user?.email}</h2>
+              <h2>
+                {user?.firstName 
+                  ? `${user.firstName} ${user.lastName || ''}`.trim() 
+                  : user?.name || user?.email || 'User'}
+              </h2>
               <span className="profile-role">{user?.role}</span>
             </div>
           </div>
@@ -93,11 +97,15 @@ const Profile: React.FC = () => {
           <div className="profile-details">
             <div className="detail-row">
               <span className="label">Full Name</span>
-              <span className="value">{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.name || 'N/A'}</span>
+              <span className="value">
+                {user?.firstName 
+                  ? `${user.firstName} ${user.lastName || ''}`.trim() 
+                  : user?.name || user?.email || 'N/A'}
+              </span>
             </div>
             <div className="detail-row">
               <span className="label">Email</span>
-              <span className="value">{user?.email}</span>
+              <span className="value">{user?.email || 'Not provided'}</span>
             </div>
             <div className="detail-row">
               <span className="label">Account Status</span>

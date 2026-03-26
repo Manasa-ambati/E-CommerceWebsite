@@ -4,6 +4,19 @@
   margin-top: 80px; /* Gap between fixed navbar and hero section - accounts for navbar height (70px) + spacing (10px) */
 }
 
+/* Mobile Responsive - Adjust gap for taller 2-row navbar */
+@media (max-width: 767px) {
+  .home {
+    margin-top: 90px; /* Larger gap for mobile - navbar wraps to 2 rows (60px+) + spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .home {
+    margin-top: 95px; /* Extra space for smallest devices with 2-row navbar */
+  }
+}
+
 /* ===== SHARED ===== */
 .section-header {
   display: flex;
