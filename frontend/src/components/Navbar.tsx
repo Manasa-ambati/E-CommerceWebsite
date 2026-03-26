@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { wishlistAPI } from "../services/api";
+import { wishlistAPI, cartAPI } from "../services/api";
 import { useAuth } from "../context/authContext";
 
 import "./Navbar.css";
@@ -98,8 +98,25 @@ const Navbar: React.FC = () => {
     };
     
     // Listen for custom cart update events
-    const handleCustomCartUpdate = () => {
-      // Cart count will update automatically via CartContext
+    const handleCustomCartUpdate = async () => {
+      // Force refresh cart count by triggering fetchCart from context
+      // This ensures the count updates even if localStorage is stale
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          // For logged in users, fetch from backend
+          await cartAPI.get();
+        } else {
+          // For guests, check localStorage
+          const localCart = localStorage.getItem('guest_cart');
+          if (!localCart) {
+            // If no cart in localStorage, clear any stale data
+            console.log('No cart in localStorage, clearing stale count');
+          }
+        }
+      } catch (error) {
+        console.error('Error refreshing cart:', error);
+      }
     };
     
     window.addEventListener('wishlistUpdated', handleCustomWishlistUpdate);

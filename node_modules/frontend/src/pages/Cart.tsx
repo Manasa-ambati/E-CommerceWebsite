@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { cartAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import '../pages/Cart.css'
 
 interface CartItem {
@@ -14,6 +15,7 @@ interface CartItem {
 
 export const Cart: React.FC = () => {
   const navigate = useNavigate();
+  const { fetchCart: refreshCartContext } = useCart(); // Use CartContext
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -192,7 +194,10 @@ export const Cart: React.FC = () => {
                 // Update local state
                 setCart([]);
                 
-                // Dispatch custom event to update navbar count
+                // Refresh CartContext to update navbar
+                await refreshCartContext();
+                
+                // Dispatch custom event for extra safety
                 window.dispatchEvent(new CustomEvent('cartUpdated'));
               } catch (err: any) {
                 console.error(err);
