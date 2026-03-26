@@ -124,7 +124,7 @@
 
 .cart-item {
   display: grid;
-  grid-template-columns: 120px 1fr auto auto auto;
+  grid-template-columns: 120px 1fr auto auto auto auto;
   align-items: center;
   gap: 25px;
   padding: 25px;
@@ -224,7 +224,55 @@
   text-align: right;
 }
 
-.remove-btn {
+/* Item Actions */
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+}
+
+.wishlist-move-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%);
+  color: #db2777;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.wishlist-move-btn:hover {
+  background: linear-gradient(135deg, #fbb6ce 0%, #f472b6 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
+}
+
+.remove-text-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  color: #e53e3e;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.remove-text-btn:hover {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+.old-remove-btn {
   width: 40px;
   height: 40px;
   background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
@@ -239,7 +287,7 @@
   transition: all 0.3s ease;
 }
 
-.remove-btn:hover {
+.old-remove-btn:hover {
   background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
   color: white;
   transform: scale(1.1);
@@ -519,7 +567,7 @@
       "details"
       "quantity"
       "subtotal"
-      "remove";
+      "actions";
     gap: 10px;
     padding: 12px;
     text-align: center;
@@ -553,6 +601,28 @@
     grid-area: quantity;
     width: auto;
     justify-content: center;
+  }
+  
+  .item-subtotal {
+    grid-area: subtotal;
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .item-actions {
+    grid-area: actions;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    min-width: auto;
+  }
+  
+  .wishlist-move-btn,
+  .remove-text-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    flex: 1;
+    max-width: 140px;
   }
   
   .item-subtotal {

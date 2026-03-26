@@ -1,6 +1,6 @@
 // src/pages/Cart.tsx
 import React, { useEffect, useState } from 'react';
-import { cartAPI } from '../services/api';
+import { cartAPI, wishlistAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../pages/Cart.css'
@@ -23,6 +23,35 @@ export const Cart: React.FC = () => {
   useEffect(() => {
     fetchCart();
   }, []);
+
+  const moveToWishlist = async (productId: number) => {
+    const token = localStorage.getItem('token');
+    
+    try {
+      // Add to wishlist
+      if (token) {
+        await wishlistAPI.add(productId);
+      } else {
+        // For guest users, use localStorage
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        if (!wishlist.includes(productId)) {
+          wishlist.push(productId);
+          localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+      }
+      
+      // Remove from cart
+      await removeFromCart(productId);
+      
+      alert('Moved to wishlist successfully!');
+      
+      // Dispatch event to update navbar wishlist count
+      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+    } catch (err: any) {
+      console.error('Failed to move to wishlist:', err);
+      alert(err.response?.data?.message || 'Failed to move to wishlist.');
+    }
+  };
 
   const fetchCart = async () => {
     setLoading(true);
@@ -237,13 +266,22 @@ export const Cart: React.FC = () => {
                   ${(Number(item.price) * item.quantity).toFixed(2)}
                 </div>
                 
-                <button 
-                  className="remove-btn" 
-                  onClick={() => removeFromCart(item.productId)}
-                  title="Remove item"
-                >
-                  ×
-                </button>
+                <div className="item-actions">
+                  <button 
+                    className="wishlist-move-btn" 
+                    onClick={() => moveToWishlist(item.productId)}
+                    title="Move to Wishlist"
+                  >
+                    ❤️ Move to Wishlist
+                  </button>
+                  <button 
+                    className="remove-text-btn" 
+                    onClick={() => removeFromCart(item.productId)}
+                    title="Remove item"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
           </div>

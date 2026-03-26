@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { cartAPI } from '../services/api';
+import { cartAPI, productAPI } from '../services/api';
 
 interface CartItem {
   id: number;
@@ -108,6 +108,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Fallback to localStorage for guest users
     try {
       setLoading(true);
+      
+      // Fetch product details first
+      let productData = null;
+      try {
+        const productRes = await productAPI.getById(productId);
+        productData = productRes.data?.data || productRes.data;
+        console.log('Product details fetched:', productData);
+      } catch (error) {
+        console.error('Failed to fetch product details:', error);
+      }
+      
       const localCart = localStorage.getItem('guest_cart');
       let cartData: Cart = localCart ? JSON.parse(localCart) : {
         id: Date.now(),
@@ -116,26 +127,30 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         totalItems: 0
       };
       
-      // Add or update item - for demo use minimal data
+      // Add or update item with proper product details
       const existingItemIndex = cartData.items.findIndex(item => item.productId === productId);
       if (existingItemIndex > -1) {
         cartData.items[existingItemIndex].quantity += quantity;
+        cartData.items[existingItemIndex].subtotal = 
+          (cartData.items[existingItemIndex].productDiscountPrice || cartData.items[existingItemIndex].productPrice) * cartData.items[existingItemIndex].quantity;
       } else {
+        const price = productData?.discountPrice || productData?.price || 0;
         cartData.items.push({
           id: Date.now(),
           productId,
-          productName: `Product ${productId}`,
-          productImage: '',
-          productPrice: 0,
-          productDiscountPrice: 0,
+          productName: productData?.name || `Product ${productId}`,
+          productImage: productData?.images?.[0] || '',
+          productPrice: productData?.price || 0,
+          productDiscountPrice: productData?.discountPrice || 0,
           quantity,
-          subtotal: 0,
-          stockQuantity: 0
+          subtotal: price * quantity,
+          stockQuantity: productData?.stockQuantity || 0
         });
       }
       
       cartData.totalItems = cartData.items.reduce((sum, item) => sum + item.quantity, 0);
-      cartData.totalPrice = cartData.items.reduce((sum, item) => sum + item.subtotal, 0);
+      cartData.totalPrice = cartData.items.reduce((sum, item) => 
+        sum + (item.productDiscountPrice || item.productPrice) * item.quantity, 0);
       
       localStorage.setItem('guest_cart', JSON.stringify(cartData));
       setCart(cartData);
