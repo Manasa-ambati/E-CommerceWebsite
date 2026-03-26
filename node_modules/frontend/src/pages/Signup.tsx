@@ -5,7 +5,8 @@ import Toast from '../components/Toast';
 import './Auth.css';
 
 interface SignupData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   phone: string;
@@ -21,7 +22,8 @@ const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<'signup' | 'otp'>('signup');
   const [formData, setFormData] = useState<SignupData>({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     phone: ''
@@ -110,7 +112,7 @@ const Signup: React.FC = () => {
       localStorage.setItem('user', JSON.stringify({
         id: data.id,
         email: data.email,
-        name: formData.name || data.name,
+        name: `${formData.firstName} ${formData.lastName}`.trim() || data.name,
         role: data.role,
         emailVerified: true // OTP verified during signup
       }));
@@ -161,19 +163,34 @@ const Signup: React.FC = () => {
       </div>
 
       <h2>Create Your Account</h2>
+      <p className="subtitle">Join our community today</p>
       
       {step === 'signup' ? (
         <form onSubmit={handleSignup}>
-          <div className="form-group">
-            <label>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your full name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
+          <div className="name-row">
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                placeholder="John"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Doe"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
           </div>
           
           <div className="form-group">
@@ -181,7 +198,7 @@ const Signup: React.FC = () => {
             <input
               type="email"
               name="email"
-              placeholder="Enter your email"
+              placeholder="john.doe@example.com"
               value={formData.email}
               onChange={handleInputChange}
               required

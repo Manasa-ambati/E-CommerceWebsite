@@ -880,11 +880,11 @@ button:focus,
   pointer-events: auto;
 }
 
-@media (max-width: 767px) {
+/*@media (max-width: 767px) {
   .mobile-menu-overlay::before {
     width: calc(100vw - 280px);
   }
-}
+}*/
 
 @media (max-width: 480px) {
   .mobile-menu-overlay::before {

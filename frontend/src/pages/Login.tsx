@@ -81,19 +81,24 @@ const Login: React.FC = () => {
       </div>
 
       <h2>Welcome Back</h2>
+      <p className="subtitle">Sign in to continue shopping</p>
       
       <form onSubmit={handlePasswordLogin}>
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <div style={{ position: 'relative' }}>
+        <div className="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            placeholder="john.doe@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group" style={{ position: 'relative' }}>
+          <label>Password</label>
           <input
             type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
