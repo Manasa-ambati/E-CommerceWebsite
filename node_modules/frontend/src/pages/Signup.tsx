@@ -34,6 +34,7 @@ const Signup: React.FC = () => {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Add toast notification
   const addToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
@@ -120,6 +121,8 @@ const Signup: React.FC = () => {
       localStorage.setItem('user', JSON.stringify({
         id: data.id,
         email: data.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         name: `${formData.firstName} ${formData.lastName}`.trim() || data.name,
         role: data.role,
         emailVerified: true // OTP verified during signup
@@ -177,7 +180,9 @@ const Signup: React.FC = () => {
         <form onSubmit={handleSignup}>
           <div className="name-row">
             <div className="form-group">
-              <label>First Name</label>
+              <label>
+                First Name <span className="required">*</span>
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -189,7 +194,9 @@ const Signup: React.FC = () => {
             </div>
             
             <div className="form-group">
-              <label>Last Name</label>
+              <label>
+                Last Name <span className="required">*</span>
+              </label>
               <input
                 type="text"
                 name="lastName"
@@ -202,7 +209,9 @@ const Signup: React.FC = () => {
           </div>
           
           <div className="form-group">
-            <label>Email Address</label>
+            <label>
+              Email Address <span className="required">*</span>
+            </label>
             <input
               type="email"
               name="email"
@@ -213,21 +222,46 @@ const Signup: React.FC = () => {
             />
           </div>
           
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleInputChange}
-              minLength={6}
-              required
-            />
+          <div className="form-group password-field">
+            <label>
+              Password <span className="required">*</span>
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a strong password"
+                value={formData.password}
+                onChange={handleInputChange}
+                minLength={6}
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
           
           <div className="form-group">
-            <label>Phone Number</label>
+            <label>
+              Phone Number <span className="required">*</span>
+            </label>
             <input
               type="tel"
               name="phone"

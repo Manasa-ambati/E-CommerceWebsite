@@ -20,12 +20,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Page<Product> findByCategoryIdAndActiveTrue(Long categoryId, Pageable pageable);
     
-    @Query("SELECT p FROM Product p WHERE p.active = true AND " +
+    @Query("SELECT p FROM Product p JOIN p.category c WHERE p.active = true AND " +
            "(:categoryId IS NULL OR p.category.id = :categoryId) AND " +
            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
            "(:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
            "(:tag IS NULL OR :tag MEMBER OF p.tags)")
     Page<Product> findProductsWithFilters(
             @Param("categoryId") Long categoryId,
@@ -35,9 +36,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tag") String tag,
             Pageable pageable);
     
-    @Query("SELECT p FROM Product p WHERE p.active = true AND " +
+    @Query("SELECT p FROM Product p JOIN p.category c WHERE p.active = true AND " +
            "(LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(p.description) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           "LOWER(p.sku) LIKE LOWER(CONCAT('%', :query, '%')))")
+           "LOWER(p.sku) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Product> searchProducts(@Param("query") String query, Pageable pageable);
 }

@@ -94,9 +94,10 @@
   border:2px solid transparent;
   width:500px;
   max-width: 600px;
-  transition:all .3s;
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   gap: 8px;
+  margin-top: 0;
 }
 
 .search-icon-wrapper{
@@ -733,6 +734,7 @@ button:focus,
   .search-form {
     width: 400px;
     max-width: 500px;
+    margin-top: 8px;
   }
   
   /* Show hamburger when nav is hidden */
@@ -752,6 +754,7 @@ button:focus,
   .search-form {
     width: 320px;
     max-width: 400px;
+    margin-top: 10px;
   }
   
   .navbar-nav {
@@ -793,10 +796,12 @@ button:focus,
   /* Search bar on second row - Reduced size */
   .search-form {
     display: flex !important;
-    width: 95%;
+    width: 100%;
     max-width: 500px;
     order: 2;
-    margin-top: 9px;
+    margin:0;
+    padding:0;
+    margin-top: 8px;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
@@ -832,7 +837,7 @@ button:focus,
     width: 100%;
     max-width: 100%;
     order: 2;
-    margin-top: 8px;
+    margin-top: 10px;
     padding: 4px 8px;
     max-width: 400px;
     margin-left: auto;
@@ -1345,6 +1350,7 @@ button:focus,
   
   .search-form {
     padding: 4px 8px;
+    margin-top: 12px;
   }
   
   .search-form input {
@@ -1375,6 +1381,10 @@ button:focus,
     height: 30px;
   }
   
+  .search-form {
+    margin-top: 10px;
+  }
+  
   .mobile-menu-overlay {
     width: 80vw;
   }
@@ -1388,6 +1398,10 @@ button:focus,
   
   .logo-text {
     font-size: 22px;
+  }
+  
+  .search-form {
+    margin-top: 10px;
   }
   
   .mobile-menu-overlay {
@@ -1404,6 +1418,7 @@ button:focus,
   .search-form {
     width: 100%;
     max-width: 100%;
+    margin-top: 12px;
   }
   
   .mobile-menu-overlay {
@@ -1421,6 +1436,7 @@ button:focus,
   .search-form {
     width: 350px;
     max-width: 400px;
+    margin-top: 10px;
   }
   
   .mobile-menu-overlay {
@@ -1437,6 +1453,7 @@ button:focus,
   .search-form {
     width: 400px;
     max-width: 450px;
+    margin-top: 8px;
   }
 }
 
@@ -1449,6 +1466,7 @@ button:focus,
   .search-form {
     width: 450px;
     max-width: 500px;
+    margin-top: 8px;
   }
 }
 
@@ -1461,6 +1479,7 @@ button:focus,
   .search-form {
     width: 500px;
     max-width: 600px;
+    margin-top: 6px;
   }
 }
 
@@ -1473,6 +1492,7 @@ button:focus,
   .search-form {
     width: 550px;
     max-width: 650px;
+    margin-top: 6px;
   }
 }
 
