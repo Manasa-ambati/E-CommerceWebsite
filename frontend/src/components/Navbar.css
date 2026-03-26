@@ -713,7 +713,7 @@ button:focus,
 
 .mobile-toggle.active span:nth-child(2) {
   opacity: 0;
-  transform: translateX(10px);
+  transform: scaleX(0);
 }
 
 .mobile-toggle.active span:nth-child(3) {
@@ -783,13 +783,15 @@ button:focus,
     order: 1;
   }
   
-  /* Search bar on second row */
+  /* Search bar on second row - Reduced size */
   .search-form {
     display: flex !important;
-    width: 100%;
-    max-width: 100%;
+    width: 95%;
+    max-width: 500px;
     order: 2;
     margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   /* Hide desktop auth buttons */
@@ -810,7 +812,7 @@ button:focus,
     justify-content: space-between;
   }
   
-  /* Search bar full width on second row */
+  /* Search bar full width but smaller - Reduced size */
   .search-form {
     display: flex !important;
     width: 100%;
@@ -818,6 +820,9 @@ button:focus,
     order: 2;
     margin-top: 8px;
     padding: 4px 8px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .logo-text {
