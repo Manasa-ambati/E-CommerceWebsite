@@ -3,6 +3,37 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
+// PERFORMANCE: Register Service Worker for ultra-fast caching
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('⚡ Service Worker registered:', registration.scope);
+      })
+      .catch(error => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// PERFORMANCE: Resource Timing API to monitor load times
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const resources = performance.getEntriesByType('resource');
+    const cssResources = resources.filter(r => r.initiatorType === 'link' && r.name.includes('.css'));
+    const jsResources = resources.filter(r => r.initiatorType === 'script' && r.name.includes('.js'));
+    
+    console.group('⚡ Performance Report');
+    console.log('📊 Total Resources Loaded:', resources.length);
+    console.log('💅 CSS Files:', cssResources.length, '- Avg:', 
+      (cssResources.reduce((sum, r) => sum + r.duration, 0) / cssResources.length).toFixed(2), 'ms');
+    console.log('🔧 JS Files:', jsResources.length, '- Avg:', 
+      (jsResources.reduce((sum, r) => sum + r.duration, 0) / jsResources.length).toFixed(2), 'ms');
+    console.log('⏱️ Page Load Time:', performance.timing.loadEventEnd - performance.timing.navigationStart, 'ms');
+    console.groupEnd();
+  }, 100);
+});
+
 
 // Suppress WebSocket connection errors in development
 if (process.env.NODE_ENV === 'development') {
