@@ -120,7 +120,9 @@ const Signup: React.FC = () => {
       return;
     }
     
+    // INSTANT UI FEEDBACK - Show loading state immediately
     setLoading(true);
+    console.log('⏱️ Signup started:', new Date().toISOString());
 
     // Combine firstName and lastName into name for backend
     const signupPayload = {
@@ -130,25 +132,31 @@ const Signup: React.FC = () => {
       phone: formData.phone
     };
 
-    console.log('Sending signup request with data:', signupPayload);
+    console.log('📤 Sending signup request...');
+    const startTime = Date.now();
 
     try {
       const response = await authAPI.signup(signupPayload);
+      const endTime = Date.now();
+      console.log('✅ API Response time:', (endTime - startTime), 'ms');
       console.log('Signup response:', response.data);
       const data = response.data;
 
       if (data.requiresOtp) {
-        // OTP sent successfully
-        toast.success('Signup successfully! Please check your email for verification code.');
+        // INSTANT SUCCESS MESSAGE
+        toast.success('Signup successfully! 🎉');
+        console.log('📧 OTP sent - switching to verification step');
         setStep('otp');
         setResendDisabled(true);
         setCountdown(30);
       } else {
-        // Direct signup (fallback)
-        toast.success('Signup successfully! Redirecting to login...');
-        setTimeout(() => navigate('/login'), 1500);
+        // DIRECT SIGNUP - Faster redirect
+        toast.success('Signup successfully! 🎉 Redirecting...');
+        setTimeout(() => navigate('/login'), 1000); // Even faster!
       }
     } catch (err: any) {
+      const errorTime = Date.now();
+      console.log('❌ Error after:', (errorTime - startTime), 'ms');
       console.error('Signup error:', err);
       console.error('Error response:', err.response?.data);
       console.error('Error status:', err.response?.status);
@@ -158,6 +166,7 @@ const Signup: React.FC = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+      console.log('🏁 Signup process completed');
     }
   };
 
