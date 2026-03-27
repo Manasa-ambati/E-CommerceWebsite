@@ -1,0 +1,346 @@
+/* ========================================
+   AMAZON STYLE SIGNUP PAGE
+   Clean, Minimalist E-commerce Design
+   ======================================== */
+
+.amazon-signup-container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding-top: 20px;
+}
+
+/* LOGO */
+.amazon-logo {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #232f3e;
+  font-family: Arial, sans-serif;
+}
+
+.amazon-logo span {
+  color: #ff9900;
+}
+
+/* MAIN BOX */
+.signup-box {
+  width: 350px;
+  margin: 20px auto;
+  padding: 26px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+}
+
+/* TITLE */
+.signup-box h2 {
+  margin-bottom: 20px;
+  font-weight: normal;
+  font-size: 28px;
+  color: #232f3e;
+  font-family: Arial, sans-serif;
+}
+
+/* FORM GROUPS */
+.form-group {
+  margin-bottom: 0;
+}
+
+/* LABELS */
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  color: #111;
+  margin-bottom: 5px;
+  font-family: Arial, sans-serif;
+}
+
+.required {
+  color: #c45500;
+  margin-left: 2px;
+}
+
+/* INPUT FIELDS */
+.form-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 6px 0 15px;
+  border: 1px solid #a6a6a6;
+  border-radius: 4px;
+  outline: none;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #e77600;
+  box-shadow: 0 0 3px #e77600;
+}
+
+.form-input::placeholder {
+  color: #767676;
+}
+
+.form-input.error {
+  border-color: #d13c1a;
+  box-shadow: 0 0 3px #d13c1a;
+}
+
+/* PASSWORD WRAPPER */
+.password-wrapper {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 18px;
+}
+
+.password-toggle-btn:hover {
+  color: #232f3e;
+}
+
+/* HELPER TEXT */
+.helper-text {
+  font-size: 12px;
+  color: #555;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+/* SUBMIT BUTTON */
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+  border: 1px solid #a88734;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(to bottom, #f5d78e, #eeb933);
+}
+
+.submit-btn:active {
+  background: #f0c14b;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) inset;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #e0e0e0;
+  border-color: #c0c0c0;
+}
+
+/* TERMS TEXT */
+.terms-text {
+  font-size: 12px;
+  color: #111;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.terms-text a {
+  color: #0066c0;
+  text-decoration: none;
+}
+
+.terms-text a:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+/* DIVIDER */
+.divider {
+  width: 350px;
+  margin: 20px auto;
+  border-top: 1px solid #ddd;
+}
+
+/* LOGIN LINK */
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 30px;
+}
+
+.login-link a {
+  color: #0066c0;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+/* FIELD ERROR */
+.field-error {
+  display: block;
+  color: #d13c1a;
+  font-size: 12px;
+  margin-top: -12px;
+  margin-bottom: 15px;
+  font-family: Arial, sans-serif;
+}
+
+/* PASSWORD STRENGTH (Minimalist) */
+.password-strength-meter {
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.strength-bar-bg {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 2px;
+}
+
+.strength-very-weak { background: #d13c1a; }
+.strength-weak { background: #e77600; }
+.strength-fair { background: #f0c14b; }
+.strength-good { background: #007600; }
+.strength-strong { background: #005c00; }
+
+.strength-text {
+  font-size: 11px;
+  color: #555;
+}
+
+/* OTP SECTION */
+.otp-section {
+  text-align: center;
+}
+
+.otp-section h3 {
+  font-size: 20px;
+  font-weight: normal;
+  margin-bottom: 15px;
+  color: #232f3e;
+}
+
+.otp-description {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.email-highlight {
+  display: block;
+  background: #f0f8ff;
+  color: #0066c0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  margin: 15px 0;
+}
+
+.otp-input-field {
+  width: 100%;
+  padding: 10px !important;
+  margin: 15px 0 !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  letter-spacing: 8px !important;
+}
+
+.resend-otp-btn {
+  background: none;
+  border: none;
+  color: #0066c0;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  margin: 10px 0;
+  padding: 5px 10px;
+}
+
+.resend-otp-btn:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+.resend-otp-btn:disabled {
+  color: #999;
+  cursor: default;
+}
+
+.back-to-signup-btn {
+  background: none;
+  border: none;
+  color: #0066c0;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  margin-top: 15px;
+  padding: 5px 10px;
+}
+
+.back-to-signup-btn:hover {
+  color: #c45500;
+  text-decoration: underline;
+}
+
+/* LOADING SPINNER */
+.loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top-color: #232f3e;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .signup-box {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .divider {
+    width: 90%;
+  }
+}

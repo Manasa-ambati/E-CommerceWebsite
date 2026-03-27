@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import { validateSignupForm, validateOtp, getPasswordStrength } from '../utils/validation';
-import './SignupProfessional.css';
+import './SignupAmazon.css';
 
 interface SignupData {
   firstName: string;
@@ -220,289 +220,216 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="signup-page-container">
-      <div className="signup-card">
-        {/* LEFT SIDE - BRANDING */}
-        <div className="signup-branding">
-          <div className="branding-content">
-            <div className="brand-logo">ShopEase</div>
-            <p className="brand-tagline">Discover the future of online shopping with exclusive deals and premium products.</p>
+    <div className="amazon-signup-container">
+      <div className="amazon-logo">Shop<span>Ease</span></div>
+      
+      <div className="signup-box">
+        {step === 'signup' ? (
+          <>
+            <h2>Create Account</h2>
             
-            <div className="brand-features">
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                </div>
-                <div className="feature-text">
-                  <h4>Secure Shopping</h4>
-                  <p>100% secure checkout</p>
-                </div>
-              </div>
-              
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                  </svg>
-                </div>
-                <div className="feature-text">
-                  <h4>Fast Delivery</h4>
-                  <p>Express shipping available</p>
-                </div>
-              </div>
-              
-              <div className="feature-item">
-                <div className="feature-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                  </svg>
-                </div>
-                <div className="feature-text">
-                  <h4>24/7 Support</h4>
-                  <p>Always here to help</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="branding-image">
-            <img src="https://cdn3d.iconscout.com/3d/premium/thumb/shopping-bag-4438064-3723931.png" alt="Shopping" />
-          </div>
-        </div>
-
-        {/* RIGHT SIDE - FORM */}
-        <div className="signup-form-container">
-          {step === 'signup' ? (
-            <>
-              <div className="signup-header">
-                <h1 className="signup-title">Create Your Account</h1>
-                <p className="signup-subtitle">Join thousands of happy customers today</p>
-              </div>
-              
-              <form onSubmit={handleSignup}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">
-                      First Name <span className="required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      placeholder="John"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      onBlur={() => handleBlur('firstName')}
-                      className={`form-input ${touched.firstName && validationErrors.firstName ? 'error' : ''}`}
-                      required
-                    />
-                    {touched.firstName && validationErrors.firstName && (
-                      <span className="field-error">{validationErrors.firstName}</span>
-                    )}
-                  </div>
-                  
-                  <div className="form-group">
-                    <label className="form-label">
-                      Last Name <span className="required">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      placeholder="Doe"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      onBlur={() => handleBlur('lastName')}
-                      className={`form-input ${touched.lastName && validationErrors.lastName ? 'error' : ''}`}
-                      required
-                    />
-                    {touched.lastName && validationErrors.lastName && (
-                      <span className="field-error">{validationErrors.lastName}</span>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">
-                    Email Address <span className="required">*</span>
-                  </label>
+            <form onSubmit={handleSignup}>
+              <div className="form-group">
+                <label className="form-label">
+                  Your name <span className="required">*</span>
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <input
-                    type="email"
-                    name="email"
-                    placeholder="john.doe@example.com"
-                    value={formData.email}
+                    type="text"
+                    name="firstName"
+                    placeholder="First name"
+                    value={formData.firstName}
                     onChange={handleInputChange}
-                    onBlur={() => handleBlur('email')}
-                    className={`form-input ${touched.email && validationErrors.email ? 'error' : ''}`}
+                    onBlur={() => handleBlur('firstName')}
+                    className={`form-input ${touched.firstName && validationErrors.firstName ? 'error' : ''}`}
                     required
                   />
-                  {touched.email && validationErrors.email && (
-                    <span className="field-error">{validationErrors.email}</span>
-                  )}
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">
-                    Password <span className="required">*</span>
-                  </label>
-                  <div className="password-wrapper">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="password"
-                      placeholder="Create a strong password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      onBlur={() => handleBlur('password')}
-                      minLength={8}
-                      className={`form-input ${touched.password && validationErrors.password ? 'error' : ''}`}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle-btn"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                          <line x1="1" y1="1" x2="23" y2="23"></line>
-                        </svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                          <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                  
-                  {/* Password Strength Indicator */}
-                  {formData.password && (
-                    <div className="password-strength-meter">
-                      <div className="strength-bar-bg">
-                        <div 
-                          className={`strength-bar-fill strength-${passwordStrength <= 1 ? 'very-weak' : passwordStrength <= 2 ? 'weak' : passwordStrength <= 3 ? 'fair' : passwordStrength <= 4 ? 'good' : 'strong'}`}
-                          style={{ width: `${(passwordStrength / 5) * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className={`strength-text strength-${passwordStrength <= 1 ? 'very-weak' : passwordStrength <= 2 ? 'weak' : passwordStrength <= 3 ? 'fair' : passwordStrength <= 4 ? 'good' : 'strong'}-text`}>
-                        {passwordStrength <= 1 ? 'Very Weak' : passwordStrength <= 2 ? 'Weak' : passwordStrength <= 3 ? 'Fair' : passwordStrength <= 4 ? 'Good' : 'Strong'}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {touched.password && validationErrors.password && (
-                    <span className="field-error">{validationErrors.password}</span>
-                  )}
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">
-                    Phone Number <span className="required">*</span>
-                  </label>
                   <input
-                    type="tel"
-                    name="phone"
-                    placeholder="+1 (555) 123-4567"
-                    value={formData.phone}
+                    type="text"
+                    name="lastName"
+                    placeholder="Last name"
+                    value={formData.lastName}
                     onChange={handleInputChange}
-                    onBlur={() => handleBlur('phone')}
-                    className={`form-input ${touched.phone && validationErrors.phone ? 'error' : ''}`}
-                    title="Please enter a valid phone number"
+                    onBlur={() => handleBlur('lastName')}
+                    className={`form-input ${touched.lastName && validationErrors.lastName ? 'error' : ''}`}
                     required
                   />
-                  {touched.phone && validationErrors.phone && (
-                    <span className="field-error">{validationErrors.phone}</span>
-                  )}
                 </div>
-                
-                <button 
-                  type="submit" 
-                  disabled={loading || Object.keys(validationErrors).length > 0}
-                  className="submit-btn"
-                >
-                  {loading ? (
-                    <>
-                      <span className="loading-spinner"></span>
-                      Creating Account...
-                    </>
-                  ) : (
-                    'Sign Up'
-                  )}
-                </button>
-                
-                <p className="terms-text">
-                  By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-                </p>
-              </form>
-              
-              <div className="login-link">
-                Already have an account? <Link to="/login">Login here</Link>
-              </div>
-            </>
-          ) : (
-            <div className="otp-section">
-              <div className="otp-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
+                {(touched.firstName && validationErrors.firstName) || (touched.lastName && validationErrors.lastName) ? (
+                  <span className="field-error">
+                    {validationErrors.firstName || validationErrors.lastName}
+                  </span>
+                ) : null}
               </div>
               
-              <h2 className="otp-title">Verify Your Email</h2>
-              <p className="otp-description">We've sent a 6-digit verification code to:</p>
-              
-              <span className="email-highlight">{formData.email}</span>
-              
-              <form onSubmit={handleOtpVerification}>
+              <div className="form-group">
+                <label className="form-label">
+                  Mobile number or email <span className="required">*</span>
+                </label>
                 <input
-                  type="text"
-                  placeholder="000000"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  maxLength={6}
-                  className="form-input otp-input-field"
+                  type="email"
+                  name="email"
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('email')}
+                  className={`form-input ${touched.email && validationErrors.email ? 'error' : ''}`}
                   required
                 />
+                {touched.email && validationErrors.email && (
+                  <span className="field-error">{validationErrors.email}</span>
+                )}
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">
+                  Password <span className="required">*</span>
+                </label>
+                <div className="password-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    placeholder="At least 8 characters"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    onBlur={() => handleBlur('password')}
+                    minLength={8}
+                    className={`form-input ${touched.password && validationErrors.password ? 'error' : ''}`}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? '👁️' : '👁️'}
+                  </button>
+                </div>
+                <div className="helper-text">Passwords must be at least 8 characters.</div>
                 
-                <button 
-                  type="submit" 
-                  disabled={loading || otp.length !== 6}
-                  className="submit-btn"
-                >
-                  {loading ? (
-                    <>
-                      <span className="loading-spinner"></span>
-                      Verifying...
-                    </>
-                  ) : (
-                    'Verify & Create Account'
-                  )}
-                </button>
+                {/* Password Strength */}
+                {formData.password && (
+                  <div className="password-strength-meter">
+                    <div className="strength-bar-bg">
+                      <div 
+                        className={`strength-bar-fill strength-${passwordStrength <= 1 ? 'very-weak' : passwordStrength <= 2 ? 'weak' : passwordStrength <= 3 ? 'fair' : passwordStrength <= 4 ? 'good' : 'strong'}`}
+                        style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="strength-text">
+                      {passwordStrength <= 1 ? 'Very Weak' : passwordStrength <= 2 ? 'Weak' : passwordStrength <= 3 ? 'Fair' : passwordStrength <= 4 ? 'Good' : 'Strong'}
+                    </span>
+                  </div>
+                )}
                 
-                <button 
-                  type="button" 
-                  onClick={handleResendOtp}
-                  disabled={resendDisabled || loading}
-                  className="resend-otp-btn"
-                >
-                  {resendDisabled ? `Resend in ${countdown}s` : 'Resend OTP'}
-                </button>
-                
-                <button 
-                  type="button"
-                  onClick={() => setStep('signup')}
-                  className="back-to-signup-btn"
-                >
-                  ← Back to Signup
-                </button>
-              </form>
-            </div>
-          )}
-        </div>
+                {touched.password && validationErrors.password && (
+                  <span className="field-error">{validationErrors.password}</span>
+                )}
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">
+                  Phone number <span className="required">*</span>
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="+1 (555) 123-4567"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('phone')}
+                  className={`form-input ${touched.phone && validationErrors.phone ? 'error' : ''}`}
+                  required
+                />
+                {touched.phone && validationErrors.phone && (
+                  <span className="field-error">{validationErrors.phone}</span>
+                )}
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={loading || Object.keys(validationErrors).length > 0}
+                className="submit-btn"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Creating your account...
+                  </>
+                ) : (
+                  'Create your ShopEase account'
+                )}
+              </button>
+              
+              <p className="terms-text">
+                By creating an account, you agree to ShopEase's{' '}
+                <a href="#">Conditions of Use</a> and{' '}
+                <a href="#">Privacy Notice</a>.
+              </p>
+            </form>
+          </>
+        ) : (
+          <div className="otp-section">
+            <h3>Verify Your Email</h3>
+            <p className="otp-description">
+              We've sent a 6-digit verification code to:
+            </p>
+            
+            <span className="email-highlight">{formData.email}</span>
+            
+            <form onSubmit={handleOtpVerification}>
+              <input
+                type="text"
+                placeholder="000000"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength={6}
+                className="form-input otp-input-field"
+                required
+              />
+              
+              <button 
+                type="submit" 
+                disabled={loading || otp.length !== 6}
+                className="submit-btn"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify Email'
+                )}
+              </button>
+              
+              <button 
+                type="button" 
+                onClick={handleResendOtp}
+                disabled={resendDisabled || loading}
+                className="resend-otp-btn"
+              >
+                {resendDisabled ? `Resend code in ${countdown}s` : 'Resend code'}
+              </button>
+              
+              <button 
+                type="button"
+                onClick={() => setStep('signup')}
+                className="back-to-signup-btn"
+              >
+                ← Back to signup
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+      
+      <div className="divider"></div>
+      
+      <div className="login-link">
+        Already have an account? <Link to="/login">Sign in</Link>
       </div>
     </div>
   );
