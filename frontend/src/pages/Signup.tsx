@@ -101,21 +101,22 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setError('');
     
-    // Validate entire form before submission
-    const errors = validateSignupForm(formData);
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      setTouched({
-        firstName: true,
-        lastName: true,
-        email: true,
-        password: true,
-        phone: true
-      });
-      
-      // Show first error as toast
-      const firstError = Object.values(errors)[0];
-      toast.error(firstError);
+    // Quick validation - only check required fields
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.phone) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    
+    // Email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    
+    // Password length check
+    if (formData.password.length < 8) {
+      toast.error('Password must be at least 8 characters');
       return;
     }
     
@@ -138,14 +139,14 @@ const Signup: React.FC = () => {
 
       if (data.requiresOtp) {
         // OTP sent successfully
-        toast.success('Account created! Please check your email for verification code.');
+        toast.success('Signup successfully! Please check your email for verification code.');
         setStep('otp');
         setResendDisabled(true);
         setCountdown(30);
       } else {
         // Direct signup (fallback)
-        toast.success('Account created successfully! Redirecting to login...');
-        setTimeout(() => navigate('/login'), 2000);
+        toast.success('Signup successfully! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 1500);
       }
     } catch (err: any) {
       console.error('Signup error:', err);
