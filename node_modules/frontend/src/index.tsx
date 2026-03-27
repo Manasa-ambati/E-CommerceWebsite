@@ -19,16 +19,16 @@ if ('serviceWorker' in navigator) {
 // PERFORMANCE: Resource Timing API to monitor load times
 window.addEventListener('load', () => {
   setTimeout(() => {
-    const resources = performance.getEntriesByType('resource');
-    const cssResources = resources.filter(r => r.initiatorType === 'link' && r.name.includes('.css'));
-    const jsResources = resources.filter(r => r.initiatorType === 'script' && r.name.includes('.js'));
+    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+    const cssResources = resources.filter(r => r.name.includes('.css'));
+    const jsResources = resources.filter(r => r.name.includes('.js'));
     
     console.group('⚡ Performance Report');
     console.log('📊 Total Resources Loaded:', resources.length);
     console.log('💅 CSS Files:', cssResources.length, '- Avg:', 
-      (cssResources.reduce((sum, r) => sum + r.duration, 0) / cssResources.length).toFixed(2), 'ms');
+      (cssResources.reduce((sum, r) => sum + r.duration, 0) / (cssResources.length || 1)).toFixed(2), 'ms');
     console.log('🔧 JS Files:', jsResources.length, '- Avg:', 
-      (jsResources.reduce((sum, r) => sum + r.duration, 0) / jsResources.length).toFixed(2), 'ms');
+      (jsResources.reduce((sum, r) => sum + r.duration, 0) / (jsResources.length || 1)).toFixed(2), 'ms');
     console.log('⏱️ Page Load Time:', performance.timing.loadEventEnd - performance.timing.navigationStart, 'ms');
     console.groupEnd();
   }, 100);

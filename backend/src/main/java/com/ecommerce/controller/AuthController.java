@@ -35,9 +35,6 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
     
     @Autowired
     private EmailService emailService;
