@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { wishlistAPI, cartAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
 import './Wishlist.css';
 
 
@@ -18,6 +19,7 @@ export const Wishlist: React.FC = () => {
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const toast = useToast();
 
   useEffect(() => {
     fetchWishlist();
@@ -77,7 +79,7 @@ export const Wishlist: React.FC = () => {
         await wishlistAPI.remove(productId);
       } catch (err: any) {
         console.error(err);
-        alert(err.response?.data?.message || 'Failed to remove from wishlist.');
+        toast.addToast(err.response?.data?.message || 'Failed to remove from wishlist.', 'error');
         return;
       }
     }
@@ -101,10 +103,10 @@ export const Wishlist: React.FC = () => {
     try {
       await cartAPI.add(productId, 1);
       await removeFromWishlist(productId);
-      alert('Moved to cart!');
+      toast.addToast('Moved to cart!', 'success');
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || 'Failed to move to cart.');
+      toast.addToast(err.response?.data?.message || 'Failed to move to cart.', 'error');
     }
   };
 

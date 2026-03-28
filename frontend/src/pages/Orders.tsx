@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { orderAPI } from '../services/api';
 import { Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 import './Orders.css';
 
 interface Order {
@@ -17,6 +18,7 @@ export const Orders: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [cancellingId, setCancellingId] = useState<number | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     fetchOrders();
@@ -45,12 +47,12 @@ export const Orders: React.FC = () => {
     setCancellingId(orderId);
     try {
       await orderAPI.cancel(orderId);
-      alert('Order cancelled successfully!');
+      toast.addToast('Order cancelled successfully!', 'success');
       // Refresh orders list
       fetchOrders();
     } catch (err: any) {
       console.error('Failed to cancel order:', err);
-      alert(err.response?.data?.message || 'Failed to cancel order. Please try again.');
+      toast.addToast(err.response?.data?.message || 'Failed to cancel order. Please try again.', 'error');
     } finally {
       setCancellingId(null);
     }

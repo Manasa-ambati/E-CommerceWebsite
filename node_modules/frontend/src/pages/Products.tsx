@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { productAPI, categoryAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
 import './Products.css';
 
 interface Product {
@@ -27,6 +28,7 @@ const Products: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
+  const toast = useToast();
   
   const page = parseInt(searchParams.get('page') || '0');
   const search = searchParams.get('search') || '';
@@ -79,7 +81,7 @@ const Products: React.FC = () => {
       } catch (error: any) {
         console.error('Failed to fetch products:', error);
         console.error('Error details:', error.response?.data || error.message);
-        alert('Failed to load products. Please check your connection or try again later.');
+        toast.addToast('Failed to load products. Please check your connection or try again later.', 'error');
       } finally {
         setLoading(false);
       }
@@ -134,7 +136,7 @@ const Products: React.FC = () => {
                   const value = e.target.value;
                   // Validate: if max exists, min should be less than max
                   if (value && maxPrice && parseFloat(value) > parseFloat(maxPrice)) {
-                    alert('Minimum price cannot be greater than maximum price');
+                    toast.addToast('Minimum price cannot be greater than maximum price', 'warning');
                     return;
                   }
                   updateFilter('minPrice', value);
@@ -149,7 +151,7 @@ const Products: React.FC = () => {
                   const value = e.target.value;
                   // Validate: if min exists, max should be greater than min
                   if (value && minPrice && parseFloat(value) < parseFloat(minPrice)) {
-                    alert('Maximum price cannot be less than minimum price');
+                    toast.addToast('Maximum price cannot be less than minimum price', 'warning');
                     return;
                   }
                   updateFilter('maxPrice', value);

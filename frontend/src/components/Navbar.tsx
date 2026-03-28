@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { wishlistAPI, cartAPI } from "../services/api";
 import { useAuth } from "../context/authContext";
+import { useToast } from '../context/ToastContext';
 
 import "./Navbar.css";
 
@@ -10,6 +11,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
   const { user, logout } = useAuth(); // ✅ USE CONTEXT
+  const toast = useToast();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -146,9 +148,7 @@ const Navbar: React.FC = () => {
       const target = e.target as HTMLInputElement;
       const file = target.files?.[0];
       if (file) {
-        alert(
-          `Image uploaded: ${file.name}\nVisual search functionality would go here.`
-        );
+        toast.addToast(`Image uploaded: ${file.name}. Visual search coming soon!`, 'info');
       }
     };
     input.click();
@@ -160,9 +160,7 @@ const Navbar: React.FC = () => {
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert(
-        "Voice search is not supported in your browser. Please use Chrome or Edge."
-      );
+      toast.addToast('Voice search is not supported in your browser. Please use Chrome or Edge.', 'warning');
       return;
     }
 
@@ -171,7 +169,7 @@ const Navbar: React.FC = () => {
     recognition.continuous = false;
     recognition.interimResults = false;
 
-    recognition.onstart = () => alert("Listening... Please speak now");
+    recognition.onstart = () => toast.addToast('Listening... Please speak now', 'info');
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
@@ -180,7 +178,7 @@ const Navbar: React.FC = () => {
     };
 
     recognition.onerror = (event: any) =>
-      alert("Voice recognition error: " + event.error);
+      toast.addToast('Voice recognition error: ' + event.error, 'error');
 
     recognition.start();
   };
