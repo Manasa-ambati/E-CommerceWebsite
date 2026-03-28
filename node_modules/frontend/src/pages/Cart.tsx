@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { cartAPI, wishlistAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import '../pages/Cart.css'
 
 interface CartItem {
@@ -18,6 +19,7 @@ interface CartItem {
 export const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { fetchCart: refreshCartContext } = useCart(); // Use CartContext
+  const toast = useToast();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -45,13 +47,13 @@ export const Cart: React.FC = () => {
       // Remove from cart
       await removeFromCart(productId);
       
-      alert('Moved to wishlist successfully!');
+      toast.addToast('Moved to wishlist successfully!', 'success');
       
       // Dispatch event to update navbar wishlist count
       window.dispatchEvent(new CustomEvent('wishlistUpdated'));
     } catch (err: any) {
       console.error('Failed to move to wishlist:', err);
-      alert(err.response?.data?.message || 'Failed to move to wishlist.');
+      toast.addToast(err.response?.data?.message || 'Failed to move to wishlist.', 'error');
     }
   };
 
@@ -131,7 +133,7 @@ export const Cart: React.FC = () => {
         await cartAPI.update(productId, newQuantity);
       } catch (err: any) {
         console.error(err);
-        alert(err.response?.data?.message || 'Failed to update quantity.');
+        toast.addToast(err.response?.data?.message || 'Failed to update quantity.', 'error');
         return;
       }
     }
@@ -162,7 +164,7 @@ export const Cart: React.FC = () => {
         await cartAPI.remove(productId);
       } catch (err: any) {
         console.error(err);
-        alert(err.response?.data?.message || 'Failed to remove from cart.');
+        toast.addToast(err.response?.data?.message || 'Failed to remove from cart.', 'error');
         return;
       }
     }
@@ -243,7 +245,7 @@ export const Cart: React.FC = () => {
                 window.dispatchEvent(new CustomEvent('cartUpdated'));
               } catch (err: any) {
                 console.error(err);
-                alert(err.response?.data?.message || 'Failed to clear cart.');
+                toast.addToast(err.response?.data?.message || 'Failed to clear cart.', 'error');
               }
             }
           }}>

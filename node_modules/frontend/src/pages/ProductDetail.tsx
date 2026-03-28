@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI, wishlistAPI, reviewAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import './ProductDetail.css';
 
 interface Product {
@@ -31,6 +32,7 @@ const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const toast = useToast();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -102,7 +104,7 @@ const ProductDetail: React.FC = () => {
         }
       } catch (error: any) {
         console.error('Failed to fetch product:', error);
-        alert(error.response?.data?.message || 'Failed to load product. Please try again.');
+        toast.addToast(error.response?.data?.message || 'Failed to load product. Please try again.', 'error');
       } finally {
         setLoading(false);
       }
@@ -149,9 +151,9 @@ const ProductDetail: React.FC = () => {
     try {
       setAddingToCart(true);
       await addToCart(Number(id), quantity);
-      alert('Added to cart!');
+      toast.addToast('Added to cart!', 'success');
     } catch (error) {
-      alert('Failed to add to cart');
+      toast.addToast('Failed to add to cart', 'error');
     } finally {
       setAddingToCart(false);
     }
@@ -176,12 +178,12 @@ const ProductDetail: React.FC = () => {
           if (isInWishlist) {
             await wishlistAPI.remove(Number(id));
             console.log('Successfully removed from wishlist');
-            alert('Removed from wishlist');
+            toast.addToast('Removed from wishlist', 'success');
           } else {
             console.log('Adding to wishlist, product ID:', Number(id));
             const response = await wishlistAPI.add(Number(id));
             console.log('Wishlist add response:', response);
-            alert('Added to wishlist');
+            toast.addToast('Added to wishlist', 'success');
           }
         } catch (apiError: any) {
           console.error('Backend wishlist operation failed:', apiError);
@@ -196,7 +198,7 @@ const ProductDetail: React.FC = () => {
           setIsInWishlist(isInWishlist);
           
           const errorMsg = apiError.response?.data?.message || apiError.message || 'Backend error';
-          alert(`Failed: ${errorMsg}`);
+          toast.addToast(`Failed: ${errorMsg}`, 'error');
           throw apiError; // Re-throw to main catch
         }
       } else {
@@ -206,11 +208,11 @@ const ProductDetail: React.FC = () => {
         if (isInWishlist) {
           // Remove from wishlist
           wishlist = wishlist.filter((pid: number) => pid !== Number(id));
-          alert('Removed from wishlist');
+          toast.addToast('Removed from wishlist', 'success');
         } else {
           // Add to wishlist
           wishlist.push(Number(id));
-          alert('Added to wishlist');
+          toast.addToast('Added to wishlist', 'success');
         }
         
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
@@ -248,7 +250,7 @@ const ProductDetail: React.FC = () => {
     } else {
       // Fallback to clipboard
       navigator.clipboard.writeText(shareData.url);
-      alert('Link copied to clipboard!');
+      toast.addToast('Link copied to clipboard!', 'info');
     }
   };
 
@@ -256,14 +258,14 @@ const ProductDetail: React.FC = () => {
     e.preventDefault();
     
     if (!userRating || userRating === 0) {
-      alert('Please select a rating');
+      toast.addToast('Please select a rating', 'warning');
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('Please login to submit a review');
+        toast.addToast('Please login to submit a review', 'warning');
         navigate('/login');
         return;
       }
@@ -273,7 +275,7 @@ const ProductDetail: React.FC = () => {
         comment: reviewComment
       });
 
-      alert('Thank you for your review!');
+      toast.addToast('Thank you for your review!', 'success');
       setUserRating(0);
       setReviewComment('');
       setShowReviewForm(false);
@@ -287,7 +289,7 @@ const ProductDetail: React.FC = () => {
       setProduct(productRes.data.data);
       
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Failed to submit review');
+      toast.addToast(error.response?.data?.message || 'Failed to submit review', 'error');
     }
   };
 

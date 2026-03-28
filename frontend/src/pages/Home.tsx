@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import './Home.css';
 
 interface Product {
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const { addToCart } = useCart();
+  const toast = useToast();
 
   useEffect(() => {
     const savedWishlist = localStorage.getItem('wishlist');
@@ -41,14 +43,14 @@ const Home: React.FC = () => {
       try {
         if (wishlist.includes(productId)) {
           await wishlistAPI.remove(productId);
-          alert('Removed from wishlist');
+          toast.addToast('Removed from wishlist', 'success');
         } else {
           await wishlistAPI.add(productId);
-          alert('Added to wishlist');
+          toast.addToast('Added to wishlist', 'success');
         }
       } catch (error: any) {
         console.error('Failed to update wishlist:', error);
-        alert('Failed to update wishlist. Please try again.');
+        toast.addToast('Failed to update wishlist. Please try again.', 'error');
         // Revert UI on error
         setWishlist(prev => 
           prev.includes(productId) 
@@ -63,11 +65,11 @@ const Home: React.FC = () => {
       if (wishlistIds.includes(productId)) {
         // Remove from wishlist
         wishlistIds = wishlistIds.filter((id: number) => id !== productId);
-        alert('Removed from wishlist');
+        toast.addToast('Removed from wishlist', 'success');
       } else {
         // Add to wishlist
         wishlistIds.push(productId);
-        alert('Added to wishlist');
+        toast.addToast('Added to wishlist', 'success');
       }
       
       localStorage.setItem('wishlist', JSON.stringify(wishlistIds));
@@ -95,7 +97,7 @@ const Home: React.FC = () => {
       // Fallback to clipboard
       try {
         await navigator.clipboard.writeText(shareData.url);
-        alert('Link copied to clipboard!');
+        toast.addToast('Link copied to clipboard!', 'info');
       } catch (err) {
         console.error('Failed to copy:', err);
       }
@@ -147,7 +149,7 @@ const Home: React.FC = () => {
       } catch (error: any) {
         console.error('Failed to fetch home data:', error);
         console.error('Error details:', error.response?.data || error.message);
-        alert('Failed to load products. Please refresh the page.');
+        toast.addToast('Failed to load products. Please refresh the page.', 'error');
       } finally {
         setLoading(false);
       }
