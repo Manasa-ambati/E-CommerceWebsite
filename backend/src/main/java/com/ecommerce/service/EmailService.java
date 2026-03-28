@@ -3,6 +3,7 @@ package com.ecommerce.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -13,6 +14,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
+    @Async
     public void sendOtpEmail(String toEmail, String firstName, String otp) {
         System.out.println("\n📧 Sending OTP email to: " + firstName + " <" + toEmail + ">");
         
