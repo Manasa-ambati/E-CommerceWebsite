@@ -45,25 +45,21 @@
 /* Toast Types */
 .toast-success {
   background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0);
-  border-left: 4px solid #10b981;
   color: #065f46;
 }
 
 .toast-error {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca);
-  border-left: 4px solid #ef4444;
   color: #991b1b;
 }
 
 .toast-warning {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a);
-  border-left: 4px solid #f59e0b;
   color: #92400e;
 }
 
 .toast-info {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe);
-  border-left: 4px solid #3b82f6;
   color: #1e40af;
 }
 

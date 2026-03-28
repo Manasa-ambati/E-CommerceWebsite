@@ -33,7 +33,7 @@ public class SecurityConfig {
 
       http
           .csrf(csrf -> csrf.disable())
-         .cors(cors -> cors.configure(http))
+          // CORS is handled by CorsConfig bean
           // Disable form login to prevent Spring Boot's default login page
          .formLogin(form -> form.disable())
          .authorizeHttpRequests(auth -> auth

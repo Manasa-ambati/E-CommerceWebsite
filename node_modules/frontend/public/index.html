@@ -16,11 +16,8 @@
     <link rel="dns-prefetch" href="%PUBLIC_URL%">
     
     <!-- PERFORMANCE: Preload critical resources -->
-    <link rel="preload" as="style" href="/static/css/main.*.css" />
-    <link rel="preload" as="script" href="/static/js/main.*.js" />
-    
-    <!-- PERFORMANCE: Early hints for browser -->
-    <link rel="modulepreload" href="/static/js/main.*.js">
+    <link rel="preload" as="style" href="/static/css/main.*.css" crossorigin />
+    <link rel="preload" as="script" href="/static/js/main.*.js" crossorigin>
     
     <!--
       manifest.json provides metadata used when your web app is installed on a

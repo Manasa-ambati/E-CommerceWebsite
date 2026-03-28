@@ -20,6 +20,15 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  
+  // IMPORTANT: Skip API requests - let them go directly to network
+  if (url.pathname.startsWith('/api/')) {
+    console.log('🌐 API request (skipping cache):', event.request.url);
+    return; // Let browser handle API requests normally
+  }
+  
+  // Only cache static assets (CSS, JS, images)
   event.respondWith(
     caches.match(event.request)
       .then(response => {
