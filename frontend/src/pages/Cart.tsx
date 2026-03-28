@@ -194,6 +194,7 @@ export const Cart: React.FC = () => {
       // Remove from backend
       try {
         await cartAPI.remove(productId);
+        console.log('✅ Removed from backend cart');
       } catch (err: any) {
         console.error(err);
         toast.addToast(err.response?.data?.message || 'Failed to remove from cart.', 'error');
@@ -208,11 +209,27 @@ export const Cart: React.FC = () => {
       const updatedItems = (cartData.items || []).filter((item: any) => item.productId !== productId);
       cartData.items = updatedItems;
       cartData.totalItems = updatedItems.length;
+      // Recalculate total price
+      cartData.totalPrice = updatedItems.reduce((sum: number, item: any) => 
+        sum + (Number(item.productPrice || item.price) * item.quantity), 0
+      );
       localStorage.setItem('guest_cart', JSON.stringify(cartData));
+      console.log('✅ Updated guest_cart in localStorage');
     }
     
-    // Update UI
+    // Update UI immediately
     setCart((prev) => prev.filter((item) => item.productId !== productId));
+    
+    // Show success message
+    toast.addToast('Item removed from cart', 'success');
+    
+    // Refresh CartContext to update navbar count
+    await refreshCartContext();
+    
+    // Dispatch custom event for extra safety
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    
+    console.log('✅ Cart removal complete');
   };
 
   if (loading) {
@@ -300,7 +317,7 @@ export const Cart: React.FC = () => {
                     onClick={() => removeFromCart(item.productId)}
                     title="Remove item"
                   >
-                    Remove
+                    🗑️ Remove
                   </button>
                 </div>
               </div>
