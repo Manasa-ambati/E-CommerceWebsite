@@ -187,31 +187,44 @@ export const Cart: React.FC = () => {
   const removeFromCart = async (productId: number) => {
     const token = localStorage.getItem('token');
     
+    // Remove from backend if logged in
     if (token) {
-      // Remove from backend
       try {
         await cartAPI.remove(productId);
         console.log('✅ Removed from backend cart');
+        
+        // Also update localStorage to keep it in sync (for next page visit)
+        const localCart = localStorage.getItem('guest_cart');
+        if (localCart) {
+          const cartData = JSON.parse(localCart);
+          const updatedItems = (cartData.items || []).filter((item: any) => item.productId !== productId);
+          cartData.items = updatedItems;
+          cartData.totalItems = updatedItems.length;
+          cartData.totalPrice = updatedItems.reduce((sum: number, item: any) => 
+            sum + (Number(item.productPrice || item.price) * item.quantity), 0
+          );
+          localStorage.setItem('guest_cart', JSON.stringify(cartData));
+          console.log('✅ Also updated guest_cart in localStorage (sync)');
+        }
       } catch (err: any) {
         console.error(err);
         toast.addToast(err.response?.data?.message || 'Failed to remove from cart.', 'error');
         return;
       }
-    }
-    
-    // Always remove from localStorage (for guests and sync)
-    const localCart = localStorage.getItem('guest_cart');
-    if (localCart) {
-      const cartData = JSON.parse(localCart);
-      const updatedItems = (cartData.items || []).filter((item: any) => item.productId !== productId);
-      cartData.items = updatedItems;
-      cartData.totalItems = updatedItems.length;
-      // Recalculate total price
-      cartData.totalPrice = updatedItems.reduce((sum: number, item: any) => 
-        sum + (Number(item.productPrice || item.price) * item.quantity), 0
-      );
-      localStorage.setItem('guest_cart', JSON.stringify(cartData));
-      console.log('✅ Updated guest_cart in localStorage');
+    } else {
+      // Guest user - only use localStorage
+      const localCart = localStorage.getItem('guest_cart');
+      if (localCart) {
+        const cartData = JSON.parse(localCart);
+        const updatedItems = (cartData.items || []).filter((item: any) => item.productId !== productId);
+        cartData.items = updatedItems;
+        cartData.totalItems = updatedItems.length;
+        cartData.totalPrice = updatedItems.reduce((sum: number, item: any) => 
+          sum + (Number(item.productPrice || item.price) * item.quantity), 0
+        );
+        localStorage.setItem('guest_cart', JSON.stringify(cartData));
+        console.log('✅ Removed from guest_cart in localStorage');
+      }
     }
     
     // Update UI immediately
