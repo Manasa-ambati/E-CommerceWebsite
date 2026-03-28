@@ -15,7 +15,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://e-commercewebsite-production-40de.up.railway.app",
+        "https://web-production-bef07.up.railway.app"
+    },
+    allowCredentials = "true"
+)
 public class ProductController {
     
     @Autowired
