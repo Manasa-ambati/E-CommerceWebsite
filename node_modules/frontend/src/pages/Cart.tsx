@@ -24,7 +24,6 @@ export const Cart: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [showClearModal, setShowClearModal] = useState(false);
 
   useEffect(() => {
     fetchCart();
@@ -125,8 +124,6 @@ export const Cart: React.FC = () => {
   };
 
   const handleClearCart = async () => {
-    setShowClearModal(false);
-    
     try {
       const token = localStorage.getItem('token');
       
@@ -271,7 +268,7 @@ export const Cart: React.FC = () => {
         <h1>Shopping Cart</h1>
         
         <div className="cart-header-actions">
-          <button className="clear-cart-btn" onClick={() => setShowClearModal(true)}>
+          <button className="clear-cart-btn" onClick={handleClearCart}>
             Clear Cart
           </button>
         </div>
@@ -349,17 +346,7 @@ export const Cart: React.FC = () => {
         </div>
       </div>
       
-      {/* Confirmation Modal */}
-      <ConfirmModal
-        isOpen={showClearModal}
-        title="Clear Cart?"
-        message="Are you sure you want to remove all items from your cart? This action cannot be undone."
-        confirmText="Yes, Clear All"
-        cancelText="No, Keep Items"
-        type="warning"
-        onConfirm={handleClearCart}
-        onCancel={() => setShowClearModal(false)}
-      />
+
     </div>
   );
 };
