@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 // Lazy load all page components for better performance
-const Home = lazy(() => import('./pages/HomeModern'));
+const Home = lazy(() => import('./pages/Home'));
 const Products = lazy(() => import('./pages/Products'));
 const Categories = lazy(() => import('./pages/Categories'));
 const Wishlist = lazy(() => import('./pages/Wishlist').then(module => ({ default: module.Wishlist })));
