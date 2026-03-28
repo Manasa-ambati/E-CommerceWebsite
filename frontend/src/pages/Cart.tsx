@@ -4,6 +4,7 @@ import { cartAPI, wishlistAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import '../pages/Cart.css'
 
 interface CartItem {
@@ -23,6 +24,7 @@ export const Cart: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [showClearModal, setShowClearModal] = useState(false);
 
   useEffect(() => {
     fetchCart();
@@ -119,6 +121,36 @@ export const Cart: React.FC = () => {
       setCart([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleClearCart = async () => {
+    setShowClearModal(false);
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Clear from backend if authenticated
+      if (token) {
+        await cartAPI.clear();
+      }
+      
+      // Always clear from localStorage (for guests and sync)
+      localStorage.removeItem('guest_cart');
+      
+      // Update local state
+      setCart([]);
+      
+      // Refresh CartContext to update navbar
+      await refreshCartContext();
+      
+      // Dispatch custom event for extra safety
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      
+      toast.addToast('Cart cleared successfully!', 'success');
+    } catch (err: any) {
+      console.error(err);
+      toast.addToast(err.response?.data?.message || 'Failed to clear cart.', 'error');
     }
   };
 
@@ -222,33 +254,7 @@ export const Cart: React.FC = () => {
         <h1>Shopping Cart</h1>
         
         <div className="cart-header-actions">
-          <button className="clear-cart-btn" onClick={async () => {
-            if (window.confirm('Are you sure you want to clear your entire cart?')) {
-              try {
-                const token = localStorage.getItem('token');
-                
-                // Clear from backend if authenticated
-                if (token) {
-                  await cartAPI.clear();
-                }
-                
-                // Always clear from localStorage (for guests and sync)
-                localStorage.removeItem('guest_cart');
-                
-                // Update local state
-                setCart([]);
-                
-                // Refresh CartContext to update navbar
-                await refreshCartContext();
-                
-                // Dispatch custom event for extra safety
-                window.dispatchEvent(new CustomEvent('cartUpdated'));
-              } catch (err: any) {
-                console.error(err);
-                toast.addToast(err.response?.data?.message || 'Failed to clear cart.', 'error');
-              }
-            }
-          }}>
+          <button className="clear-cart-btn" onClick={() => setShowClearModal(true)}>
             Clear Cart
           </button>
         </div>
@@ -325,6 +331,18 @@ export const Cart: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showClearModal}
+        title="Clear Cart?"
+        message="Are you sure you want to remove all items from your cart? This action cannot be undone."
+        confirmText="Yes, Clear All"
+        cancelText="No, Keep Items"
+        type="warning"
+        onConfirm={handleClearCart}
+        onCancel={() => setShowClearModal(false)}
+      />
     </div>
   );
 };

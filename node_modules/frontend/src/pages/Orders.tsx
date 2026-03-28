@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { orderAPI } from '../services/api';
 import { Link } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
+import ConfirmModal from '../components/ConfirmModal';
 import './Orders.css';
 
 interface Order {
@@ -18,6 +19,8 @@ export const Orders: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [cancellingId, setCancellingId] = useState<number | null>(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState<{id: number, number: string} | null>(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -39,14 +42,19 @@ export const Orders: React.FC = () => {
     }
   };
 
-  const handleCancelOrder = async (orderId: number, orderNumber: string) => {
-    if (!window.confirm(`Are you sure you want to cancel order #${orderNumber}?`)) {
-      return;
-    }
+  const handleCancelOrder = (orderId: number, orderNumber: string) => {
+    setOrderToCancel({ id: orderId, number: orderNumber });
+    setShowCancelModal(true);
+  };
 
-    setCancellingId(orderId);
+  const confirmCancelOrder = async () => {
+    if (!orderToCancel) return;
+    
+    setCancellingId(orderToCancel.id);
+    setShowCancelModal(false);
+    
     try {
-      await orderAPI.cancel(orderId);
+      await orderAPI.cancel(orderToCancel.id);
       toast.addToast('Order cancelled successfully!', 'success');
       // Refresh orders list
       fetchOrders();
@@ -55,6 +63,7 @@ export const Orders: React.FC = () => {
       toast.addToast(err.response?.data?.message || 'Failed to cancel order. Please try again.', 'error');
     } finally {
       setCancellingId(null);
+      setOrderToCancel(null);
     }
   };
 
@@ -140,6 +149,21 @@ export const Orders: React.FC = () => {
           ))}
         </div>
       </div>
+      
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showCancelModal}
+        title="Cancel Order?"
+        message={`Are you sure you want to cancel order #${orderToCancel?.number}? This action cannot be undone.`}
+        confirmText="Yes, Cancel"
+        cancelText="No, Keep"
+        type="danger"
+        onConfirm={confirmCancelOrder}
+        onCancel={() => {
+          setShowCancelModal(false);
+          setOrderToCancel(null);
+        }}
+      />
     </div>
   );
 };
