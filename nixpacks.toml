@@ -9,7 +9,9 @@ cmds = [
 
 [phases.build]
 cmds = [
+  "echo 'Building backend...",
   "cd backend && mvn clean package -DskipTests",
+  "echo 'Building frontend...",
   "cd frontend && CI=false npm run build"
 ]
 
