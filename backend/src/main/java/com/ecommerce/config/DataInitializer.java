@@ -48,6 +48,19 @@ public class DataInitializer implements CommandLineRunner {
             admin.setEmailVerified(true);
             userRepository.save(admin);
         }
+        
+        // Create test customer user
+        if (!userRepository.existsByEmail("customer@test.com")) {
+            User customer = new User();
+            customer.setFirstName("Test");
+            customer.setLastName("Customer");
+            customer.setEmail("customer@test.com");
+            customer.setPassword(passwordEncoder != null ? passwordEncoder.encode("password123") : "password123");
+            customer.setPhone("+1234567899");
+            customer.setRole(User.Role.CUSTOMER);
+            customer.setEmailVerified(true);
+            userRepository.save(customer);
+        }
 
         // Create categories if they don't exist
         if (categoryRepository.count() == 0) {
