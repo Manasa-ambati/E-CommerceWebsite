@@ -102,8 +102,42 @@ const App = () => (
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          style={{ marginTop: '80px' }} // Position below navbar
+          style={{ 
+            marginTop: '80px', // Position below navbar
+            zIndex: 9999 // Ensure toasts appear on top of everything
+          }}
         />
+        {/* Inline styles to force toast visibility in production */}
+        <style>{`
+          .Toastify__toast-container {
+            z-index: 9999 !important;
+          }
+          
+          .Toastify__toast {
+            min-width: 300px;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+          
+          .Toastify__close-button {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 0.7 !important;
+            color: inherit !important;
+          }
+          
+          .Toastify__close-button:hover {
+            opacity: 1 !important;
+          }
+          
+          /* Ensure toast icons are visible */
+          .Toastify__toast-icon {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+        `}</style>
       </Router>
     </CartProvider>
   </ToastProvider>
