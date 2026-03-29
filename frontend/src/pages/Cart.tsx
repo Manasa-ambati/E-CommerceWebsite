@@ -63,22 +63,28 @@ export const Cart: React.FC = () => {
     setError('');
     
     const token = localStorage.getItem('token');
+    console.log('🔍 Fetching cart... User logged in:', !!token);
     
     // If user is logged in, fetch from backend
     if (token) {
       try {
         const response = await cartAPI.get();
-        console.log('Cart API response:', response.data);
+        console.log('✅ Backend cart response:', response.data);
         
         // Backend returns: { success: true, data: { items: [...] } } or { success: true, data: [...] }
         let cartItems = [];
         if (Array.isArray(response.data.data)) {
           cartItems = response.data.data;
+          console.log('📦 Cart items from backend (array):', cartItems.length, 'items');
         } else if (response.data.data && Array.isArray(response.data.data.items)) {
           cartItems = response.data.data.items;
+          console.log('📦 Cart items from backend (nested):', cartItems.length, 'items');
         } else if (response.data.data && typeof response.data.data === 'object') {
           // Single item or empty object
           cartItems = [response.data.data];
+          console.log('📦 Cart items from backend (single object):', cartItems.length, 'items');
+        } else {
+          console.log('⚠️ Unexpected backend response structure');
         }
         
         // Map backend fields to frontend interface
@@ -88,10 +94,12 @@ export const Cart: React.FC = () => {
         }));
         
         setCart(Array.isArray(mappedCartItems) ? mappedCartItems : []);
+        console.log('✅ Cart loaded from backend - Total items:', mappedCartItems.length);
         setLoading(false);
         return;
       } catch (err: any) {
-        console.error('Backend cart error:', err);
+        console.error('❌ Backend cart error:', err);
+        console.log('⚠️ Falling back to localStorage');
         // Fall back to localStorage if backend fails
       }
     }
@@ -99,6 +107,8 @@ export const Cart: React.FC = () => {
     // For guest users or if backend fails, use localStorage
     try {
       const localCart = localStorage.getItem('guest_cart');
+      console.log('📋 LocalStorage guest_cart:', localCart ? JSON.parse(localCart) : 'NOT FOUND');
+      
       if (localCart) {
         const cartData = JSON.parse(localCart);
         // guest_cart structure: { id: number, items: [...], totalPrice: number, totalItems: number }
@@ -109,14 +119,17 @@ export const Cart: React.FC = () => {
             price: item.productPrice || item.productDiscountPrice || item.price || 0
           }));
           setCart(mappedCartItems);
+          console.log('✅ Cart loaded from localStorage - Total items:', mappedCartItems.length);
         } else {
+          console.log('⚠️ Invalid localStorage structure');
           setCart([]);
         }
       } else {
+        console.log('ℹ️ No localStorage data found');
         setCart([]);
       }
     } catch (error) {
-      console.error('Failed to load cart from localStorage:', error);
+      console.error('❌ Failed to load cart from localStorage:', error);
       setCart([]);
     } finally {
       setLoading(false);
@@ -193,7 +206,8 @@ export const Cart: React.FC = () => {
         await cartAPI.remove(productId);
         console.log('✅ Removed from backend cart');
         
-        // Also update localStorage to keep it in sync (for next page visit)
+        // CRITICAL: Always clear localStorage for logged-in users too
+        // This prevents stale data from appearing on next visit
         const localCart = localStorage.getItem('guest_cart');
         if (localCart) {
           const cartData = JSON.parse(localCart);
@@ -204,10 +218,12 @@ export const Cart: React.FC = () => {
             sum + (Number(item.productPrice || item.price) * item.quantity), 0
           );
           localStorage.setItem('guest_cart', JSON.stringify(cartData));
-          console.log('✅ Also updated guest_cart in localStorage (sync)');
+          console.log('✅ Updated guest_cart in localStorage (sync for logged-in user)');
+        } else {
+          console.log('ℹ️ No guest_cart found for logged-in user');
         }
       } catch (err: any) {
-        console.error(err);
+        console.error('❌ Backend removal failed:', err);
         toast.addToast(err.response?.data?.message || 'Failed to remove from cart.', 'error');
         return;
       }
@@ -239,7 +255,7 @@ export const Cart: React.FC = () => {
     // Dispatch custom event for extra safety
     window.dispatchEvent(new CustomEvent('cartUpdated'));
     
-    console.log('✅ Cart removal complete');
+    console.log('✅ Cart removal complete - item should stay gone!');
   };
 
   if (loading) {
