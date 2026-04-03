@@ -1,6 +1,3 @@
-[providers]
-  type = "nixpacks"
-
 [phases.setup]
 nixPkgs = ["jdk17", "maven", "nodejs_20"]
 
