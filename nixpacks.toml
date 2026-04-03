@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["jdk_17" "maven" "nodejs_20"]
+nixPkgs = ["jdk_17", "maven", "nodejs_20"]
 
 [phases.install]
 cmds = [
@@ -9,9 +9,9 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "echo 'Building backend...",
+  "echo 'Building backend...'",
   "cd backend && mvn clean package -DskipTests",
-  "echo 'Building frontend...",
+  "echo 'Building frontend...'",
   "cd frontend && CI=false npm run build"
 ]
 
