@@ -1,16 +1,23 @@
+[providers]
+  type = "nixpacks"
+
 [phases.setup]
-nixPkgs = ["jdk_17", "maven", "nodejs_20"]
+nixPkgs = ["jdk17", "maven", "nodejs_20"]
+
+# Set PATH explicitly
+env.PATH = "$PATH:/nix/store/nodejs-20/bin"
 
 [phases.install]
 cmds = [
-  "cd backend && mvn dependency:go-offline",
-  "cd frontend && npm ci"
+  "echo 'Installing dependencies...'",
+  "cd backend && mvn dependency:go-offline -q",
+  "cd frontend && npm install --legacy-peer-deps"
 ]
 
 [phases.build]
 cmds = [
   "echo 'Building backend...'",
-  "cd backend && mvn clean package -DskipTests",
+  "cd backend && mvn clean package -DskipTests -q",
   "echo 'Building frontend...'",
   "cd frontend && CI=false npm run build"
 ]
