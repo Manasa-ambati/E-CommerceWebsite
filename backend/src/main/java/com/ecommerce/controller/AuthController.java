@@ -174,6 +174,7 @@ public class AuthController {
                 userData.put("firstName", user.getFirstName());
                 userData.put("lastName", user.getLastName());
                 userData.put("role", user.getRole().name());
+                userData.put("emailVerified", user.isEmailVerified()); // Include email verification status
                 
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", true);

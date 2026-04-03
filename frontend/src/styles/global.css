@@ -5,33 +5,39 @@
 
 :root {
   /* ========================================
-     COLOR PALETTE
+     COLOR PALETTE - Flipkart/Amazon/Meesho Inspired
      ======================================== */
   
-  /* Primary Brand Colors */
-  --primary-orange: #f97316;
-  --primary-orange-light: #fb923c;
-  --primary-orange-dark: #ea580c;
+  /* Primary Brand Colors - Flipkart Blue */
+  --primary-blue: #2874f0;
+  --primary-blue-light: #4f9bff;
+  --primary-blue-dark: #1e5fc2;
   
-  --primary-pink: #ec4899;
-  --primary-pink-light: #f472b6;
-  --primary-pink-dark: #db2777;
+  /* Secondary - Amazon Orange */
+  --primary-orange: #FF9900;
+  --primary-orange-light: #ffb14d;
+  --primary-orange-dark: #e68a00;
+  
+  /* Accent - Meesho Pink */
+  --primary-pink: #F43397;
+  --primary-pink-light: #f76cb3;
+  --primary-pink-dark: #dc2e87;
   
   --secondary-blue: #3b82f6;
   --secondary-blue-light: #60a5fa;
   --secondary-blue-dark: #2563eb;
   
-  --success-green: #10b981;
-  --success-green-light: #34d399;
-  --success-green-dark: #059669;
+  --success-green: #388E3C;
+  --success-green-light: #66bb6a;
+  --success-green-dark: #2e7d32;
   
-  --error-red: #ef4444;
-  --error-red-light: #f87171;
-  --error-red-dark: #dc2626;
+  --error-red: #D32F2F;
+  --error-red-light: #ef5350;
+  --error-red-dark: #c62828;
   
-  --warning-yellow: #f59e0b;
-  --warning-yellow-light: #fbbf24;
-  --warning-yellow-dark: #d97706;
+  --warning-yellow: #FFA726;
+  --warning-yellow-light: #FFB74D;
+  --warning-yellow-dark: #FB8C00;
   
   /* Neutral Grays */
   --gray-50: #f9fafb;
@@ -76,9 +82,9 @@
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   
   /* Colored shadows */
-  --shadow-orange: 0 4px 12px rgba(249, 115, 22, 0.3);
-  --shadow-pink: 0 4px 12px rgba(236, 72, 153, 0.3);
-  --shadow-blue: 0 4px 12px rgba(59, 130, 246, 0.3);
+  --shadow-blue: 0 4px 12px rgba(40, 116, 240, 0.3);
+  --shadow-orange: 0 4px 12px rgba(255, 153, 0, 0.3);
+  --shadow-pink: 0 4px 12px rgba(244, 51, 151, 0.3);
   
   /* ========================================
      TYPOGRAPHY
@@ -157,7 +163,7 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--gray-700);
-  background-color: var(--gray-50);
+  background-color: #f1f3f6; /* Flipkart-style light gray background */
   min-height: 100vh;
 }
 
@@ -233,14 +239,14 @@ a:hover {
 
 /* Button Variants */
 .btn-primary {
-  background-color: var(--primary-orange);
+  background-color: var(--primary-blue);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--primary-orange-dark);
+  background-color: var(--primary-blue-dark);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-orange);
+  box-shadow: var(--shadow-blue);
 }
 
 .btn-secondary {
@@ -250,8 +256,8 @@ a:hover {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--primary-orange);
-  color: var(--primary-orange);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
   background-color: var(--gray-50);
 }
 
@@ -277,12 +283,12 @@ a:hover {
 
 .btn-outline {
   background-color: transparent;
-  color: var(--primary-orange);
-  border: 2px solid var(--primary-orange);
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: var(--primary-orange);
+  background-color: var(--primary-blue);
   color: white;
 }
 
@@ -324,8 +330,8 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--primary-orange);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(40, 116, 240, 0.1);
 }
 
 input:disabled,
@@ -448,7 +454,7 @@ label.required::after {
   width: 40px;
   height: 40px;
   border: 4px solid var(--gray-200);
-  border-top-color: var(--primary-orange);
+  border-top-color: var(--primary-blue);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -488,7 +494,7 @@ label.required::after {
 }
 
 .badge-primary {
-  background-color: var(--primary-orange);
+  background-color: var(--primary-blue);
   color: white;
 }
 
@@ -537,7 +543,7 @@ label.required::after {
 
 /* Focus visible for keyboard navigation */
 *:focus-visible {
-  outline: 2px solid var(--primary-orange);
+  outline: 2px solid var(--primary-blue);
   outline-offset: 2px;
 }
 
@@ -546,7 +552,7 @@ label.required::after {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--primary-orange);
+  background: var(--primary-blue);
   color: white;
   padding: var(--spacing-sm) var(--spacing-md);
   z-index: var(--z-tooltip);

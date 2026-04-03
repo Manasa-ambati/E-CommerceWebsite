@@ -11,12 +11,13 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
   const { user, logout } = useAuth(); // ✅ USE CONTEXT
-  const toast = useToast();
+  const { addToast } = useToast(); // Destructure addToast directly
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [isDevelopmentMode, setIsDevelopmentMode] = useState(false);
   
   // fallback for refresh
   const storedUser = localStorage.getItem("user");
@@ -41,6 +42,11 @@ const Navbar: React.FC = () => {
     document.removeEventListener("mousedown", handleClickOutside);
   };
 }, []);  // Removed showProfileDropdown from dependencies - it's not needed
+
+// Check if running in development mode
+useEffect(() => {
+  setIsDevelopmentMode(window.location.hostname === 'localhost' || window.location.port !== '');
+}, []);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -148,7 +154,7 @@ const Navbar: React.FC = () => {
       const target = e.target as HTMLInputElement;
       const file = target.files?.[0];
       if (file) {
-        toast.addToast(`Image uploaded: ${file.name}. Visual search coming soon!`, 'info');
+        addToast(`Image uploaded: ${file.name}. Visual search coming soon!`, 'info');
       }
     };
     input.click();
@@ -160,7 +166,7 @@ const Navbar: React.FC = () => {
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      toast.addToast('Voice search is not supported in your browser. Please use Chrome or Edge.', 'warning');
+      addToast('Voice search is not supported in your browser. Please use Chrome or Edge.', 'warning');
       return;
     }
 
@@ -169,7 +175,7 @@ const Navbar: React.FC = () => {
     recognition.continuous = false;
     recognition.interimResults = false;
 
-    recognition.onstart = () => toast.addToast('Listening... Please speak now', 'info');
+    recognition.onstart = () => addToast('Listening... Please speak now', 'info');
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
@@ -178,7 +184,7 @@ const Navbar: React.FC = () => {
     };
 
     recognition.onerror = (event: any) =>
-      toast.addToast('Voice recognition error: ' + event.error, 'error');
+      addToast('Voice recognition error: ' + event.error, 'error');
 
     recognition.start();
   };
@@ -424,6 +430,7 @@ const Navbar: React.FC = () => {
                   {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
                 </Link>
                 <Link to="/orders" className="nav-link">Orders</Link>
+                
                 <div className="profile-dropdown-container">
                   <button 
                     className="nav-link nav-link-icon profile-trigger"

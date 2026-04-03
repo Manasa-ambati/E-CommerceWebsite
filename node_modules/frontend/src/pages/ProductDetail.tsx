@@ -54,12 +54,23 @@ const ProductDetail: React.FC = () => {
     const fetchProduct = async () => {
       try {
         console.log('Fetching product with ID:', id);
+        
+        // Validate ID
+        if (!id || isNaN(Number(id))) {
+          throw new Error('Invalid product ID: ' + id);
+        }
+        
         const response = await productAPI.getById(Number(id));
-        console.log('Product API response:', response.data);
+        console.log('Product API response:', response);
+        console.log('Response data:', response.data);
         
         // Handle different response structures
-        let productData = response.data.data || response.data;
-        console.log('Product data:', productData);
+        let productData = response.data?.data || response.data;
+        console.log('Extracted product data:', productData);
+        
+        if (!productData) {
+          throw new Error('No product data received');
+        }
         
         setProduct(productData);
         
@@ -68,7 +79,7 @@ const ProductDetail: React.FC = () => {
         if (token) {
           try {
             const wishlistRes = await wishlistAPI.check(Number(id));
-            setIsInWishlist(wishlistRes.data.data);
+            setIsInWishlist(wishlistRes.data?.data || false);
           } catch (err) {
             console.log('Wishlist check failed:', err);
           }
@@ -76,7 +87,7 @@ const ProductDetail: React.FC = () => {
           // Fetch reviews
           try {
             const reviewsRes = await reviewAPI.getByProduct(Number(id));
-            const reviewsData = reviewsRes.data.data || [];
+            const reviewsData = reviewsRes.data?.data || [];
             setReviews(reviewsData);
             
             // Calculate average rating and distribution
@@ -97,14 +108,21 @@ const ProductDetail: React.FC = () => {
           // Check if user has already reviewed
           try {
             const checkRes = await reviewAPI.check(Number(id));
-            setHasUserReviewed(checkRes.data.data);
+            setHasUserReviewed(checkRes.data?.data || false);
           } catch (err) {
             console.log('Review check failed:', err);
           }
         }
       } catch (error: any) {
         console.error('Failed to fetch product:', error);
-        toast.addToast(error.response?.data?.message || 'Failed to load product. Please try again.', 'error');
+        console.error('Error details:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          config: error.config
+        });
+        const errorMsg = error.response?.data?.message || error.message || 'Failed to load product. Please try again.';
+        toast.addToast(errorMsg, 'error');
       } finally {
         setLoading(false);
       }

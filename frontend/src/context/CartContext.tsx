@@ -180,16 +180,59 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const removeFromCart = async (productId: number) => {
+    const token = localStorage.getItem('token');
+    
+    // If authenticated, use backend ONLY
+    if (token) {
+      try {
+        setLoading(true);
+        const response = await cartAPI.remove(productId);
+        console.log('✅ Backend removal successful:', response.data);
+        
+        // Update CartContext state with backend response
+        setCart(response.data.data);
+        
+        // Clear localStorage guest_cart completely for logged-in users
+        // This prevents stale data from appearing on refresh
+        localStorage.removeItem('guest_cart');
+        console.log('🗑️ Cleared guest_cart for logged-in user');
+        
+        // Dispatch custom event to update navbar
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
+        setLoading(false);
+        return; // ✅ CRITICAL: Return here, don't fall through
+      } catch (error: any) {
+        console.error('Backend remove failed:', error);
+        console.log('Falling back to localStorage removal');
+        // Fall through to localStorage removal below
+      }
+    }
+    
+    // Fallback to localStorage for guest users or if backend fails
     try {
       setLoading(true);
-      const response = await cartAPI.remove(productId);
-      setCart(response.data.data);
+      const localCart = localStorage.getItem('guest_cart');
+      if (localCart) {
+        const cartData = JSON.parse(localCart);
+        const updatedItems = (cartData.items || []).filter((item: any) => item.productId !== productId);
+        cartData.items = updatedItems;
+        cartData.totalItems = updatedItems.length;
+        cartData.totalPrice = updatedItems.reduce((sum: number, item: any) => 
+          sum + (Number(item.productPrice || item.price) * item.quantity), 0
+        );
+        localStorage.setItem('guest_cart', JSON.stringify(cartData));
+        setCart(cartData);
+        console.log('✅ Removed from localStorage cart');
+      } else {
+        console.log('⚠️ No localStorage cart found');
+      }
       
       // Dispatch custom event to update navbar
       window.dispatchEvent(new CustomEvent('cartUpdated'));
+      setLoading(false);
     } catch (error) {
-      console.error('Failed to remove from cart:', error);
-      throw error;
+      console.error('Failed to remove from localStorage cart:', error);
+      throw new Error('Failed to remove from cart');
     } finally {
       setLoading(false);
     }

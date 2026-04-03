@@ -11,13 +11,14 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     
+    <!-- PREVENT CACHING IN DEVELOPMENT -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <!-- PERFORMANCE: Preconnect to API server -->
     <link rel="preconnect" href="%PUBLIC_URL%">
     <link rel="dns-prefetch" href="%PUBLIC_URL%">
-    
-    <!-- PERFORMANCE: Preload critical resources -->
-    <link rel="preload" as="style" href="/static/css/main.*.css" crossorigin />
-    <link rel="preload" as="script" href="/static/js/main.*.js" crossorigin>
     
     <!--
       manifest.json provides metadata used when your web app is installed on a

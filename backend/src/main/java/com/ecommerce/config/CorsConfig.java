@@ -19,7 +19,8 @@ public class CorsConfig {
                         .allowedOrigins(
                                 "https://e-commercewebsite-production-40de.up.railway.app",
                                 "https://web-production-bef07.up.railway.app",
-                                "http://localhost:3000"
+                                "http://localhost:3000",
+                                "http://localhost:3001"
                         )
                         // HTTP methods you want to allow
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")

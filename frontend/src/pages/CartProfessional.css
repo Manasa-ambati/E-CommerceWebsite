@@ -5,13 +5,13 @@
 
 .cart-page {
   min-height: calc(100vh - 70px);
-  background-color: var(--gray-50);
+  background-color: #f1f3f6; /* Flipkart-style background */
   padding-top: 80px;
 }
 
 /* Page Header */
 .cart-header {
-  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-orange-dark) 100%);
+  background: linear-gradient(135deg, #2874f0 0%, #1e5fc2 100%); /* Flipkart blue */
   color: white;
   padding: var(--spacing-2xl) var(--spacing-xl);
   text-align: center;

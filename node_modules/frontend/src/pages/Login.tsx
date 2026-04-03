@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { authAPI } from "../services/api";
 import { useToast } from "../context/ToastContext";
 import { validateLoginForm } from "../utils/validation";
-import './ModernAuth.css';
+import './LoginAmazon.css';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -63,66 +63,51 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="modern-auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <div className="auth-icon">🛍️</div>
-          <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Sign in to continue shopping</p>
-        </div>
+    <div className="amazon-login-container">
+      {/* Logo */}
+      <div className="amazon-logo">
+        <h2>shop<span>easy</span></h2>
+      </div>
 
+      {/* Login Card */}
+      <div className="login-container">
+        <h2>Sign In</h2>
+        
         <form onSubmit={handleLogin}>
           {/* Email Field */}
           <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <div className="form-input-wrapper">
-              <span className="form-input-icon">📧</span>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-input"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
+            <label className="form-label" htmlFor="email">Email address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-input"
+              placeholder="Enter your email"
+              required
+            />
           </div>
 
           {/* Password Field */}
           <div className="form-group">
-            <label className="form-label">Password</label>
-            <div className="form-input-wrapper">
-              <span className="form-input-icon">🔒</span>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
-                placeholder="Enter your password"
-                required
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
+            <div className="password-row">
+              <label className="form-label" htmlFor="password">Password</label>
+              <Link to="/forgot-password" className="forgot-password-link" onClick={(e) => { e.preventDefault(); toast.addToast('Forgot password feature coming soon!', 'info'); }}>
+                Forgot your password?
+              </Link>
             </div>
-            <div className="forgot-password">
-              <a href="#" className="forgot-password-link" onClick={(e) => { e.preventDefault(); toast.addToast('Forgot password feature coming soon!', 'info'); }}>
-                Forgot Password?
-              </a>
-            </div>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input"
+              placeholder="Enter your password"
+              required
+            />
           </div>
 
-          {/* Remember Me */}
-          <div className="checkbox-container">
-            <input type="checkbox" id="keep-signed-in" />
-            <label htmlFor="keep-signed-in">Keep me signed in</label>
-          </div>
-
-          {/* Submit Button */}
+          {/* Sign In Button */}
           <button type="submit" disabled={loading} className="submit-btn">
             {loading ? (
               <>
@@ -134,32 +119,35 @@ const Login: React.FC = () => {
             )}
           </button>
 
-          {/* Divider */}
-          <div className="divider">
-            <span>or continue with</span>
-          </div>
-
-          {/* Social Login */}
-          <div className="social-login">
-            <button type="button" className="social-btn google" onClick={() => toast.addToast('Google login coming soon!', 'info')}>
-              G
-            </button>
-            <button type="button" className="social-btn facebook" onClick={() => toast.addToast('Facebook login coming soon!', 'info')}>
-              f
-            </button>
-            <button type="button" className="social-btn apple" onClick={() => toast.addToast('Apple login coming soon!', 'info')}>
-              🍎
-            </button>
-          </div>
-
-          {/* Footer */}
-          <div className="auth-footer">
-            Don't have an account?{' '}
-            <Link to="/signup" className="auth-footer-link">
-              Sign Up
-            </Link>
+          {/* Keep me signed in */}
+          <div className="checkbox-container">
+            <input type="checkbox" id="keep-signed-in" />
+            <label htmlFor="keep-signed-in">Keep me signed in.</label>{' '}
+            <Link to="/help" onClick={(e) => { e.preventDefault(); toast.addToast('Help section coming soon!', 'info'); }}>Details</Link>
           </div>
         </form>
+      </div>
+
+      {/* New Customer Section */}
+      <div className="create-account-section">
+        <div className="divider">
+          <span>New customer?</span>
+        </div>
+        <Link to="/signup" className="create-account-btn">
+          Create your account
+        </Link>
+      </div>
+
+      {/* Footer Links */}
+      <div style={{ textAlign: 'center', marginTop: '30px', fontSize: '12px', color: '#555' }}>
+        <div style={{ marginBottom: '10px' }}>
+          <a href="#" style={{ color: '#0066c0', textDecoration: 'none', margin: '0 10px' }} onClick={(e) => { e.preventDefault(); toast.addToast('Conditions of Use', 'info'); }}>Conditions of Use</a>
+          <a href="#" style={{ color: '#0066c0', textDecoration: 'none', margin: '0 10px' }} onClick={(e) => { e.preventDefault(); toast.addToast('Privacy Notice', 'info'); }}>Privacy Notice</a>
+          <a href="#" style={{ color: '#0066c0', textDecoration: 'none', margin: '0 10px' }} onClick={(e) => { e.preventDefault(); toast.addToast('Help', 'info'); }}>Help</a>
+        </div>
+        <div>
+          © 1996-2026, ShopEasy.com, Inc. or its affiliates
+        </div>
       </div>
     </div>
   );

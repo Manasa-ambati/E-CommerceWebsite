@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 FORCE CLEAR CACHE - E-Commerce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #dc2626;
+            font-size: 36px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .warning h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .warning ol {
+            color: #78350f;
+            padding-left: 20px;
+            line-height: 2;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 15px;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(220, 38, 38, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.6);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        
+        .status.processing {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+        
+        .steps {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .steps h3 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            color: #374151;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .checklist {
+            margin-top: 20px;
+            padding: 20px;
+            background: #ecfdf5;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .checkmark {
+            color: #10b981;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 FORCE CLEAR CACHE</h1>
+        <p style="color: #6b7280; font-size: 18px; margin-top: 10px;">
+            Clear ALL cached files and see the new Amazon-style design immediately!
+        </p>
+        
+        <div class="warning">
+            <h3>⚠️ This Will:</h3>
+            <ol>
+                <li>Delete all service worker caches</li>
+                <li>Clear localStorage and sessionStorage</li>
+                <li>Force reload every single file</li>
+                <li>Unregister old service workers</li>
+            </ol>
+        </div>
+        
+        <button class="btn" onclick="forceClearCache()">💥 FORCE CLEAR EVERYTHING</button>
+        <button class="btn btn-secondary" onclick="goToApp()">Go to App (Normal)</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="steps">
+            <h3>📋 What to Do After Clearing Cache:</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">
+                    <strong>Click "FORCE CLEAR EVERYTHING"</strong> above and wait for success message
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">
+                    <strong>Close ALL browser windows completely</strong> (make sure no browser processes running)
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">
+                    <strong>Open browser fresh</strong> and navigate to http://localhost:3000
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">
+                    <strong>Press Ctrl+Shift+R ONCE</strong> to ensure completely fresh load
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">
+                    <strong>Enjoy your new Amazon-style design!</strong> 🎉
+                </div>
+            </div>
+        </div>
+        
+        <div class="checklist">
+            <h3 style="color: #059669; margin-bottom: 15px;">✅ You'll Know It Worked When:</h3>
+            <div class="checklist-item">
+                <span class="checkmark">✓</span>
+                <span>Wishlist shows horizontal Amazon-style cards</span>
+            </div>
+            <div class="checklist-item">
+                <span class="checkmark">✓</span>
+                <span>Cards are compact (~200px, not ~400px)</span>
+            </div>
+            <div class="checklist-item">
+                <span class="checkmark">✓</span>
+                <span>Amazon orange/yellow buttons</span>
+            </div>
+            <div class="checklist-item">
+                <span class="checkmark">✓</span>
+                <span>Clean, professional modern design</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function forceClearCache() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = '⏳ Clearing all caches...';
+            statusDiv.className = 'status processing';
+            statusDiv.style.display = 'block';
+            
+            try {
+                // Step 1: Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    console.log('Found', registrations.length, 'service workers');
+                    
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        console.log('✅ Unregistered service worker:', registration.scope);
+                    }
+                }
+                
+                // Step 2: Clear all cache storage
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    console.log('Found', cacheNames.length, 'caches');
+                    
+                    for (let name of cacheNames) {
+                        await caches.delete(name);
+                        console.log('✅ Deleted cache:', name);
+                    }
+                }
+                
+                // Step 3: Clear localStorage
+                localStorage.clear();
+                console.log('✅ Cleared localStorage');
+                
+                // Step 4: Clear sessionStorage
+                sessionStorage.clear();
+                console.log('✅ Cleared sessionStorage');
+                
+                // Step 5: Force reload with timestamp
+                const timestamp = new Date().getTime();
+                const currentUrl = window.location.origin + '?clearcache=' + timestamp;
+                
+                statusDiv.textContent = '✅ Cache cleared successfully! Redirecting...';
+                statusDiv.className = 'status success';
+                
+                setTimeout(() => {
+                    window.location.replace(currentUrl);
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error clearing cache:', error);
+                statusDiv.textContent = '❌ Error: ' + error.message;
+                statusDiv.className = 'status processing';
+                statusDiv.style.borderColor = '#dc2626';
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.color = '#991b1b';
+            }
+        }
+        
+        function goToApp() {
+            window.location.href = '/';
+        }
+        
+        // Auto-clear on page load (optional - uncomment if you want it automatic)
+        // forceClearCache();
+    </script>
+</body>
+</html>

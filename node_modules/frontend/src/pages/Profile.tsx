@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
+import { useToast } from '../context/ToastContext';
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   useEffect(() => {
     // Function to load user data
@@ -26,7 +28,7 @@ const Profile: React.FC = () => {
           console.log('  - lastName:', parsedUser.lastName, `(type: ${typeof parsedUser.lastName})`);
           console.log('  - name:', parsedUser.name);
           console.log('  - role:', parsedUser.role);
-          console.log('  - emailVerified:', parsedUser.emailVerified);
+          console.log('  - emailVerified:', parsedUser.emailVerified, `(type: ${typeof parsedUser.emailVerified})`);
           
           setUser(parsedUser);
           console.log('✅ User parsed successfully:', parsedUser);
@@ -121,14 +123,27 @@ const Profile: React.FC = () => {
             </div>
             <div className="detail-row">
               <span className="label">Account Status</span>
-              <span className={`value status-${user?.emailVerified ? 'verified' : 'pending'}`}>
-                {user?.emailVerified ? 'Verified ✅' : 'Pending Verification ⏳'}
+              <span className={`value status-${user?.emailVerified === true ? 'verified' : 'pending'}`}>
+                {user?.emailVerified === true ? 'Verified ✅' : 'Pending Verification ⏳'}
               </span>
             </div>
+            <div className="detail-row">
+              <span className="label">Last Updated</span>
+              <span className="value">{new Date().toLocaleString()}</span>
+            </div>
+          </div>
+          
+          
+           
+            {user?.emailVerified !== true && (
+              <p className="verification-note">
+                ℹ️ If you've verified your email, please logout and login again to see the updated status.
+              </p>
+            )}
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 

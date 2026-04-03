@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { clearAllCaches } from './utils/cacheBuster';
 
 // Lazy load all page components for better performance
 const Home = lazy(() => import('./pages/Home'));
@@ -56,6 +57,13 @@ const PageLoader = () => (
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const showFooter = location.pathname === '/'; // Only show footer on home page
+  
+  // Cache busting - clear cache on app mount (development only)
+  useEffect(() => {
+    console.log('🔄 Clearing application cache...');
+    // Uncomment the line below during development if cache issues persist
+    // clearAllCaches();
+  }, []);
 
   return (
     <>

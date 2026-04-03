@@ -16,6 +16,7 @@ public class OrderItemDTO {
     private Long id;
     private Long productId;
     private String productName;
+    private String productImage; // Add product image field
     private BigDecimal productPrice;
     private Integer quantity;
     private BigDecimal subtotal;
@@ -25,6 +26,9 @@ public class OrderItemDTO {
                 .id(orderItem.getId())
                 .productId(orderItem.getProduct().getId())
                 .productName(orderItem.getProductName())
+                .productImage(orderItem.getProduct().getImages() != null && !orderItem.getProduct().getImages().isEmpty() 
+                    ? orderItem.getProduct().getImages().get(0) 
+                    : null)
                 .productPrice(orderItem.getProductPrice())
                 .quantity(orderItem.getQuantity())
                 .subtotal(orderItem.getSubtotal())

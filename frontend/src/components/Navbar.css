@@ -1,6 +1,6 @@
 :root {
-  --primary: #f97316;
-  --primary-dark: #ea580c;
+  --primary: #2874f0; /* Flipkart blue */
+  --primary-dark: #1e5fc2;
   --text-dark: #282c3f;
   --text-gray: #535766;
   --bg-white: #ffffff;
@@ -23,7 +23,7 @@
 
 /* ===== NAVBAR CONTAINER ===== */
 .navbar {
-  background: linear-gradient(135deg,#2e8219 50%,#d85ec1 50%);
+  background:rgb(51, 12, 151); /* Flipkart blue gradient */
   position: fixed;
   top: 0;
   left: 0;
@@ -31,6 +31,10 @@
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
+
+ 
+
+
 
 /* ===== MAIN NAVBAR ===== */
 .navbar-main-content{
@@ -79,10 +83,7 @@
 .logo-text{
   font-size:26px;
   font-weight:800;
-  background:linear-gradient(135deg,var(--primary),#ec4899);
-  background-clip:text;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  color: white; /* Simple white text for Flipkart style */
   letter-spacing:-0.5px;
 }
 
@@ -144,7 +145,7 @@
 }
 
 .search-actions button:hover{
-  background:rgba(249,115,22,0.1);
+  background:rgba(40, 116, 240, 0.1); /* Flipkart blue */
 }
 
 .search-actions button:hover svg{
@@ -166,7 +167,7 @@
 .search-form:focus-within{
   background:white;
   border-color:var(--primary);
-  box-shadow:0 4px 12px rgba(249,115,22,0.15);
+  box-shadow:0 4px 12px rgba(40, 116, 240, 0.15);
 }
 
 /* ===== NAVIGATION LINKS ===== */
@@ -219,7 +220,7 @@
   position: absolute;
   top: 2px;
   right: 2px;
-  background: #ef4444;
+  background: #FF9900; /* Amazon orange for badges */
   color: white;
   font-size: 10px;
   font-weight: 700;
@@ -230,7 +231,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 2px 4px rgba(255, 153, 0, 0.4);
 }
 
 /* Login and Signup buttons styling */
@@ -249,17 +250,17 @@
 }
 
 .btn-signup {
-  background: linear-gradient(135deg, var(--primary), #ec4899);
+  background: linear-gradient(135deg, #FF9900 0%, #e68a00); /* Amazon orange */
   border: 2px solid transparent;
   padding: 8px 20px;
   transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
 }
 
 .btn-signup:hover {
-  background: linear-gradient(135deg, var(--primary-dark), #db2777);
+  background: linear-gradient(135deg, #e68a00 0%, #cc7a00);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+  box-shadow: 0 6px 20px rgba(255, 153, 0, 0.5);
 }
 
 /* Profile trigger button */
@@ -937,10 +938,7 @@ button:focus,
 .mobile-logo-text {
   font-size: 1.5rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #f97316, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white; /* Simple white for Flipkart style */
 }
 
 .mobile-menu-close {
@@ -1002,7 +1000,7 @@ button:focus,
 /* Badges for Cart and Wishlist */
 .mobile-badge,
 .mobile-cart-count {
-  background-color: #f97316;
+  background-color: #FF9900; /* Amazon orange */
   color: white;
   font-size: 0.75rem;
   padding: 3px 8px;
@@ -1053,12 +1051,12 @@ button:focus,
 }
 
 .mobile-signup {
-  background-color: #f97316;
+  background-color: #FF9900; /* Amazon orange */
   color: white;
 }
 
 .mobile-signup:hover {
-  background-color: #ea580c;
+  background-color: #e68a00;
   transform: translateY(-2px);
 }
 
@@ -1263,12 +1261,12 @@ button:focus,
 }
 
 .mobile-signup {
-  background-color: #f97316;
+  background-color: #FF9900; /* Amazon orange */
   color: white;
 }
 
 .mobile-signup:hover {
-  background-color: #ea580c;
+  background-color: #e68a00;
   transform: translateY(-2px);
 }
 

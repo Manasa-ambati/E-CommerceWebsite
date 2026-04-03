@@ -1,5 +1,5 @@
 // Service Worker for Ultra-Fast Caching
-const CACHE_NAME = 'shopease-v1';
+const CACHE_NAME = 'shopease-v3-amazon-style';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -35,6 +35,12 @@ self.addEventListener('fetch', event => {
         // Cache hit - return immediately
         if (response) {
           console.log('💾 Cache hit:', event.request.url);
+          // Return cached response but update in background
+          self.clients.matchAll().then(clients => {
+            clients.forEach(client => {
+              client.postMessage({ type: 'CACHED_RESOURCE', url: event.request.url });
+            });
+          });
           return response;
         }
         

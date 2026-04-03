@@ -2,9 +2,10 @@
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   color: #fff;
   padding: 40px 20px 15px;
-  margin-top: auto;
+  margin-top: 80px;
   width: 100%;
   box-sizing: border-box;
+  min-height: 350px;
 }
 
 .footer-container {
@@ -136,6 +137,13 @@
   margin-bottom: 20px;
 }
 
+.newsletter-content {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .newsletter-text {
   color: #bdc3c7;
   font-size: 0.85rem;
@@ -182,111 +190,6 @@
 
 .newsletter-form button:hover {
   background: #ea580c;
-  transform: scale(1.1);
-}
-
-/* App Download Section */
-.app-download-section {
-  margin-top: 15px;
-}
-
-.app-download-section h4 {
-  margin-bottom: 10px;
-}
-
-.app-text {
-  color: #bdc3c7;
-  font-size: 0.8rem;
-  margin-bottom: 10px;
-}
-
-.qr-code-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.qr-code {
-  width: 70px;
-  height: 70px;
-  background: white;
-  border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.qr-code svg {
-  width: 100%;
-  height: 100%;
-}
-
-.app-stores {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.store-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-  min-width: 130px;
-}
-
-.store-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.store-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.store-text span {
-  font-size: 0.7rem;
-  color: #bdc3c7;
-}
-
-.store-text strong {
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-/* Payment Methods */
-.payment-methods {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.payment-methods span {
-  color: #95a5a6;
-  font-size: 0.85rem;
-}
-
-.payment-icons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.payment-icons svg {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-  transition: transform 0.3s ease;
-}
-
-.payment-icons svg:hover {
   transform: scale(1.1);
 }
 
