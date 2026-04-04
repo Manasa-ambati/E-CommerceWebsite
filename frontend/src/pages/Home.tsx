@@ -443,11 +443,11 @@ const Home: React.FC = () => {
                 <div className="product-price">
                   {product.discountPrice ? (
                     <>
-                      <span className="discount-price">${product.discountPrice}</span>
-                      <span className="original-price">${product.price}</span>
+                      <span className="discount-price"> ₹{product.discountPrice}</span>
+                      <span className="original-price"> ₹{product.price}</span>
                     </>
                   ) : (
-                    <span className="discount-price">${product.price}</span>
+                    <span className="discount-price"> ₹{product.price}</span>
                   )}
                 </div>
               </div>

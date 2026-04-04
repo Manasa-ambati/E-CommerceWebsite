@@ -21,7 +21,7 @@ const Checkout: React.FC = () => {
         setSingleItemCart({
           ...cart,
           items: [singleItem],
-          totalPrice: singleItem.productDiscountPrice || singleItem.productPrice || singleItem.price
+          totalPrice: singleItem.productDiscountPrice || singleItem.productPrice || singleItem.subtotal / singleItem.quantity
         });
       }
     }
