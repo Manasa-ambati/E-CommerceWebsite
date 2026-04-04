@@ -19,7 +19,11 @@ interface Order {
   id: number;
   orderNumber: string;
   status: string;
-  totalAmount: number | null;
+  totalAmount?: number;     // Legacy/alias field
+  subtotal?: number;        // Backend field name
+  tax?: number;             // Backend field name
+  shippingCost?: number;    // Backend field name
+  total?: number;           // Backend field name (primary)
   createdAt: string;
   items?: OrderItem[];
   shippingAddress?: {
@@ -277,7 +281,7 @@ export const Orders: React.FC = () => {
                   <div className="order-price-section">
                     <span className="price-label">Total:</span>
                     <strong className="price-value">
-                      ${order.totalAmount ? order.totalAmount.toFixed(2) : '0.00'}
+                      ${(order.total || order.totalAmount || 0).toFixed(2)}
                     </strong>
                   </div>
                 </div>
@@ -398,15 +402,21 @@ export const Orders: React.FC = () => {
               <div className="order-summary-box">
                 <div className="summary-row">
                   <span>Subtotal:</span>
-                  <span>${(selectedOrder.totalAmount || 0).toFixed(2)}</span>
+                  <span>${(selectedOrder.subtotal || selectedOrder.totalAmount || 0).toFixed(2)}</span>
                 </div>
                 <div className="summary-row">
                   <span>Shipping:</span>
-                  <span>$0.00</span>
+                  <span>${(selectedOrder.shippingCost || 0).toFixed(2)}</span>
                 </div>
+                {selectedOrder.tax && selectedOrder.tax > 0 && (
+                  <div className="summary-row">
+                    <span>Tax:</span>
+                    <span>${selectedOrder.tax.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="summary-row total">
                   <span>Total:</span>
-                  <span>${(selectedOrder.totalAmount || 0).toFixed(2)}</span>
+                  <span>${(selectedOrder.total || selectedOrder.totalAmount || 0).toFixed(2)}</span>
                 </div>
               </div>
             </div>
