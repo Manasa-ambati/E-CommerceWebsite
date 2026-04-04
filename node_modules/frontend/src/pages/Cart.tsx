@@ -190,36 +190,48 @@ export const Cart: React.FC = () => {
   };
 
   const handleRemove = async (productId: number) => {
+    console.log('🗑️ Removing product ID:', productId);
+    
     try {
       // Find the item before removing to save its details
       const itemToRemove = cart.find(item => item.productId === productId);
+      console.log('📦 Item to remove:', itemToRemove);
+      
+      if (!itemToRemove) {
+        toast.addToast('Item not found in cart', 'error');
+        return;
+      }
       
       // Call context to persist removal (backend + localStorage)
       // The useEffect will automatically update local state when context changes
+      console.log('⏳ Calling removeFromCartContext...');
       await removeFromCartContext(productId);
+      console.log('✅ removeFromCartContext completed');
       
       // Save to recently removed list for "Put Back" functionality
-      if (itemToRemove) {
-        const removedItem = {
-          productId: itemToRemove.productId,
-          productName: itemToRemove.productName,
-          productImage: itemToRemove.productImage,
-          productPrice: itemToRemove.productPrice || itemToRemove.price,
-          productDiscountPrice: itemToRemove.discountPrice,
-          quantity: itemToRemove.quantity,
-          removedAt: Date.now()
-        };
-        
-        // Dispatch custom event to notify RecentlyRemoved component
-        window.dispatchEvent(new CustomEvent('itemRemovedFromCart', { 
-          detail: removedItem 
-        }));
-      }
+      const removedItem = {
+        productId: itemToRemove.productId,
+        productName: itemToRemove.productName,
+        productImage: itemToRemove.productImage,
+        productPrice: itemToRemove.productPrice || itemToRemove.price,
+        productDiscountPrice: itemToRemove.discountPrice,
+        quantity: itemToRemove.quantity,
+        removedAt: Date.now()
+      };
+      
+      console.log('💾 Saving to recently removed:', removedItem);
+      
+      // Dispatch custom event to notify RecentlyRemoved component
+      window.dispatchEvent(new CustomEvent('itemRemovedFromCart', { 
+        detail: removedItem 
+      }));
+      console.log('📢 Dispatched itemRemovedFromCart event');
       
       toast.addToast('Item removed from cart', 'success');
-    } catch (error) {
-      console.error('Failed to remove item:', error);
-      toast.addToast('Failed to remove item. Please try again.', 'error');
+    } catch (error: any) {
+      console.error('❌ Failed to remove item:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      toast.addToast(error.response?.data?.message || 'Failed to remove item. Please try again.', 'error');
     }
   };
 

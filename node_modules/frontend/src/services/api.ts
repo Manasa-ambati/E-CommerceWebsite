@@ -10,6 +10,11 @@ const API_URL = process.env.REACT_APP_API_URL + '/api';
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL + "/api",
   timeout: 30000, // 10 seconds
+  headers: {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
 });
 
 api.interceptors.request.use((config) => {
@@ -18,6 +23,13 @@ api.interceptors.request.use((config) => {
     config.headers = config.headers || {};
     (config.headers as any)['Authorization'] = `Bearer ${token}`;
   }
+  
+  // Add cache-busting to prevent stale data
+  if (config.method === 'get') {
+    config.params = config.params || {};
+    config.params['_t'] = Date.now(); // Add timestamp to bypass cache
+  }
+  
   return config;
 });
 

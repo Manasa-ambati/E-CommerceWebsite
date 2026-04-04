@@ -23,10 +23,10 @@ const RecentlyRemoved: React.FC = () => {
     if (saved) {
       try {
         const items = JSON.parse(saved);
-        // Filter out items older than 24 hours
+        // Filter out items older than 1 hour (Meesho style - short duration)
         const now = Date.now();
         const validItems = items.filter((item: RemovedItem) => 
-          now - item.removedAt < 24 * 60 * 60 * 1000
+          now - item.removedAt < 60 * 60 * 1000 // 1 hour
         );
         setRemovedItems(validItems);
         localStorage.setItem('recently_removed_items', JSON.stringify(validItems));
@@ -41,7 +41,7 @@ const RecentlyRemoved: React.FC = () => {
     const handleItemRemoved = (event: CustomEvent) => {
       const item = event.detail;
       setRemovedItems(prev => {
-        const updated = [item, ...prev].slice(0, 5); // Keep only last 5 items
+        const updated = [item, ...prev].slice(0, 3); // Keep only last 3 items (Meesho style)
         localStorage.setItem('recently_removed_items', JSON.stringify(updated));
         return updated;
       });
@@ -74,13 +74,12 @@ const RecentlyRemoved: React.FC = () => {
     }
   };
 
-  const handleRemovePermanently = (productId: number) => {
+  const handleDismiss = (productId: number) => {
     setRemovedItems(prev => {
       const updated = prev.filter(i => i.productId !== productId);
       localStorage.setItem('recently_removed_items', JSON.stringify(updated));
       return updated;
     });
-    toast.addToast('Item removed from history', 'info');
   };
 
   if (removedItems.length === 0) {
@@ -88,57 +87,36 @@ const RecentlyRemoved: React.FC = () => {
   }
 
   return (
-    <div className="recentlyremoved-container">
-      <div className="recentlyremoved-header">
-        <h3>🔄 Recently Removed</h3>
-        <span className="recentlyremoved-count">{removedItems.length} item(s)</span>
-      </div>
-      
-      <div className="recentlyremoved-items">
-        {removedItems.map((item) => (
-          <div key={item.productId} className="recentlyremoved-item">
-            <img 
-              src={item.productImage || 'https://via.placeholder.com/80x80'} 
-              alt={item.productName}
-              className="recentlyremoved-image"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/80x80';
-              }}
-            />
-            
-            <div className="recentlyremoved-details">
-              <h4 className="recentlyremoved-name">{item.productName}</h4>
-              <p className="recentlyremoved-price">
-                {item.productDiscountPrice ? (
-                  <>
-                    <span className="discounted">₹{item.productDiscountPrice.toFixed(2)}</span>
-                    <span className="original">₹{item.productPrice.toFixed(2)}</span>
-                  </>
-                ) : (
-                  <span>₹{item.productPrice.toFixed(2)}</span>
-                )}
-              </p>
-              <p className="recentlyremoved-qty">Qty: {item.quantity}</p>
-            </div>
-            
-            <div className="recentlyremoved-actions">
+    <div className="recentlyremoved-banner">
+      <div className="recentlyremoved-content">
+        <span className="recentlyremoved-icon">↩️</span>
+        <div className="recentlyremoved-items-inline">
+          {removedItems.map((item) => (
+            <div key={item.productId} className="recentlyremoved-chip">
+              <img 
+                src={item.productImage || 'https://via.placeholder.com/40x40'} 
+                alt={item.productName}
+                className="recentlyremoved-chip-image"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/40x40';
+                }}
+              />
+              <span className="recentlyremoved-chip-name">{item.productName}</span>
               <button 
-                className="putback-btn"
+                className="putback-inline-btn"
                 onClick={() => handlePutBack(item)}
-                title="Add back to cart"
               >
-                ↩️ Put Back
+                Put Back
               </button>
               <button 
-                className="remove-permanent-btn"
-                onClick={() => handleRemovePermanently(item.productId)}
-                title="Remove from history"
+                className="dismiss-btn"
+                onClick={() => handleDismiss(item.productId)}
               >
                 ✕
               </button>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

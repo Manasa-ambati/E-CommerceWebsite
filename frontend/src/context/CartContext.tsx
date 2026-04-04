@@ -180,17 +180,20 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const removeFromCart = async (productId: number) => {
+    console.log('🗑️ CartContext: Removing product', productId);
     const token = localStorage.getItem('token');
     
     // If authenticated, use backend ONLY
     if (token) {
       try {
         setLoading(true);
+        console.log('📡 Calling backend remove API...');
         const response = await cartAPI.remove(productId);
         console.log('✅ Backend removal successful:', response.data);
         
         // Update CartContext state with backend response
         setCart(response.data.data);
+        console.log('💾 Cart state updated');
         
         // Clear localStorage guest_cart completely for logged-in users
         // This prevents stale data from appearing on refresh
@@ -199,10 +202,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         // Dispatch custom event to update navbar
         window.dispatchEvent(new CustomEvent('cartUpdated'));
+        console.log('📢 Dispatched cartUpdated event');
         setLoading(false);
         return; // ✅ CRITICAL: Return here, don't fall through
       } catch (error: any) {
-        console.error('Backend remove failed:', error);
+        console.error('❌ Backend remove failed:', error);
+        console.error('Error details:', error.response?.data || error.message);
         console.log('Falling back to localStorage removal');
         // Fall through to localStorage removal below
       }
@@ -231,7 +236,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       window.dispatchEvent(new CustomEvent('cartUpdated'));
       setLoading(false);
     } catch (error) {
-      console.error('Failed to remove from localStorage cart:', error);
+      console.error('❌ Failed to remove from localStorage cart:', error);
       throw new Error('Failed to remove from cart');
     } finally {
       setLoading(false);
