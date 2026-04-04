@@ -281,7 +281,7 @@ export const Orders: React.FC = () => {
                   <div className="order-price-section">
                     <span className="price-label">Total:</span>
                     <strong className="price-value">
-                      ${(order.total || order.totalAmount || 0).toFixed(2)}
+                      ₹{(order.total || order.totalAmount || 0).toFixed(2)}
                     </strong>
                   </div>
                 </div>
@@ -388,35 +388,24 @@ export const Orders: React.FC = () => {
                       <div className="item-details">
                         <h5>{item.productName}</h5>
                         <p>Quantity: {item.quantity}</p>
-                        <p className="item-price">${(item.productPrice || item.price || 0).toFixed(2)}</p>
+                        <p className="item-price">₹{(item.productPrice || item.price || 0).toFixed(2)}</p>
                       </div>
                       <div className="item-total">
-                        ${((item.productPrice || item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                        ₹{((item.productPrice || item.price || 0) * (item.quantity || 1)).toFixed(2)}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Order Summary */}
+              {/* Order Summary - Simplified (No Tax/Shipping) */}
               <div className="order-summary-box">
-                <div className="summary-row">
-                  <span>Subtotal:</span>
-                  <span>${(selectedOrder.subtotal || selectedOrder.totalAmount || 0).toFixed(2)}</span>
-                </div>
-                <div className="summary-row">
-                  <span>Shipping:</span>
-                  <span>${(selectedOrder.shippingCost || 0).toFixed(2)}</span>
-                </div>
-                {selectedOrder.tax && selectedOrder.tax > 0 && (
-                  <div className="summary-row">
-                    <span>Tax:</span>
-                    <span>${selectedOrder.tax.toFixed(2)}</span>
-                  </div>
-                )}
                 <div className="summary-row total">
-                  <span>Total:</span>
-                  <span>${(selectedOrder.total || selectedOrder.totalAmount || 0).toFixed(2)}</span>
+                  <span>Order Total:</span>
+                  <span>₹{(selectedOrder.total || selectedOrder.subtotal || selectedOrder.totalAmount || 0).toFixed(2)}</span>
+                </div>
+                <div className="free-delivery-badge">
+                  ✓ Free Delivery
                 </div>
               </div>
             </div>

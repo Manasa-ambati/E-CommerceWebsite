@@ -91,17 +91,17 @@ public class OrderService {
             }
         }
         
-        // Calculate totals
+        // Calculate totals - No tax, no shipping (FREE delivery)
         BigDecimal subtotal = cart.getTotalPrice();
-        BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.1)); // 10% tax
-        BigDecimal shippingCost = BigDecimal.valueOf(10); // Fixed shipping
-        BigDecimal total = subtotal.add(tax).add(shippingCost);
+        BigDecimal tax = BigDecimal.ZERO; // No tax
+        BigDecimal shippingCost = BigDecimal.ZERO; // Free shipping
+        BigDecimal total = subtotal; // Total equals subtotal
         
         System.out.println("=== ORDER CALCULATION ===");
-        System.out.println("Subtotal: " + subtotal);
-        System.out.println("Tax: " + tax);
-        System.out.println("Shipping: " + shippingCost);
-        System.out.println("Total: " + total);
+        System.out.println("Subtotal: ₹" + subtotal);
+        System.out.println("Tax: ₹" + tax);
+        System.out.println("Shipping: ₹" + shippingCost + " (FREE)");
+        System.out.println("Total: ₹" + total);
         
         // Create order
         Order order = new Order();

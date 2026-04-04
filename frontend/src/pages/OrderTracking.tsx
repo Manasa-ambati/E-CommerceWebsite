@@ -162,26 +162,17 @@ const OrderTracking: React.FC = () => {
                     <span className="item-name">{item.productName}</span>
                     <span className="item-qty">Qty: {item.quantity}</span>
                   </div>
-                  <span className="item-price">${item.subtotal.toFixed(2)}</span>
+                  <span className="item-price">₹{item.subtotal.toFixed(2)}</span>
                 </div>
               ))}
             </div>
             <div className="order-totals">
-              <div className="total-row">
-                <span>Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
-              </div>
-              <div className="total-row">
-                <span>Tax</span>
-                <span>${order.tax.toFixed(2)}</span>
-              </div>
-              <div className="total-row">
-                <span>Shipping</span>
-                <span>${order.shippingCost.toFixed(2)}</span>
-              </div>
               <div className="total-row grand-total">
-                <span>Total</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>Order Total</span>
+                <span>₹{order.total.toFixed(2)}</span>
+              </div>
+              <div className="free-delivery-note">
+                ✓ Free Delivery Applied
               </div>
             </div>
           </div>

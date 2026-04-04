@@ -195,6 +195,20 @@ const Products: React.FC = () => {
     }
   };
 
+  const handleBuyNow = async (productId: number) => {
+    try {
+      // Add product to cart first
+      await addCart(productId, 1);
+      fetchCart();
+      
+      // Navigate to checkout page
+      window.location.href = '/checkout';
+    } catch (error: any) {
+      console.error('Buy now error:', error);
+      toast.addToast(error.response?.data?.message || 'Failed to proceed to checkout', 'error');
+    }
+  };
+
   if (loading) {
     return <div className="loading">Loading products...</div>;
   }
@@ -599,6 +613,17 @@ const Products: React.FC = () => {
                           <span className="regular-price">₹{product.price.toFixed(2)}</span>
                         )}
                       </div>
+                      {/* Buy Now Button - Meesho Style */}
+                      <button 
+                        className="buy-now-btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleBuyNow(product.id);
+                        }}
+                      >
+                        Buy Now
+                      </button>
                     </div>
                   </div>
                 ))}

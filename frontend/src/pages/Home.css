@@ -1,6 +1,6 @@
 .home {
   padding: 0;
-  background-color: #f1f3f6; /* Flipkart-style background */
+  background-color: #ffffff; /* Clean white background */
   margin-top: 70px; /* Account for fixed navbar height */
 }
 
@@ -313,14 +313,14 @@ line-height: 1.6 ;
   object-fit: cover;
 }
 
-/* Product action buttons - horizontal layout */
+/* Product action buttons - VERTICAL layout */
 .cart-icon-btn,
 .wishlist-icon-btn,
 .share-icon-btn {
   position: absolute;
-  top: var(--spacing-sm);
-  width: 32px;
-  height: 32px;
+  right: var(--spacing-sm);
+  width: 36px;
+  height: 36px;
   background: white;
   border: none;
   border-radius: var(--radius-full);
@@ -334,23 +334,23 @@ line-height: 1.6 ;
 }
 
 .cart-icon-btn {
-  right: 72px;
+  top: 80px;
 }
 
 .share-icon-btn {
-  right: 36px;
+  top: 45px;
 }
 
 .wishlist-icon-btn {
-  right: var(--spacing-sm);
+  top: var(--spacing-sm);
 }
 
 /* Icon button SVG styles */
 .cart-icon-btn svg,
 .wishlist-icon-btn svg,
 .share-icon-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--gray-600);
   transition: all var(--transition-fast);
 }

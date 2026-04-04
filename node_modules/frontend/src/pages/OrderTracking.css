@@ -211,6 +211,19 @@
   border-top: 1px solid #eee;
 }
 
+/* Free Delivery Note */
+.free-delivery-note {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid #c3e6cb;
+}
+
 .tracking-footer {
   margin-top: 30px;
   text-align: center;
