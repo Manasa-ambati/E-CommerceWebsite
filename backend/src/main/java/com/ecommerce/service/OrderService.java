@@ -91,6 +91,18 @@ public class OrderService {
             }
         }
         
+        // Calculate totals
+        BigDecimal subtotal = cart.getTotalPrice();
+        BigDecimal tax = subtotal.multiply(BigDecimal.valueOf(0.1)); // 10% tax
+        BigDecimal shippingCost = BigDecimal.valueOf(10); // Fixed shipping
+        BigDecimal total = subtotal.add(tax).add(shippingCost);
+        
+        System.out.println("=== ORDER CALCULATION ===");
+        System.out.println("Subtotal: " + subtotal);
+        System.out.println("Tax: " + tax);
+        System.out.println("Shipping: " + shippingCost);
+        System.out.println("Total: " + total);
+        
         // Create order
         Order order = new Order();
         order.setOrderNumber(generateOrderNumber());
@@ -98,10 +110,10 @@ public class OrderService {
         order.setShippingAddress(shippingAddressDTO.toEntity());
         order.setPaymentMethod(paymentMethod);
         order.setNotes(notes);
-        order.setSubtotal(cart.getTotalPrice());
-        order.setTax(cart.getTotalPrice().multiply(BigDecimal.valueOf(0.1))); // 10% tax
-        order.setShippingCost(BigDecimal.valueOf(10)); // Fixed shipping
-        order.setTotal(order.getSubtotal().add(order.getTax()).add(order.getShippingCost()));
+        order.setSubtotal(subtotal);
+        order.setTax(tax);
+        order.setShippingCost(shippingCost);
+        order.setTotal(total);
         order.setStatus(Order.OrderStatus.PENDING);
         order.setPaymentStatus(Order.PaymentStatus.PENDING);
         
@@ -117,6 +129,11 @@ public class OrderService {
             orderItem.setSubtotal(cartItem.getSubtotal());
             order.getItems().add(orderItem);
             
+            System.out.println("Item: " + orderItem.getProductName() + 
+                             " | Price: " + orderItem.getProductPrice() + 
+                             " | Qty: " + orderItem.getQuantity() + 
+                             " | Subtotal: " + orderItem.getSubtotal());
+            
             // Update stock
             Product product = cartItem.getProduct();
             product.setStockQuantity(product.getStockQuantity() - cartItem.getQuantity());
@@ -124,6 +141,15 @@ public class OrderService {
         }
         
         order = orderRepository.save(order);
+        
+        // Force refresh to ensure all fields are persisted
+        order = orderRepository.findById(order.getId()).orElseThrow();
+        
+        System.out.println("=== SAVED ORDER ===");
+        System.out.println("Order ID: " + order.getId());
+        System.out.println("Order Number: " + order.getOrderNumber());
+        System.out.println("Saved Subtotal: " + order.getSubtotal());
+        System.out.println("Saved Total: " + order.getTotal());
         
         // Clear cart
         cartService.clearCart(userId);
