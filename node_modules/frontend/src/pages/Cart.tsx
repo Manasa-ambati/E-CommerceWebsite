@@ -148,27 +148,28 @@ export const Cart: React.FC = () => {
       try {
         await cartAPI.update(productId, newQuantity);
       } catch (err: any) {
-        console.error(err);
-        toast.addToast(err.response?.data?.message || 'Failed to update quantity.', 'error');
+        console.error('Failed to update quantity:', err);
+        toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
         return;
       }
     }
     
-    // Always update localStorage (for guests and sync)
-    const localCart = localStorage.getItem('guest_cart');
-    if (localCart) {
-      const cartData = JSON.parse(localCart);
-      const updatedItems = (cartData.items || []).map((item: any) => 
+    // Update local state
+    setCart((prev) =>
+      prev.map((item) =>
         item.productId === productId ? { ...item, quantity: newQuantity } : item
-      );
-      cartData.items = updatedItems;
-      localStorage.setItem('guest_cart', JSON.stringify(cartData));
+      )
+    );
+  };
+
+  const handleBuyNow = async (productId: number) => {
+    try {
+      // Navigate to checkout with specific product
+      navigate('/checkout', { state: { buyNowProductId: productId } });
+    } catch (err: any) {
+      console.error('Buy now error:', err);
+      toast.addToast('Failed to proceed to checkout', 'error');
     }
-    
-    // Update UI
-    setCart((prev) => prev.map((item) => 
-      item.productId === productId ? { ...item, quantity: newQuantity } : item
-    ));
   };
 
   const handleRemove = async (productId: number) => {
@@ -299,6 +300,14 @@ export const Cart: React.FC = () => {
                       </div>
                       
                       <div className="action-buttons">
+                        <button 
+                          className="buy-now-btn-cart" 
+                          onClick={() => handleBuyNow(item.productId)}
+                          title="Buy This Item Now"
+                        >
+                          ⚡ Buy Now
+                        </button>
+                        
                         <button 
                           className="wishlist-btn-flipkart" 
                           onClick={() => moveToWishlist(item.productId)}

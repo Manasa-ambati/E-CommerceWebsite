@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { orderAPI } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { orderAPI, cartAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import './Checkout.css';
 
 const Checkout: React.FC = () => {
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart, removeFromCart } = useCart();
+  const location = useLocation();
   const navigate = useNavigate();
+  
+  // Check if this is a "Buy Now" order (single item)
+  const buyNowProductId = location.state?.buyNowProductId;
+  const [singleItemCart, setSingleItemCart] = useState<any>(null);
+  
+  useEffect(() => {
+    // If Buy Now, filter cart to only include that product
+    if (buyNowProductId && cart) {
+      const singleItem = cart.items.find((item: any) => item.productId === buyNowProductId);
+      if (singleItem) {
+        setSingleItemCart({
+          ...cart,
+          items: [singleItem],
+          totalPrice: singleItem.productDiscountPrice || singleItem.productPrice || singleItem.price
+        });
+      }
+    }
+  }, [buyNowProductId, cart]);
+  
+  // Use single item cart if Buy Now, otherwise use full cart
+  const currentCart = buyNowProductId ? singleItemCart : cart;
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -51,7 +73,14 @@ const Checkout: React.FC = () => {
         notes: formData.notes,
       });
       
-      await clearCart();
+      // If Buy Now, remove only that item from cart
+      if (buyNowProductId) {
+        await removeFromCart(buyNowProductId);
+      } else {
+        // Otherwise clear entire cart
+        await clearCart();
+      }
+      
       navigate(`/track-order/${response.data.data.orderNumber}`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
@@ -60,7 +89,7 @@ const Checkout: React.FC = () => {
     }
   };
 
-  if (!cart || cart.items.length === 0) {
+  if (!currentCart || currentCart.items.length === 0) {
     return (
       <div className="checkout-page">
         <div className="checkout-empty">
@@ -71,10 +100,10 @@ const Checkout: React.FC = () => {
     );
   }
 
-  const subtotal = cart.totalPrice;
-  const tax = subtotal * 0.1;
-  const shipping = 10;
-  const total = subtotal + tax + shipping;
+  const subtotal = currentCart.totalPrice;
+  const tax = 0; // No tax
+  const shipping = 0; // Free shipping
+  const total = subtotal;
 
   return (
     <div className="checkout-page">
@@ -175,37 +204,30 @@ const Checkout: React.FC = () => {
             </div>
 
             <button type="submit" className="place-order-btn" disabled={loading}>
-              {loading ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
+              {loading ? 'Placing Order...' : `Place Order - ₹${total.toFixed(2)}`}
             </button>
           </form>
 
           <div className="order-summary">
             <h2>Order Summary</h2>
             <div className="summary-items">
-              {cart.items.map((item) => (
+              {currentCart.items.map((item: any) => (
                 <div key={item.id} className="summary-item">
                   <span>{item.productName} × {item.quantity}</span>
-                  <span>${item.subtotal.toFixed(2)}</span>
+                  <span>₹{item.subtotal.toFixed(2)}</span>
                 </div>
               ))}
             </div>
             <div className="summary-totals">
-              <div className="summary-row">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="summary-row">
-                <span>Tax (10%)</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
-              <div className="summary-row">
-                <span>Shipping</span>
-                <span>${shipping.toFixed(2)}</span>
-              </div>
               <div className="summary-row total">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>Order Total</span>
+                <span>₹{total.toFixed(2)}</span>
               </div>
+              {buyNowProductId && (
+                <div className="single-item-note">
+                  ⚡ Single Item Order
+                </div>
+              )}
             </div>
           </div>
         </div>

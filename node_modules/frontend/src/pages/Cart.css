@@ -270,6 +270,37 @@
   gap: 10px;
 }
 
+/* Buy Now Button - Cart */
+.buy-now-btn-cart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #ff3e6c 0%, #ff6b9d 100%);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(255, 62, 108, 0.3);
+}
+
+.buy-now-btn-cart:hover {
+  background: linear-gradient(135deg, #ff2855 0%, #ff5588 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 62, 108, 0.4);
+}
+
+.buy-now-btn-cart:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 62, 108, 0.3);
+}
+
 .wishlist-btn-flipkart,
 .remove-btn-flipkart {
   display: inline-flex;

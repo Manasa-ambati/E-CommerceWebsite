@@ -421,7 +421,7 @@ line-height: 1.6 ;
 }
 
 .product-name-link h3 {
-  color: #282c3f;
+  color:red;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 4px;
@@ -462,7 +462,7 @@ line-height: 1.6 ;
 .discount-price {
   font-size: 16px;
   font-weight: 700;
-  color: #388E3C; /* Amazon/Flipkart green for prices */
+  color:brown; /* Amazon/Flipkart green for prices */
 }
 
 .original-price {
