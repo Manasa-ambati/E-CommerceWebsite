@@ -1,21 +1,18 @@
+# Nixpacks Configuration for E-Commerce App
+# Java + Node.js Full Stack Build
+
 [phases.setup]
 nixPkgs = ["jdk17", "maven", "nodejs_20"]
 
-# Set PATH explicitly
-env.PATH = "$PATH:/nix/store/nodejs-20/bin"
-
 [phases.install]
 cmds = [
-  "echo 'Installing dependencies...'",
   "cd backend && mvn dependency:go-offline -q",
   "cd frontend && npm install --legacy-peer-deps"
 ]
 
 [phases.build]
 cmds = [
-  "echo 'Building backend...'",
   "cd backend && mvn clean package -DskipTests -q",
-  "echo 'Building frontend...'",
   "cd frontend && CI=false npm run build"
 ]
 
