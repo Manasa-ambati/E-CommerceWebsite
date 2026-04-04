@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "java -jar target/ecommerce-backend-1.0.0.jar",
+    "startCommand": "java -jar backend/target/ecommerce-backend-1.0.0.jar",
     "healthcheckPath": "/api/products/featured",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
