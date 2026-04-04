@@ -12,7 +12,7 @@
 /* Page Header */
 .orders-header {
   background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-orange-dark) 100%);
-  color: white;
+  color:purple;
   padding: var(--spacing-2xl) var(--spacing-xl);
   text-align: center;
   margin-bottom: var(--spacing-xl);
@@ -22,7 +22,7 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-extrabold);
   margin-bottom: var(--spacing-xs);
-  color: white;
+  color: maroon;
 }
 
 .orders-header p {
@@ -46,7 +46,7 @@
 
 /* Order Card */
 .order-card {
-  background: white;
+  background: green;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   overflow: hidden;

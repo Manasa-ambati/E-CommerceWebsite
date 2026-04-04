@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import RecentlyRemoved from './components/RecentlyRemoved';
 import { clearAllCaches } from './utils/cacheBuster';
 
 // Lazy load all page components for better performance
@@ -99,6 +100,10 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </Layout>
+        
+        {/* Recently Removed Items - Shows on all pages below navbar */}
+        <RecentlyRemoved />
+        
         {/* React Toastify Container - positioned below navbar */}
         <ToastContainer 
           position="top-right"

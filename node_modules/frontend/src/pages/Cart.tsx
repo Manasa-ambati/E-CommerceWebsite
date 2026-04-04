@@ -53,6 +53,23 @@ export const Cart: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once on mount
 
+  // Listen for cart updates from context (when items are removed/added)
+  useEffect(() => {
+    if (hasInitialized.current && contextCart && contextCart.items) {
+      const items = Array.isArray(contextCart.items) ? contextCart.items : [];
+      const mappedItems = items.map((item: any) => ({
+        productId: item.productId,
+        productName: item.productName,
+        productImage: item.productImage,
+        quantity: item.quantity,
+        price: item.productDiscountPrice || item.productPrice || item.price || 0,
+        productPrice: item.productPrice,
+        discountPrice: item.discountPrice
+      }));
+      setCart(mappedItems);
+    }
+  }, [contextCart]); // Update when context cart changes
+
   useEffect(() => {
     // Cart data is already loaded from context in the initial useEffect
     // No need to call refreshCartContext() here
@@ -174,17 +191,35 @@ export const Cart: React.FC = () => {
 
   const handleRemove = async (productId: number) => {
     try {
-      // First remove from UI immediately for better UX
-      setCart((prevCart) => prevCart.filter((item) => item.productId !== productId));
+      // Find the item before removing to save its details
+      const itemToRemove = cart.find(item => item.productId === productId);
       
-      // Then call context to persist removal (backend + localStorage)
+      // Call context to persist removal (backend + localStorage)
+      // The useEffect will automatically update local state when context changes
       await removeFromCartContext(productId);
+      
+      // Save to recently removed list for "Put Back" functionality
+      if (itemToRemove) {
+        const removedItem = {
+          productId: itemToRemove.productId,
+          productName: itemToRemove.productName,
+          productImage: itemToRemove.productImage,
+          productPrice: itemToRemove.productPrice || itemToRemove.price,
+          productDiscountPrice: itemToRemove.discountPrice,
+          quantity: itemToRemove.quantity,
+          removedAt: Date.now()
+        };
+        
+        // Dispatch custom event to notify RecentlyRemoved component
+        window.dispatchEvent(new CustomEvent('itemRemovedFromCart', { 
+          detail: removedItem 
+        }));
+      }
       
       toast.addToast('Item removed from cart', 'success');
     } catch (error) {
       console.error('Failed to remove item:', error);
       toast.addToast('Failed to remove item. Please try again.', 'error');
-      // Don't refresh - just show error. User can manually refresh if needed.
     }
   };
 
