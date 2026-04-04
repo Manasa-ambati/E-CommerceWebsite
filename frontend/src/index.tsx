@@ -3,18 +3,41 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-// PERFORMANCE: Register Service Worker for ultra-fast caching
+// CACHE FIX: Unregister Service Worker to prevent stale content on Railway
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('⚡ Service Worker registered:', registration.scope);
-      })
-      .catch(error => {
-        console.error('❌ Service Worker registration failed:', error);
+    // Unregister any existing service workers
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => {
+        registration.unregister();
+        console.log('✅ Service Worker unregistered:', registration.scope);
       });
+    });
   });
 }
+
+// CACHE FIX: Version-based auto-refresh for new deployments
+const APP_VERSION = 'v2.0.1'; // Increment this on each deployment
+
+window.addEventListener('load', () => {
+  const oldVersion = localStorage.getItem('app_version');
+  
+  if (oldVersion && oldVersion !== APP_VERSION) {
+    console.log(`🔄 New version detected: ${oldVersion} → ${APP_VERSION}`);
+    console.log('🗑️ Clearing cache and reloading...');
+    
+    // Clear all caches
+    localStorage.removeItem('app_version');
+    localStorage.removeItem('guest_cart');
+    localStorage.removeItem('recently_removed_items');
+    
+    // Force hard reload
+    window.location.reload();
+  } else {
+    localStorage.setItem('app_version', APP_VERSION);
+    console.log(`✅ App version: ${APP_VERSION}`);
+  }
+});
 
 // PERFORMANCE: Resource Timing API to monitor load times
 window.addEventListener('load', () => {
