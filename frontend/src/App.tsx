@@ -17,7 +17,7 @@ const Wishlist = lazy(() => import('./pages/Wishlist').then(module => ({ default
 const Cart = lazy(() => import('./pages/Cart').then(module => ({ default: module.Cart })));
 const Profile = lazy(() => import('./pages/Profile'));
 const Checkout = lazy(() => import('./pages/Checkout'));
-const Orders = lazy(() => import('./pages/Orders').then(module => ({ default: module.Orders })));
+const OrdersDashboard = lazy(() => import('./pages/OrdersDashboard'));
 const OrderTracking = lazy(() => import('./pages/OrderTracking'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Login = lazy(() => import('./pages/Login'));
@@ -92,7 +92,7 @@ const App = () => (
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders" element={<OrdersDashboard />} />
             <Route path="/track-order/:orderNumber" element={<OrderTracking />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
