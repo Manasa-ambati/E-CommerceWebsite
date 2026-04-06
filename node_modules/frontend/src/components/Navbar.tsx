@@ -501,22 +501,36 @@ useEffect(() => {
       {/* Amazon-style Mobile Bottom Navigation */}
       <div className="mobile-bottom-nav">
         <Link to="/" className="mobile-nav-item">
-          <span className="mobile-nav-icon">🏠</span>
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
           <span className="mobile-nav-label">Home</span>
         </Link>
         
         <Link to="/products" className="mobile-nav-item">
-          <span className="mobile-nav-icon">📦</span>
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
           <span className="mobile-nav-label">Products</span>
         </Link>
         
         <Link to="/categories" className="mobile-nav-item">
-          <span className="mobile-nav-icon">📂</span>
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
           <span className="mobile-nav-label">Categories</span>
         </Link>
         
         <Link to="/cart" className="mobile-nav-item">
-          <span className="mobile-nav-icon">🛒</span>
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+          </svg>
           <span className="mobile-nav-label">Cart</span>
           {cartCount > 0 && (
             <span className="mobile-nav-badge">{cartCount}</span>
@@ -524,7 +538,9 @@ useEffect(() => {
         </Link>
         
         <Link to="/wishlist" className="mobile-nav-item">
-          <span className="mobile-nav-icon">❤️</span>
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
           <span className="mobile-nav-label">Wishlist</span>
           {wishlistCount > 0 && (
             <span className="mobile-nav-badge">{wishlistCount}</span>

@@ -331,6 +331,8 @@ line-height: 1.6 ;
   box-shadow: var(--shadow-md);
   z-index: 5;
   transition: all var(--transition-base);
+  opacity: 0;
+  transform: translateX(10px);
 }
 
 .cart-icon-btn {
@@ -343,6 +345,13 @@ line-height: 1.6 ;
 
 .wishlist-icon-btn {
   top: var(--spacing-sm);
+}
+
+.product-card:hover .cart-icon-btn,
+.product-card:hover .share-icon-btn,
+.product-card:hover .wishlist-icon-btn {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Icon button SVG styles */
@@ -1032,6 +1041,35 @@ line-height: 1.6 ;
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+  }
+  
+  /* Show icons always on mobile */
+  .cart-icon-btn,
+  .share-icon-btn,
+  .wishlist-icon-btn {
+    opacity: 1;
+    transform: translateX(0);
+    width: 32px;
+    height: 32px;
+  }
+  
+  .cart-icon-btn {
+    top: 70px;
+  }
+  
+  .share-icon-btn {
+    top: 38px;
+  }
+  
+  .wishlist-icon-btn {
+    top: 6px;
+  }
+  
+  .cart-icon-btn svg,
+  .share-icon-btn svg,
+  .wishlist-icon-btn svg {
+    width: 16px;
+    height: 16px;
   }
   
   .hero-slider {
