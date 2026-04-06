@@ -506,8 +506,13 @@ useEffect(() => {
         </Link>
         
         <Link to="/products" className="mobile-nav-item">
-          <span className="mobile-nav-icon">🔍</span>
+          <span className="mobile-nav-icon">📦</span>
           <span className="mobile-nav-label">Products</span>
+        </Link>
+        
+        <Link to="/categories" className="mobile-nav-item">
+          <span className="mobile-nav-icon">📂</span>
+          <span className="mobile-nav-label">Categories</span>
         </Link>
         
         <Link to="/cart" className="mobile-nav-item">
@@ -524,11 +529,6 @@ useEffect(() => {
           {wishlistCount > 0 && (
             <span className="mobile-nav-badge">{wishlistCount}</span>
           )}
-        </Link>
-        
-        <Link to={isLoggedIn ? "/orders" : "/login"} className="mobile-nav-item">
-          <span className="mobile-nav-icon">👤</span>
-          <span className="mobile-nav-label">{isLoggedIn ? "Orders" : "Login"}</span>
         </Link>
       </div>
     </>

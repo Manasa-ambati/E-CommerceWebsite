@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { orderAPI } from '../services/api';
+import BackButton from '../components/BackButton';
 import './OrderTracking.css';
 
 interface Order {
@@ -81,6 +82,8 @@ const OrderTracking: React.FC = () => {
 
   return (
     <div className="order-tracking-page">
+      <BackButton fallbackPath="/orders" />
+      
       <div className="tracking-container">
         <div className="tracking-header">
           <h1>Order #{order.orderNumber}</h1>

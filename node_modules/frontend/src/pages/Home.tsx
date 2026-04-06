@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import BackButton from '../components/BackButton';
 import './Home.css';
 
 interface Product {
@@ -169,6 +170,8 @@ const Home: React.FC = () => {
 
   return (
     <div className="home">
+      <BackButton fallbackPath="/products" />
+      
       {/* Hero Section - Enhanced with Multiple Slides */}
       <section className="hero-section">
         <div className="hero-slider">

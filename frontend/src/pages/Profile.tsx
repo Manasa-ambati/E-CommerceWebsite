@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
+import BackButton from '../components/BackButton';
 import { useToast } from '../context/ToastContext';
 
 const Profile: React.FC = () => {
@@ -90,6 +91,8 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-page">
+      <BackButton fallbackPath="/" />
+      
       <div className="profile-container">
         <h1>My Profile</h1>
         
@@ -133,8 +136,21 @@ const Profile: React.FC = () => {
             </div>
           </div>
           
-          
-           
+          <div className="profile-actions">
+            <button 
+              className="refresh-profile-btn"
+              onClick={() => {
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                  const parsed = JSON.parse(userData);
+                  setUser(parsed);
+                  toast.addToast('Profile refreshed!', 'success');
+                  console.log('Profile refreshed:', parsed);
+                }
+              }}
+            >
+        
+            </button>
             {user?.emailVerified !== true && (
               <p className="verification-note">
                 ℹ️ If you've verified your email, please logout and login again to see the updated status.
@@ -143,7 +159,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
-
+    </div>
   );
 };
 

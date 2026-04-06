@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { orderAPI, cartAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
+import BackButton from '../components/BackButton';
 import './Checkout.css';
 
 const Checkout: React.FC = () => {
@@ -107,6 +108,8 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="checkout-page">
+      <BackButton fallbackPath="/cart" />
+      
       <div className="checkout-container">
         <h1>Checkout</h1>
         

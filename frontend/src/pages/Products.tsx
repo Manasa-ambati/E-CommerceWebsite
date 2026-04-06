@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { productAPI, categoryAPI, cartAPI, wishlistAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useCart } from '../context/CartContext';
+import BackButton from '../components/BackButton';
 import './Products.css';
 
 interface Product {
@@ -215,6 +216,8 @@ const Products: React.FC = () => {
 
   return (
     <div className="products-page">
+      <BackButton fallbackPath="/" />
+      
       {/* Page Header */}
       <div className="products-header">
         <h1>Shop All Products</h1>

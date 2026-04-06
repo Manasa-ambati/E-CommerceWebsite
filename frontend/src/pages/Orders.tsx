@@ -4,6 +4,7 @@ import { orderAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
+import BackButton from '../components/BackButton';
 import './Orders.css';
 
 interface OrderItem {
@@ -136,6 +137,8 @@ export const Orders: React.FC = () => {
 
   return (
     <div className="orders-page">
+      <BackButton fallbackPath="/" />
+      
       <div className="orders-container">
         {/* Header */}
         <div className="orders-header">

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI, wishlistAPI, reviewAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import BackButton from '../components/BackButton';
 import './ProductDetail.css';
 
 interface Product {
@@ -336,6 +337,8 @@ const ProductDetail: React.FC = () => {
 
   return (
     <div className="product-detail">
+      <BackButton fallbackPath="/products" />
+      
       <div className="product-detail-container">
         {/* Image Gallery */}
         <div className="product-images">

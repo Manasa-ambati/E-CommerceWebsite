@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { adminAPI } from '../services/api';
+import BackButton from '../components/BackButton';
 import './AdminDashboard.css';
 
 interface Order {
@@ -65,6 +66,8 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="admin-dashboard">
+      <BackButton fallbackPath="/" />
+      
       <div className="dashboard-container">
         <h1>Admin Dashboard</h1>
         

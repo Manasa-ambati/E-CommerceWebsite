@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { wishlistAPI, cartAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import BackButton from '../components/BackButton';
 import './Wishlist.css';
 
 
@@ -132,6 +133,8 @@ export const Wishlist: React.FC = () => {
   if (wishlist.length === 0) {
     return (
       <div className="wishlist-page">
+        <BackButton fallbackPath="/" />
+        
         <div className="wishlist-empty-container">
           <div className="empty-wishlist-content">
             {/* Heart Icon Animation */}
@@ -209,6 +212,8 @@ export const Wishlist: React.FC = () => {
 
   return (
     <div className="wishlist-page">
+      <BackButton fallbackPath="/" />
+      
       <div className="wishlist-header">
         <h1>My Wishlist</h1>
         <p className="wishlist-count">{wishlist.length} items</p>
