@@ -21,6 +21,18 @@ body {
   padding-top: 70px; /* Same as navbar height */
 }
 
+/* Ensure proper spacing below navbar on mobile */
+@media (max-width: 768px) {
+  .app {
+    padding-top: 70px; /* Maintain spacing on mobile */
+  }
+  
+  /* Add extra breathing room for main content */
+  .main-content {
+    padding-top: 10px;
+  }
+}
+
 .main-content {
   flex: 1;
   padding: 20px;

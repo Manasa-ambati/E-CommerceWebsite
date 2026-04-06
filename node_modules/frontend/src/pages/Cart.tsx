@@ -4,6 +4,7 @@ import { cartAPI, wishlistAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import BackButton from '../components/BackButton';
 import '../pages/Cart.css'
 
 interface CartItem {
@@ -263,6 +264,8 @@ export const Cart: React.FC = () => {
 
   return (
     <div className="cart-page">
+      <BackButton fallbackPath="/products" />
+      
       <div className="cart-header-section">
         <div className="cart-header-content">
           <h1>My Cart</h1>

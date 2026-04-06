@@ -3,6 +3,7 @@ import { orderAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 import ConfirmModal from '../components/ConfirmModal';
+import BackButton from '../components/BackButton';
 import './OrdersDashboard.css';
 
 interface OrderItem {
@@ -546,6 +547,8 @@ const OrdersDashboard: React.FC = () => {
       {renderSidebar()}
       
       <div className="dashboard-main">
+        <BackButton fallbackPath="/" />
+        
         {activeTab === 'dashboard' && (
           <>
             <div className="page-header">

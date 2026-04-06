@@ -121,6 +121,7 @@
   flex: 1;
   padding: 30px;
   max-width: calc(100% - 260px);
+  min-height: calc(100vh - 70px); /* Ensure full height minus navbar */
 }
 
 .page-header {
@@ -952,9 +953,10 @@
   .dashboard-main {
     margin-left: 0;
     max-width: 100%;
-    padding: 12px;
+    padding: 16px 12px; /* Increased top padding for spacing */
     padding-bottom: 80px; /* Space for bottom nav */
     margin-top: 0;
+    min-height: calc(100vh - 70px - 60px); /* Viewport - navbar - bottom nav */
   }
   
   .page-header {

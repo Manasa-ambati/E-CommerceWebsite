@@ -1,0 +1,57 @@
+/* Back Button - Mobile Only */
+.back-button {
+  display: none; /* Hidden on desktop */
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.back-button:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: translateX(0);
+  background: #f3f4f6;
+}
+
+.back-button svg {
+  flex-shrink: 0;
+}
+
+.back-text {
+  white-space: nowrap;
+}
+
+/* Show only on mobile */
+@media (max-width: 768px) {
+  .back-button {
+    display: inline-flex;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+  .back-button {
+    padding: 6px 12px;
+    font-size: 13px;
+    gap: 4px;
+  }
+  
+  .back-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
