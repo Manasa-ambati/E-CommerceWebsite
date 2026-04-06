@@ -497,6 +497,40 @@ useEffect(() => {
           </div>
         </div>
       </nav>
+      
+      {/* Amazon-style Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <Link to="/" className="mobile-nav-item">
+          <span className="mobile-nav-icon">🏠</span>
+          <span className="mobile-nav-label">Home</span>
+        </Link>
+        
+        <Link to="/products" className="mobile-nav-item">
+          <span className="mobile-nav-icon">🔍</span>
+          <span className="mobile-nav-label">Products</span>
+        </Link>
+        
+        <Link to="/cart" className="mobile-nav-item">
+          <span className="mobile-nav-icon">🛒</span>
+          <span className="mobile-nav-label">Cart</span>
+          {cartCount > 0 && (
+            <span className="mobile-nav-badge">{cartCount}</span>
+          )}
+        </Link>
+        
+        <Link to="/wishlist" className="mobile-nav-item">
+          <span className="mobile-nav-icon">❤️</span>
+          <span className="mobile-nav-label">Wishlist</span>
+          {wishlistCount > 0 && (
+            <span className="mobile-nav-badge">{wishlistCount}</span>
+          )}
+        </Link>
+        
+        <Link to={isLoggedIn ? "/orders" : "/login"} className="mobile-nav-item">
+          <span className="mobile-nav-icon">👤</span>
+          <span className="mobile-nav-label">{isLoggedIn ? "Orders" : "Login"}</span>
+        </Link>
+      </div>
     </>
   );
 };

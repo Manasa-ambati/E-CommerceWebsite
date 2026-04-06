@@ -732,3 +732,109 @@
   color: var(--primary);
   text-decoration: underline;
 }
+
+/* ========================================
+   AMAZON-STYLE MOBILE FOOTER
+   ======================================== */
+
+@media (max-width: 768px) {
+  .footer {
+    margin-top: 20px !important;
+    padding: 20px 15px 80px !important; /* Extra bottom padding for mobile nav */
+    background: #232f3e !important; /* Amazon dark blue */
+    min-height: auto !important;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr !important; /* Single column */
+    gap: 20px !important;
+    padding: 0 !important;
+  }
+  
+  .footer-section {
+    padding: 15px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 8px !important;
+  }
+  
+  .footer-section h3,
+  .footer-section h4 {
+    font-size: 16px !important;
+    margin-bottom: 12px !important;
+    color: #ff9900 !important; /* Amazon orange */
+  }
+  
+  .footer-logo {
+    font-size: 20px !important;
+    text-align: center !important;
+  }
+  
+  .footer-description {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+  }
+  
+  .social-links {
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+  
+  .social-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 8px !important;
+  }
+  
+  .footer-section ul li a {
+    font-size: 13px !important;
+    padding: 6px 0 !important;
+    display: block !important;
+  }
+  
+  .newsletter-form {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .newsletter-input {
+    width: 100% !important;
+    font-size: 13px !important;
+    padding: 10px !important;
+  }
+  
+  .newsletter-btn {
+    width: 100% !important;
+    font-size: 13px !important;
+    padding: 10px !important;
+  }
+  
+  .qr-code-section {
+    display: none !important; /* Hide QR code on mobile */
+  }
+  
+  .footer-bottom {
+    padding-top: 15px !important;
+    margin-top: 15px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .footer-bottom p {
+    font-size: 11px !important;
+    text-align: center !important;
+  }
+  
+  .payment-methods {
+    justify-content: center !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+  }
+  
+  .payment-icon {
+    width: 40px !important;
+    height: 25px !important;
+  }
+}
