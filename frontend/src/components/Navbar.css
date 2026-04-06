@@ -953,8 +953,9 @@ button:focus,
     padding: 8px !important;
   }
   
-  /* Add bottom navigation bar */
+  /* Add bottom navigation bar - ONLY show on mobile */
   .mobile-bottom-nav {
+    display: flex;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -1033,6 +1034,13 @@ button:focus,
   /* Adjust main content for bottom nav */
   body {
     padding-bottom: 60px !important;
+  }
+}
+
+/* Hide mobile bottom nav on laptop and desktop */
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none !important;
   }
 }
 

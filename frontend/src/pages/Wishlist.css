@@ -742,6 +742,8 @@
   .amazon-card-row {
     grid-template-columns: 1fr;
     gap: 0;
+    display: flex;
+    flex-direction: column;
   }
   
   .product-image-section {
@@ -750,10 +752,12 @@
     border-right: none;
     border-bottom: 1px solid #e7e7e7;
     padding: 12px;
+    order: 1;
   }
   
   .product-info-section {
     padding: 12px;
+    order: 2;
   }
   
   .product-actions-section {
@@ -763,6 +767,7 @@
     border-top: 1px solid #e7e7e7;
     min-width: auto;
     gap: 8px;
+    order: 3;
   }
   
   .move-to-cart-btn-amazon,
@@ -809,19 +814,27 @@
     font-size: 12px;
   }
   
+  .amazon-card-row {
+    display: flex;
+    flex-direction: column;
+  }
+  
   .product-image-section {
     height: 180px;
     padding: 10px;
+    order: 1;
   }
   
   .product-info-section {
     padding: 10px;
+    order: 2;
   }
   
   .product-actions-section {
     padding: 10px;
     flex-direction: column;
     gap: 8px;
+    order: 3;
   }
   
   .move-to-cart-btn-amazon,

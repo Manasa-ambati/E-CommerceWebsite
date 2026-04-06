@@ -161,23 +161,33 @@ export const Cart: React.FC = () => {
     
     const token = localStorage.getItem('token');
     
-    if (token) {
-      // Update backend
-      try {
-        await cartAPI.update(productId, newQuantity);
-      } catch (err: any) {
-        console.error('Failed to update quantity:', err);
-        toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
-        return;
-      }
-    }
-    
-    // Update local state
+    // Update local state immediately for better UX
     setCart((prev) =>
       prev.map((item) =>
         item.productId === productId ? { ...item, quantity: newQuantity } : item
       )
     );
+    
+    if (token) {
+      // Update backend
+      try {
+        await cartAPI.update(productId, newQuantity);
+        // Refresh cart context to keep it in sync
+        await refreshCartContext();
+      } catch (err: any) {
+        console.error('Failed to update quantity:', err);
+        toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
+        // Revert on error
+        await refreshCartContext();
+      }
+    } else {
+      // For guest users, update localStorage
+      const localCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+      const updatedCart = localCart.map((item: any) => 
+        item.productId === productId ? { ...item, quantity: newQuantity } : item
+      );
+      localStorage.setItem('guest_cart', JSON.stringify(updatedCart));
+    }
   };
 
   const handleBuyNow = async (productId: number) => {
