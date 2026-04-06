@@ -119,11 +119,51 @@ const OrdersDashboard: React.FC = () => {
     ? orders 
     : orders.filter(order => order.status.toUpperCase() === filterStatus.toUpperCase());
 
+  // Extract unique customers from orders
+  const customers = React.useMemo(() => {
+    const customerMap = new Map();
+    
+    orders.forEach(order => {
+      if (order.shippingAddress) {
+        const key = `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`;
+        
+        if (!customerMap.has(key)) {
+          customerMap.set(key, {
+            name: key,
+            email: 'customer@example.com', // Would come from user data in real app
+            phone: order.shippingAddress.phone,
+            location: `${order.shippingAddress.city}, ${order.shippingAddress.state}`,
+            orders: 0,
+            totalSpent: 0,
+            lastOrder: order.createdAt
+          });
+        }
+        
+        const customer = customerMap.get(key);
+        customer.orders += 1;
+        customer.totalSpent += order.total || order.subtotal || 0;
+        
+        // Update last order date if this one is more recent
+        if (new Date(order.createdAt) > new Date(customer.lastOrder)) {
+          customer.lastOrder = order.createdAt;
+        }
+      }
+    });
+    
+    return Array.from(customerMap.values()).sort((a, b) => 
+      new Date(b.lastOrder).getTime() - new Date(a.lastOrder).getTime()
+    );
+  }, [orders]);
+
   // Dashboard stats
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, order) => sum + (order.total || order.subtotal || 0), 0);
   const pendingOrders = orders.filter(o => o.status.toUpperCase() === 'PENDING' || o.status.toUpperCase() === 'PROCESSING').length;
   const deliveredOrders = orders.filter(o => o.status.toUpperCase() === 'DELIVERED').length;
+  const totalCustomers = customers.length;
+  const topCustomer = customers.length > 0 ? customers.reduce((prev, current) => 
+    (prev.totalSpent > current.totalSpent) ? prev : current
+  ) : null;
 
   const renderSidebar = () => (
     <div className="dashboard-sidebar">
@@ -198,6 +238,24 @@ const OrdersDashboard: React.FC = () => {
           <p>Delivered</p>
         </div>
       </div>
+      
+      <div className="stat-card cyan">
+        <div className="stat-icon">👥</div>
+        <div className="stat-content">
+          <h3>{totalCustomers}</h3>
+          <p>Total Customers</p>
+        </div>
+      </div>
+      
+      {topCustomer && (
+        <div className="stat-card gold">
+          <div className="stat-icon">⭐</div>
+          <div className="stat-content">
+            <h3>₹{topCustomer.totalSpent.toFixed(0)}</h3>
+            <p>Top Customer</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -411,6 +469,78 @@ const OrdersDashboard: React.FC = () => {
     );
   };
 
+  const renderCustomersTable = () => (
+    <div className="customers-table-container">
+      <div className="table-header">
+        <h2>Customers ({totalCustomers})</h2>
+        {topCustomer && (
+          <div className="top-customer-badge">
+            ⭐ Top Customer: {topCustomer.name}
+          </div>
+        )}
+      </div>
+
+      {customers.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">👥</div>
+          <h3>No customers yet</h3>
+          <p>Customers will appear here once they place orders.</p>
+        </div>
+      ) : (
+        <div className="table-responsive">
+          <table className="customers-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Location</th>
+                <th>Orders</th>
+                <th>Total Spent</th>
+                <th>Last Order</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((customer, index) => (
+                <tr key={index}>
+                  <td>
+                    <div className="customer-avatar-name">
+                      <div className="customer-avatar">
+                        {customer.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="customer-full-name">{customer.name}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="contact-info">
+                      <div className="contact-phone">📞 {customer.phone}</div>
+                      <div className="contact-email">{customer.email}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span className="location-text">{customer.location}</span>
+                  </td>
+                  <td>
+                    <span className="orders-count">{customer.orders} order(s)</span>
+                  </td>
+                  <td>
+                    <span className="customer-spent">₹{customer.totalSpent.toFixed(2)}</span>
+                  </td>
+                  <td>
+                    {new Date(customer.lastOrder).toLocaleDateString('en-IN', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="orders-dashboard">
       {renderSidebar()}
@@ -439,11 +569,7 @@ const OrdersDashboard: React.FC = () => {
             <div className="page-header">
               <h1>Customers</h1>
             </div>
-            <div className="coming-soon">
-              <div className="coming-soon-icon">🚧</div>
-              <h2>Coming Soon</h2>
-              <p>Customer management features are under development.</p>
-            </div>
+            {renderCustomersTable()}
           </>
         )}
       </div>
