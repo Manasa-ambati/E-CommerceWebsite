@@ -23,6 +23,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on mobile */
+  gap: 10px;
 }
 
 .cart-header-content h1 {
@@ -30,6 +32,8 @@
   color: white;
   margin: 0;
   font-weight: 700;
+  word-wrap: break-word; /* Prevent overflow */
+  line-height: 1.3;
 }
 
 .cart-items-count {
@@ -565,8 +569,17 @@
     padding: 16px 0;
   }
   
+  .cart-header-content {
+    padding: 0 12px;
+    flex-direction: column; /* Stack vertically on mobile */
+    align-items: flex-start; /* Left align */
+    gap: 8px;
+  }
+  
   .cart-header-content h1 {
-    font-size: 24px;
+    font-size: 22px;
+    word-wrap: break-word;
+    width: 100%;
   }
   
   .cart-items-count {

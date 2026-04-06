@@ -1,6 +1,6 @@
-/* Back Button - Mobile Only */
+/* Back Button - All Screen Sizes */
 .back-button {
-  display: none; /* Hidden on desktop */
+  display: inline-flex; /* Show on all devices */
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
@@ -13,7 +13,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 12px;
+  margin: 12px 12px 12px 12px; /* Add margin all around for spacing */
+  max-width: calc(100% - 24px); /* Prevent overflow */
 }
 
 .back-button:hover {
@@ -33,13 +34,6 @@
 
 .back-text {
   white-space: nowrap;
-}
-
-/* Show only on mobile */
-@media (max-width: 768px) {
-  .back-button {
-    display: inline-flex;
-  }
 }
 
 /* Extra small mobile */

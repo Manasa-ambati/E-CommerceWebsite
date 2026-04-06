@@ -9,6 +9,9 @@ import Footer from './components/Footer';
 import RecentlyRemoved from './components/RecentlyRemoved';
 import { clearAllCaches } from './utils/cacheBuster';
 
+// Import Amazon-style mobile view
+import './styles/AmazonMobileView.css';
+
 // Lazy load all page components for better performance
 const Home = lazy(() => import('./pages/Home'));
 const Products = lazy(() => import('./pages/Products'));
