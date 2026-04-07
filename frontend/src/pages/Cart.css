@@ -17,9 +17,11 @@
   display: inline-flex !important;
   visibility: visible !important;
   opacity: 1 !important;
-  position: relative;
-  z-index: 100;
-  margin: 8px 12px;
+  position: relative !important;
+  z-index: 100 !important;
+  margin: 8px 12px !important;
+  top: auto !important;
+  left: auto !important;
 }
 
 /* Header Section - Flipkart Blue Bar */

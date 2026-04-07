@@ -5,26 +5,45 @@
 
 .amazon-login-container {
   min-height: 100vh;
-  background: #f2f2f2;
+  background: linear-gradient(to bottom, #f0f2f5 0%, #ffffff 100%);
   padding-top: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Amazon Ember', Arial, sans-serif;
+  position: relative;
+}
+
+/* Background Pattern */
+.amazon-login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+  z-index: 0;
 }
 
 /* LOGO */
 .amazon-logo {
   text-align: center;
   margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  padding: 20px 0;
 }
 
 .amazon-logo h2 {
-  font-size: 32px;
-  font-weight: bold;
-  color: #232f3e;
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .amazon-logo span {
   color: #ff9900;
+  font-weight: 800;
 }
 
 /* MAIN CONTAINER */
@@ -32,9 +51,12 @@
   width: 350px;
   margin: 20px auto;
   background: #fff;
-  padding: 26px;
+  padding: 28px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  position: relative;
+  z-index: 1;
 }
 
 /* TITLE */
@@ -62,22 +84,25 @@
 /* INPUT FIELDS */
 .form-input {
   width: 100%;
-  padding: 8px 10px;
-  margin: 6px 0 15px;
+  padding: 10px 12px;
+  margin: 6px 0 18px;
   border: 1px solid #a6a6a6;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: 6px;
+  font-size: 14px;
   box-sizing: border-box;
   outline: none;
+  transition: all 0.2s ease;
+  background: #fafafa;
 }
 
 .form-input:focus {
-  border-color: #e77600;
-  box-shadow: 0 0 3px #e77600;
+  border-color: #ff9900;
+  box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.15);
+  background: #fff;
 }
 
 .form-input::placeholder {
-  color: #767676;
+  color: #888;
 }
 
 /* PASSWORD ROW */
@@ -107,24 +132,28 @@
 /* SUBMIT BUTTON */
 .submit-btn {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: linear-gradient(#f7dfa5, #f0c14b);
+  padding: 12px;
+  margin-top: 12px;
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
   border: 1px solid #a88734;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   font-family: Arial, sans-serif;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .submit-btn:hover {
-  background: linear-gradient(#f5d78e, #eeb933);
+  background: linear-gradient(to bottom, #f5d78e, #eeb933);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 
 .submit-btn:active {
   background: #f0c14b;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2) inset;
+  transform: translateY(1px);
 }
 
 .submit-btn:disabled {
@@ -132,6 +161,7 @@
   cursor: not-allowed;
   background: #e0e0e0;
   border-color: #c0c0c0;
+  box-shadow: none;
 }
 
 /* CHECKBOX */
@@ -200,23 +230,31 @@
 
 .create-account-btn {
   width: 100%;
-  padding: 10px;
-  background: linear-gradient(#f7f8fa, #e7e9ec);
+  padding: 12px;
+  background: linear-gradient(to bottom, #f7f8fa, #e7e9ec);
   border: 1px solid #adb1b8;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   font-family: Arial, sans-serif;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  color: #111;
 }
 
 .create-account-btn:hover {
-  background: linear-gradient(#eef0f3, #dde1e6);
+  background: linear-gradient(to bottom, #eef0f3, #dde1e6);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .create-account-btn:active {
   background: #e7e9ec;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2) inset;
+  transform: translateY(1px);
 }
 
 /* LOADING SPINNER */
@@ -249,13 +287,41 @@
 
 /* Responsive */
 @media (max-width: 480px) {
-  .login-container,
-  .create-account-section {
-    width: 90%;
-    margin: 20px auto;
+  .amazon-login-container::before {
+    height: 300px;
+  }
+  
+  .amazon-logo {
+    padding: 15px 0;
   }
   
   .amazon-logo h2 {
     font-size: 28px;
+  }
+  
+  .login-container,
+  .create-account-section {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .login-container {
+    padding: 20px;
+  }
+  
+  .login-container h2 {
+    font-size: 24px;
+  }
+  
+  .form-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px;
+  }
+  
+  .submit-btn,
+  .create-account-btn {
+    padding: 14px;
+    font-size: 16px;
   }
 }
