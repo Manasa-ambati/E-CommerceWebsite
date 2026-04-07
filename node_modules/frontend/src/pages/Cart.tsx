@@ -275,9 +275,7 @@ export const Cart: React.FC = () => {
 
   return (
     <div className="cart-page">
-      <div className="back-button-wrapper">
-        <BackButton fallbackPath="/products" />
-      </div>
+      <BackButton fallbackPath="/products" />
       
       <div className="cart-header-section">
         <div className="cart-header-content">

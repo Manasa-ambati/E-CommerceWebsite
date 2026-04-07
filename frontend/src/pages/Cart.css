@@ -20,28 +20,6 @@
   position: relative;
   z-index: 100;
   margin: 8px 12px;
-  top: 0;
-  left: 0;
-}
-
-/* BackButton wrapper for better positioning */
-.cart-page .back-button-wrapper {
-  position: relative;
-  z-index: 100;
-  padding: 0;
-  margin: 0;
-}
-
-/* Mobile - BackButton closer to navbar */
-@media (max-width: 768px) {
-  .cart-page .back-button {
-    margin: 4px 8px;
-  }
-  
-  .cart-page .back-button-wrapper {
-    margin: 0;
-    padding: 0;
-  }
 }
 
 /* Header Section - Flipkart Blue Bar */
@@ -632,6 +610,10 @@
 
 /* Mobile - Responsive Layout */
 @media (max-width: 768px) {
+  .cart-page .back-button {
+    margin: 4px 8px;
+  }
+  
   .cart-header-section {
     padding: 16px 0;
   }
