@@ -1,19 +1,19 @@
-/* Back Button - All Screen Sizes */
+/* Back Button - Clean Pill Style */
 .back-button {
-  display: inline-flex !important; /* Force show on all devices */
+  display: inline-flex !important;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #374151;
-  font-size: 14px;
-  font-weight: 600;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #f1f1f1;
+  border: none !important;
+  border-radius: 12px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin: 8px 12px; /* Reduced margin for better spacing */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin: 12px;
   max-width: calc(100% - 24px);
   z-index: 100;
   visibility: visible !important;
@@ -21,18 +21,20 @@
 }
 
 .back-button:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  transform: translateX(-2px);
+  background-color: #e5e5e5;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
 }
 
 .back-button:active {
-  transform: translateX(0);
-  background: #f3f4f6;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .back-button svg {
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .back-text {
@@ -42,14 +44,14 @@
 /* Extra small mobile */
 @media (max-width: 480px) {
   .back-button {
-    padding: 6px 12px;
-    font-size: 13px;
-    gap: 4px;
-    margin: 4px 8px; /* Even smaller margin on mobile */
+    padding: 8px 14px;
+    font-size: 15px;
+    gap: 6px;
+    margin: 8px;
   }
   
   .back-button svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
   }
 }
