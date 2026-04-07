@@ -3,6 +3,16 @@
   min-height: calc(100vh - 70px);
   background-color: #f3f3f3; /* Amazon light gray */
   margin-top: 70px;
+  position: relative;
+}
+
+/* Ensure BackButton is visible */
+.wishlist-page .back-button {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 10;
 }
 
 /* Wishlist Header - Amazon Style */
@@ -739,35 +749,36 @@
     font-size: 13px;
   }
   
+  /* Force vertical stacking - Image on top, info below */
   .amazon-card-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
   }
   
   .product-image-section {
-    width: 100%;
+    width: 100% !important;
     height: 200px;
-    border-right: none;
+    border-right: none !important;
     border-bottom: 1px solid #e7e7e7;
     padding: 12px;
-    order: 1;
+    order: 1 !important;
   }
   
   .product-info-section {
     padding: 12px;
-    order: 2;
+    order: 2 !important;
+    width: 100% !important;
   }
   
   .product-actions-section {
     padding: 12px;
     flex-direction: row;
-    border-left: none;
+    border-left: none !important;
     border-top: 1px solid #e7e7e7;
     min-width: auto;
     gap: 8px;
-    order: 3;
+    order: 3 !important;
   }
   
   .move-to-cart-btn-amazon,
@@ -775,6 +786,9 @@
     flex: 1;
     padding: 10px 12px;
     font-size: 13px;
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .product-title {
@@ -814,27 +828,28 @@
     font-size: 12px;
   }
   
+  /* Force vertical stacking */
   .amazon-card-row {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   .product-image-section {
     height: 180px;
     padding: 10px;
-    order: 1;
+    order: 1 !important;
   }
   
   .product-info-section {
     padding: 10px;
-    order: 2;
+    order: 2 !important;
   }
   
   .product-actions-section {
     padding: 10px;
     flex-direction: column;
     gap: 8px;
-    order: 3;
+    order: 3 !important;
   }
   
   .move-to-cart-btn-amazon,

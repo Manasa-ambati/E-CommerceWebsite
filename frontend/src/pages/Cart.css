@@ -7,6 +7,16 @@
   min-height: 100vh;
   background: #f1f3f6; /* Flipkart light gray */
   padding: 0;
+  position: relative;
+}
+
+/* Ensure BackButton is visible */
+.cart-page .back-button {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 10;
 }
 
 /* Header Section - Flipkart Blue Bar */
@@ -587,7 +597,11 @@
   
   .cart-summary-box {
     position: static;
-    order: -1;
+    order: 2; /* Summary comes AFTER items */
+  }
+  
+  .cart-items-section {
+    order: 1; /* Items come FIRST */
   }
 }
 
@@ -659,6 +673,8 @@
     flex-wrap: wrap;
     gap: 8px;
     width: 100%;
+    display: flex !important;
+    visibility: visible !important;
   }
   
   .buy-now-btn-cart {
@@ -675,6 +691,9 @@
     justify-content: center;
     padding: 10px 12px;
     font-size: 13px;
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .item-subtotal-section {

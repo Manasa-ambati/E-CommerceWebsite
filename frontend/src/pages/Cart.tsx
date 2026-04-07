@@ -161,6 +161,9 @@ export const Cart: React.FC = () => {
     
     const token = localStorage.getItem('token');
     
+    // Store previous state for rollback
+    const previousCart = [...cart];
+    
     // Update local state immediately for better UX
     setCart((prev) =>
       prev.map((item) =>
@@ -168,25 +171,29 @@ export const Cart: React.FC = () => {
       )
     );
     
-    if (token) {
-      // Update backend
-      try {
+    try {
+      if (token) {
+        // Update backend for logged-in users
         await cartAPI.update(productId, newQuantity);
         // Refresh cart context to keep it in sync
         await refreshCartContext();
-      } catch (err: any) {
-        console.error('Failed to update quantity:', err);
-        toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
-        // Revert on error
+      } else {
+        // For guest users, update localStorage
+        const localCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+        const updatedCart = localCart.map((item: any) => 
+          item.productId === productId ? { ...item, quantity: newQuantity } : item
+        );
+        localStorage.setItem('guest_cart', JSON.stringify(updatedCart));
+        // Refresh cart context
         await refreshCartContext();
       }
-    } else {
-      // For guest users, update localStorage
-      const localCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
-      const updatedCart = localCart.map((item: any) => 
-        item.productId === productId ? { ...item, quantity: newQuantity } : item
-      );
-      localStorage.setItem('guest_cart', JSON.stringify(updatedCart));
+      
+      toast.addToast('Quantity updated', 'success');
+    } catch (err: any) {
+      console.error('Failed to update quantity:', err);
+      toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
+      // Revert to previous state on error
+      setCart(previousCart);
     }
   };
 
@@ -285,7 +292,7 @@ export const Cart: React.FC = () => {
       
       <div className="cart-container">
         <div className="cart-content">
-          {/* Cart Items */}
+          {/* Cart Items - Product Details First */}
           <div className="cart-items-section">
             <div className="cart-header-actions">
               <button className="clear-cart-btn-flipkart" onClick={handleClearCart}>
