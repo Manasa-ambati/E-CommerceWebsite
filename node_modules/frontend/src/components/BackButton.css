@@ -33,8 +33,12 @@
 
 .back-button svg {
   flex-shrink: 0;
-  width: 18px;
-  height: 18px;
+  width: 18px !important;
+  height: 18px !important;
+  display: block !important;
+  min-width: 18px;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .back-text {

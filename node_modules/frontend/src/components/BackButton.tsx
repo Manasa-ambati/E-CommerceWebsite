@@ -28,11 +28,12 @@ const BackButton: React.FC<BackButtonProps> = ({ fallbackPath = '/' }) => {
   return (
     <button className="back-button" onClick={handleBack} aria-label="Go back">
       <svg 
-        width="24" 
-        height="24" 
+        width="18" 
+        height="18" 
         viewBox="0 0 24 24" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
+        style={{ display: 'block', minWidth: '18px' }}
       >
         <path 
           d="M19 12H5M5 12L12 19M5 12L12 5" 
