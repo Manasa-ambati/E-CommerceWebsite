@@ -275,15 +275,11 @@ export const Cart: React.FC = () => {
 
   return (
     <div className="cart-page">
-      <div className="cart-back-button-container">
-        <BackButton fallbackPath="/products" />
-      </div>
+      <BackButton fallbackPath="/products" />
       
-      <div className="cart-header-section">
-        <div className="cart-header-content">
-          <h1>My Cart</h1>
-          <p className="cart-items-count">{cart.length} Items</p>
-        </div>
+      <div className="cart-header">
+        <h1>My Cart</h1>
+        <p className="cart-items-count">{cart.length} Items</p>
       </div>
       
       <div className="cart-container">
