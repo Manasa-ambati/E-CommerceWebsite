@@ -18,10 +18,23 @@
   visibility: visible !important;
   opacity: 1 !important;
   position: relative !important;
-  z-index: 100 !important;
-  margin: 8px 12px !important;
+  z-index: 1000 !important;
+  margin: 12px !important;
   top: auto !important;
   left: auto !important;
+  background-color: #f1f1f1 !important;
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* BackButton container */
+.cart-back-button-container {
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 /* Header Section - Flipkart Blue Bar */
