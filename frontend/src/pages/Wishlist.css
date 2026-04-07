@@ -4,6 +4,8 @@
   background-color: #f3f3f3; /* Amazon light gray */
   margin-top: 70px;
   position: relative;
+  overflow-y: auto; /* Enable scrolling */
+  height: 100%;
 }
 
 /* Ensure BackButton is visible */
@@ -734,6 +736,9 @@
   .wishlist-page {
     padding: 12px;
     margin-top: 110px;
+    overflow-y: auto !important;
+    height: auto !important;
+    padding-bottom: 80px; /* Space for bottom nav */
   }
   
   .wishlist-header {
@@ -760,7 +765,7 @@
     width: 100% !important;
     height: 200px;
     border-right: none !important;
-    border-bottom: 1px solid #e7e7e7;
+    border-bottom: 2px solid #e7e7e7;
     padding: 12px;
     order: 1 !important;
   }
@@ -775,10 +780,11 @@
     padding: 12px;
     flex-direction: row;
     border-left: none !important;
-    border-top: 1px solid #e7e7e7;
+    border-top: 2px solid #e7e7e7;
     min-width: auto;
     gap: 8px;
     order: 3 !important;
+    width: 100% !important;
   }
   
   .move-to-cart-btn-amazon,

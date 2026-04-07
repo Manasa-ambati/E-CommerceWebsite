@@ -897,3 +897,28 @@
     font-size: 1.1rem;
   }
 }
+
+/* Mobile - Hide Filter Section */
+@media (max-width: 768px) {
+  .filter-section {
+    display: none !important;
+  }
+  
+  .products-container {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .filter-sidebar {
+    display: none !important;
+  }
+  
+  .products-main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .products-page {
+    margin-top: 110px; /* Account for mobile bottom nav */
+    padding: 0;
+  }
+}

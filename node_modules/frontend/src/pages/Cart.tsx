@@ -161,10 +161,7 @@ export const Cart: React.FC = () => {
     
     const token = localStorage.getItem('token');
     
-    // Store previous state for rollback
-    const previousCart = [...cart];
-    
-    // Update local state immediately for better UX
+    // Update local state immediately for better UX - no loading state
     setCart((prev) =>
       prev.map((item) =>
         item.productId === productId ? { ...item, quantity: newQuantity } : item
@@ -173,10 +170,10 @@ export const Cart: React.FC = () => {
     
     try {
       if (token) {
-        // Update backend for logged-in users
-        await cartAPI.update(productId, newQuantity);
-        // Refresh cart context to keep it in sync
-        await refreshCartContext();
+        // Update backend for logged-in users (don't wait for it)
+        cartAPI.update(productId, newQuantity).catch(err => {
+          console.error('Failed to sync quantity with backend:', err);
+        });
       } else {
         // For guest users, update localStorage
         const localCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
@@ -184,16 +181,13 @@ export const Cart: React.FC = () => {
           item.productId === productId ? { ...item, quantity: newQuantity } : item
         );
         localStorage.setItem('guest_cart', JSON.stringify(updatedCart));
-        // Refresh cart context
-        await refreshCartContext();
       }
       
-      toast.addToast('Quantity updated', 'success');
+      // Dispatch event to update navbar cart count
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     } catch (err: any) {
       console.error('Failed to update quantity:', err);
-      toast.addToast(err.response?.data?.message || 'Failed to update quantity', 'error');
-      // Revert to previous state on error
-      setCart(previousCart);
+      // Don't show error toast for background sync failures
     }
   };
 
@@ -281,7 +275,9 @@ export const Cart: React.FC = () => {
 
   return (
     <div className="cart-page">
-      <BackButton fallbackPath="/products" />
+      <div className="back-button-wrapper">
+        <BackButton fallbackPath="/products" />
+      </div>
       
       <div className="cart-header-section">
         <div className="cart-header-content">

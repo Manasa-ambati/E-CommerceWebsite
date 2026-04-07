@@ -13,7 +13,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin: 12px 12px 12px 12px;
+  margin: 8px 12px; /* Reduced margin for better spacing */
   max-width: calc(100% - 24px);
   z-index: 100;
   visibility: visible !important;
@@ -45,6 +45,7 @@
     padding: 6px 12px;
     font-size: 13px;
     gap: 4px;
+    margin: 4px 8px; /* Even smaller margin on mobile */
   }
   
   .back-button svg {
