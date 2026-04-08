@@ -765,30 +765,46 @@ button:focus,
   .navbar-main-content {
     padding: 0 16px;
     height: auto;
-    min-height: 60px;
-    gap: 0;
-    flex-wrap: wrap;
+    min-height: auto;
+    gap: 8px;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: stretch;
   }
   
+  /* Row 1: Logo (left) + Menu Toggle + Profile (right) */
   .navbar-left {
     width: 100%;
     justify-content: space-between;
+    align-items: center;
     padding: 10px 0;
     order: 1;
-    display: flex !important; /* Ensure it's always visible */
+    display: flex !important;
+    flex-direction: row;
+    gap: 10px;
   }
   
-  /* Search bar on second row - Reduced size */
+  /* Ensure logo stays on left */
+  .navbar-logo {
+    flex-shrink: 0;
+  }
+  
+  /* Right side group: Profile + Menu Toggle */
+  .navbar-right-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+  
+  /* Search bar on row 2 */
   .search-form {
     display: flex !important;
     width: 100%;
-    max-width: 500px;
+    max-width: 100%;
     order: 2;
-    margin:0;
-    padding:0;
-    margin-top: 0;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 0 10px 0;
+    padding: 0;
     box-sizing: border-box;
   }
   
@@ -811,26 +827,24 @@ button:focus,
   
   .navbar-main-content {
     padding: 0 12px;
-    gap: 0;
+    gap: 8px;
   }
   
   .navbar-left {
     width: 100%;
     justify-content: space-between;
     display: flex !important;
+    gap: 8px;
   }
   
-  /* Search bar full width but smaller - Reduced size */
+  /* Search bar full width but smaller */
   .search-form {
     display: flex !important;
     width: 100%;
     max-width: 100%;
     order: 2;
-    margin-top: 0;
-    padding: 4px 8px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 0 8px 0;
+    padding: 0;
     box-sizing: border-box;
   }
   
@@ -917,14 +931,47 @@ button:focus,
   /* Hide desktop navbar on mobile, show simplified version */
   .navbar {
     background: #232f3e !important; /* Amazon dark blue */
-    height: 60px !important;
+    height: auto !important;
+    min-height: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    padding: 8px 12px;
   }
   
   .navbar-main-content {
-    height: 60px !important;
-    padding: 0 12px !important;
+    height: auto !important;
+    min-height: auto;
+    padding: 0 !important;
     gap: 8px !important;
+    flex-direction: column;
+  }
+  
+  /* Row 1: Logo (left) + Profile + Menu Toggle (right) */
+  .navbar-left {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 0;
+  }
+  
+  /* Mobile Profile Icon */
+  .mobile-profile-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  
+  .mobile-profile-icon:hover {
+    opacity: 0.8;
+  }
+  
+  /* Show hamburger menu toggle on mobile */
+  .mobile-toggle {
+    display: flex !important;
   }
   
   /* Simplified logo */
@@ -932,22 +979,16 @@ button:focus,
     font-size: 20px !important;
   }
   
-  /* Show search bar on mobile - compact version */
+  /* Row 2: Search bar full width */
   .search-form {
     display: flex !important;
     width: 100%;
     max-width: 100%;
-    margin-top: 0;
-    padding: 4px 8px;
+    margin: 0;
+    padding: 6px 10px;
     order: 2;
-  }
-  
-  /* Adjust navbar layout for mobile with search */
-  .navbar-main-content {
-    flex-wrap: wrap;
-    height: auto !important;
-    min-height: 60px;
-    padding: 8px 12px !important;
+    background: white;
+    border-radius: 8px;
   }
   
   /* Hide desktop nav links */
@@ -1061,6 +1102,13 @@ button:focus,
     transition: all 0.2s ease;
     position: relative;
     min-width: 60px;
+    background: none;
+    border: none;
+    outline: none;
+  }
+  
+  .mobile-nav-item:active {
+    color: #2874f0;
   }
   
   .mobile-nav-item:hover {

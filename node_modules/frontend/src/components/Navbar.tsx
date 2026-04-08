@@ -219,15 +219,26 @@ useEffect(() => {
               <span className="logo-text">ShopEase</span>
             </Link>
 
-            <button
-              className={`mobile-toggle ${mobileMenuOpen ? "active" : ""}`}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
+            {/* Right side group: Profile Icon + Menu Toggle */}
+            <div className="navbar-right-group">
+              {/* Profile Icon for Mobile */}
+              <Link to="/profile" className="mobile-profile-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </Link>
+
+              <button
+                className={`mobile-toggle ${mobileMenuOpen ? "active" : ""}`}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+            </div>
           </div>
 
           {/* MOBILE MENU OVERLAY */}
@@ -549,6 +560,13 @@ useEffect(() => {
             <rect x="3" y="14" width="7" height="7"/>
           </svg>
           <span className="mobile-nav-label">Categories</span>
+        </Link>
+        
+        <Link to="/products" className="mobile-nav-item">
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          <span className="mobile-nav-label">Products</span>
         </Link>
         
         <Link to="/wishlist" className="mobile-nav-item">

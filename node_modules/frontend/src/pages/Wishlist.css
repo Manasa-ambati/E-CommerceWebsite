@@ -763,11 +763,18 @@
   
   .product-image-section {
     width: 100% !important;
-    height: 200px;
+    height: 180px;
     border-right: none !important;
     border-bottom: 2px solid #e7e7e7;
     padding: 12px;
     order: 1 !important;
+    overflow: hidden;
+  }
+  
+  .product-image-section img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
   }
   
   .product-info-section {

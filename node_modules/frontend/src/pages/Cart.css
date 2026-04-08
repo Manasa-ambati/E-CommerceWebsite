@@ -652,11 +652,18 @@
   
   .item-image-section {
     width: 100% !important;
-    height: 200px;
+    height: 180px;
     border-radius: 8px;
     order: 1 !important;
     border-right: none !important;
     border-bottom: 2px solid #f0f0f0;
+    overflow: hidden;
+  }
+  
+  .item-image-section img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
   }
   
   .item-details-section {

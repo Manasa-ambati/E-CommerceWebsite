@@ -23,8 +23,8 @@ const Checkout = lazy(() => import('./pages/Checkout'));
 const OrdersDashboard = lazy(() => import('./pages/OrdersDashboard'));
 const OrderTracking = lazy(() => import('./pages/OrderTracking'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
-const Login = lazy(() => import('./pages/Login'));
-const Signup = lazy(() => import('./pages/Signup'));
+const Login = lazy(() => import('./pages/LoginSplitPanel'));
+const Signup = lazy(() => import('./pages/SignupSplitPanel'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 // Loading component
