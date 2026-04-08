@@ -954,19 +954,9 @@ button:focus,
     padding: 8px 0;
   }
   
-  /* Mobile Profile Icon */
+  /* Mobile Profile Icon - Hidden on desktop/laptop */
   .mobile-profile-icon {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  
-  .mobile-profile-icon:hover {
-    opacity: 0.8;
+    display: none;
   }
   
   /* Show hamburger menu toggle on mobile */

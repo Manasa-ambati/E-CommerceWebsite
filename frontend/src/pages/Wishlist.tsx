@@ -291,3 +291,4 @@ export const Wishlist: React.FC = () => {
     </div>
   );
 };
+

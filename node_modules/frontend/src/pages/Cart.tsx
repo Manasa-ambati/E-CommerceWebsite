@@ -30,7 +30,7 @@ export const Cart: React.FC = () => {
   
   // Use CartContext's cart data, transform to match Cart.tsx interface
   const [cart, setCart] = useState<CartItem[]>([]);
-  const hasInitialized = React.useRef(false); // Track if we've loaded cart initially
+  const hasInitialized = React.useRef(false); // Track if we've loaded cart initially`n`n  // Helper function to get the correct price for an item`n  const getItemPrice = (item: CartItem): number => {`n    return item.price || item.discountPrice || item.productPrice || 0;`n  };
 
   // Initial load only - fetch cart from context ONCE
   useEffect(() => {
@@ -412,7 +412,7 @@ export const Cart: React.FC = () => {
             <div className="summary-details">
               <div className="summary-row">
                 <span>Subtotal ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
-                <span>₹{cart.reduce((sum, item) => sum + (Number(item.discountPrice || item.productPrice || item.price) * item.quantity), 0).toFixed(2)}</span>
+                <span>₹{cart.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0).toFixed(2)}</span>
               </div>
               
               <div className="summary-row">
@@ -429,7 +429,7 @@ export const Cart: React.FC = () => {
             <div className="summary-total">
               <div className="total-row">
                 <span>Total Amount</span>
-                <span>₹{cart.reduce((sum, item) => sum + (Number(item.discountPrice || item.productPrice || item.price) * item.quantity), 0).toFixed(2)}</span>
+                <span>₹{cart.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0).toFixed(2)}</span>
               </div>
             </div>
             
@@ -466,3 +466,5 @@ export const Cart: React.FC = () => {
     </div>
   );
 };
+
+
