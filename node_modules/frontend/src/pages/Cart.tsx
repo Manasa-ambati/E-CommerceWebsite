@@ -30,7 +30,12 @@ export const Cart: React.FC = () => {
   
   // Use CartContext's cart data, transform to match Cart.tsx interface
   const [cart, setCart] = useState<CartItem[]>([]);
-  const hasInitialized = React.useRef(false); // Track if we've loaded cart initially`n`n  // Helper function to get the correct price for an item`n  const getItemPrice = (item: CartItem): number => {`n    return item.price || item.discountPrice || item.productPrice || 0;`n  };
+  const hasInitialized = React.useRef(false); // Track if we've loaded cart initially
+
+  // Helper function to get the correct price for an item
+  const getItemPrice = (item: CartItem): number => {
+    return item.price || item.discountPrice || item.productPrice || 0;
+  };
 
   // Initial load only - fetch cart from context ONCE
   useEffect(() => {
@@ -466,5 +471,3 @@ export const Cart: React.FC = () => {
     </div>
   );
 };
-
-
