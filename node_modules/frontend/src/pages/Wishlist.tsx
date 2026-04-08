@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { wishlistAPI, cartAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useCart } from '../context/CartContext';
 import BackButton from '../components/BackButton';
 import './Wishlist.css';
 
@@ -21,6 +22,7 @@ export const Wishlist: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const toast = useToast();
+  const { fetchCart } = useCart(); // Get cart refresh function
 
   useEffect(() => {
     fetchWishlist();
@@ -104,6 +106,7 @@ export const Wishlist: React.FC = () => {
     try {
       await cartAPI.add(productId, 1);
       await removeFromWishlist(productId);
+      await fetchCart(); // Refresh cart context to update navbar count immediately
       toast.addToast('Moved to cart!', 'success');
     } catch (err: any) {
       console.error(err);

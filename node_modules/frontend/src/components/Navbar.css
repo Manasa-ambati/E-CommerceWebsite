@@ -98,7 +98,7 @@
   align-items:center;
   background:var(--bg-light);
   border-radius:25px;
-  padding:4px 12px;
+  padding:2px 10px; /* Reduced from 4px 12px */
   border:2px solid transparent;
   width:500px;
   max-width: 600px;
@@ -106,17 +106,19 @@
   flex-shrink: 0;
   gap: 0;
   margin-top: 0;
+  height: 42px; /* Fixed height to make it shorter */
 }
 
 .search-form input{
   border:none;
   background:transparent;
-  padding:8px 10px;
+  padding:6px 8px; /* Reduced from 8px 10px */
   font-size:14px;
   outline:none;
   flex:1;
   color:var(--text-dark);
   min-width: 0;
+  height: 32px; /* Fixed height for input */
 }
 
 .search-form input::placeholder{

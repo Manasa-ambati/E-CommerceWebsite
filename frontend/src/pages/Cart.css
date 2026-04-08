@@ -11,6 +11,9 @@
   position: relative;
   overflow-y: auto;
   height: 100%;
+  max-width: 1400px; /* Increased max width for full-width cards */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Ensure BackButton is visible */
@@ -83,10 +86,9 @@
 
 /* Cart Content Grid */
 .cart-content {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 16px;
+  display: block; /* Changed from grid to block since summary is removed */
   max-width: 100%;
+  width: 100%;
 }
 
 /* Cart Items Section */

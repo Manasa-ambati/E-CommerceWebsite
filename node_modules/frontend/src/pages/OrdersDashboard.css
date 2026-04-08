@@ -189,6 +189,7 @@
   margin-left: 260px;
   flex: 1;
   padding: 30px;
+  padding-top: 50px; /* Add gap between navbar and back button */
   max-width: calc(100% - 260px);
   min-height: calc(100vh - 70px); /* Ensure full height minus navbar */
   transition: margin-left 0.3s ease, max-width 0.3s ease;
@@ -197,12 +198,13 @@
 .dashboard-main.sidebar-open {
   margin-left: 260px;
   max-width: calc(100% - 260px);
+  padding-top: 50px;
 }
 
 .dashboard-main.sidebar-closed {
   margin-left: 60px;
   max-width: calc(100% - 60px);
-  padding-top: 40px; /* Add gap between navbar and back button */
+  padding-top: 50px; /* Gap between navbar and back button */
 }
 
 .page-header {
