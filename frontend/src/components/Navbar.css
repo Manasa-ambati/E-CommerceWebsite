@@ -1002,10 +1002,27 @@ button:focus,
     width: 100%;
     max-width: 100%;
     margin: 0;
-    padding: 6px 10px;
+    padding: 0;
     order: 2;
     background: white;
     border-radius: 8px;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .search-form input {
+    padding: 10px 12px;
+    font-size: 14px;
+    height: 40px;
+  }
+  
+  .search-actions {
+    padding-right: 8px;
+    gap: 2px;
+  }
+  
+  .search-actions button {
+    padding: 6px;
   }
   
   /* Hide desktop nav links */

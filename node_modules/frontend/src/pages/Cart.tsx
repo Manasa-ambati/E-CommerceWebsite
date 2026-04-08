@@ -219,9 +219,11 @@ export const Cart: React.FC = () => {
         return;
       }
       
+      // Optimistically update UI immediately
+      setCart((prev) => prev.filter((item) => item.productId !== productId));
+      console.log('✅ Local state updated immediately');
+      
       // Call context to persist removal (backend + localStorage)
-      // The useEffect will automatically update local state when context changes
-      console.log('⏳ Calling removeFromCartContext...');
       await removeFromCartContext(productId);
       console.log('✅ removeFromCartContext completed');
       
@@ -249,6 +251,21 @@ export const Cart: React.FC = () => {
       console.error('❌ Failed to remove item:', error);
       console.error('Error details:', error.response?.data || error.message);
       toast.addToast(error.response?.data?.message || 'Failed to remove item. Please try again.', 'error');
+      
+      // Revert the UI update if removal failed
+      if (contextCart && contextCart.items) {
+        const items = Array.isArray(contextCart.items) ? contextCart.items : [];
+        const mappedItems = items.map((item: any) => ({
+          productId: item.productId,
+          productName: item.productName,
+          productImage: item.productImage,
+          quantity: item.quantity,
+          price: item.productDiscountPrice || item.productPrice || item.price || 0,
+          productPrice: item.productPrice,
+          discountPrice: item.discountPrice
+        }));
+        setCart(mappedItems);
+      }
     }
   };
 
@@ -325,16 +342,9 @@ export const Cart: React.FC = () => {
                       </div>
                       
                       <div className="price-section">
-                        {getItemPrice(item) < (item.productPrice || item.price) ? (
-                          <>
-                            <span className="current-price">₹{getItemPrice(item).toFixed(2)}</span>
-                            <span className="original-price">₹{(item.productPrice || item.price).toFixed(2)}</span>
-                            <span className="discount-badge">
-                              {Math.round((1 - getItemPrice(item) / (item.productPrice || item.price)) * 100)}% OFF
-                            </span>
-                          </>
-                        ) : (
-                          <span className="current-price">₹{getItemPrice(item).toFixed(2)}</span>
+                        <span className="current-price">₹{getItemPrice(item).toFixed(2)}</span>
+                        {(item.productPrice || item.price) > getItemPrice(item) && (
+                          <span className="original-price">₹{(item.productPrice || item.price).toFixed(2)}</span>
                         )}
                       </div>
                     </div>

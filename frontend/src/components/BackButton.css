@@ -45,13 +45,27 @@
   white-space: nowrap;
 }
 
+/* Mobile view - proper gap from navbar */
+@media (max-width: 768px) {
+  .back-button {
+    margin: 80px 12px 12px 12px;
+    padding: 9px 15px;
+    font-size: 14px;
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 100;
+  }
+}
+
 /* Extra small mobile */
 @media (max-width: 480px) {
   .back-button {
     padding: 8px 14px;
-    font-size: 15px;
+    font-size: 13px;
     gap: 6px;
-    margin: 8px;
+    margin: 85px 8px 8px 8px;
   }
   
   .back-button svg {

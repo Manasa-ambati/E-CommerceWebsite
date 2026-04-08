@@ -18,10 +18,15 @@ const Categories: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('Fetching categories...');
         const response = await categoryAPI.getAll();
-        setCategories(response.data.data || []);
+        console.log('Categories response:', response.data);
+        const categoriesData = response.data?.data || response.data || [];
+        console.log('Categories data:', categoriesData);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
+        setCategories([]);
       } finally {
         setLoading(false);
       }

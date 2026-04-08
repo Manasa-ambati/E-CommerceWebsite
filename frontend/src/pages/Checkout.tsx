@@ -45,17 +45,90 @@ const Checkout: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear validation error when user starts typing
+    if (validationErrors[e.target.name]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[e.target.name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    // First Name validation
+    if (!formData.firstName.trim()) {
+      errors.firstName = 'First name is required';
+    } else if (formData.firstName.trim().length < 2) {
+      errors.firstName = 'First name must be at least 2 characters';
+    }
+
+    // Last Name validation
+    if (!formData.lastName.trim()) {
+      errors.lastName = 'Last name is required';
+    } else if (formData.lastName.trim().length < 2) {
+      errors.lastName = 'Last name must be at least 2 characters';
+    }
+
+    // Phone validation
+    if (!formData.phone.trim()) {
+      errors.phone = 'Phone number is required';
+    } else if (!/^[0-9]{10}$/.test(formData.phone.trim())) {
+      errors.phone = 'Phone number must be 10 digits';
+    }
+
+    // Street validation
+    if (!formData.street.trim()) {
+      errors.street = 'Street address is required';
+    } else if (formData.street.trim().length < 5) {
+      errors.street = 'Please enter a complete address';
+    }
+
+    // City validation
+    if (!formData.city.trim()) {
+      errors.city = 'City is required';
+    }
+
+    // State validation
+    if (!formData.state.trim()) {
+      errors.state = 'State is required';
+    }
+
+    // ZIP Code validation
+    if (!formData.zipCode.trim()) {
+      errors.zipCode = 'ZIP code is required';
+    } else if (!/^[0-9]{6}$/.test(formData.zipCode.trim())) {
+      errors.zipCode = 'ZIP code must be 6 digits';
+    }
+
+    // Country validation
+    if (!formData.country.trim()) {
+      errors.country = 'Country is required';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Validate form
+    if (!validateForm()) {
+      setError('Please fill in all required fields correctly');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -122,39 +195,97 @@ const Checkout: React.FC = () => {
               <div className="form-row">
                 <div className="form-group">
                   <label>First Name<span className="asterisk">*</span></label>
-                  <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="firstName" 
+                    value={formData.firstName} 
+                    onChange={handleChange}
+                    className={validationErrors.firstName ? 'input-error' : ''}
+                  />
+                  {validationErrors.firstName && <span className="error-text">{validationErrors.firstName}</span>}
                 </div>
                 <div className="form-group">
                   <label>Last Name<span className="asterisk">*</span></label>
-                  <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="lastName" 
+                    value={formData.lastName} 
+                    onChange={handleChange}
+                    className={validationErrors.lastName ? 'input-error' : ''}
+                  />
+                  {validationErrors.lastName && <span className="error-text">{validationErrors.lastName}</span>}
                 </div>
               </div>
               <div className="form-group">
                 <label>Phone<span className="asterisk">*</span></label>
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  value={formData.phone} 
+                  onChange={handleChange}
+                  className={validationErrors.phone ? 'input-error' : ''}
+                  placeholder="10-digit mobile number"
+                />
+                {validationErrors.phone && <span className="error-text">{validationErrors.phone}</span>}
               </div>
               <div className="form-group">
                 <label>Street Address<span className="asterisk">*</span></label>
-                <input type="text" name="street" value={formData.street} onChange={handleChange} required />
+                <input 
+                  type="text" 
+                  name="street" 
+                  value={formData.street} 
+                  onChange={handleChange}
+                  className={validationErrors.street ? 'input-error' : ''}
+                />
+                {validationErrors.street && <span className="error-text">{validationErrors.street}</span>}
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>City<span className="asterisk">*</span></label>
-                  <input type="text" name="city" value={formData.city} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="city" 
+                    value={formData.city} 
+                    onChange={handleChange}
+                    className={validationErrors.city ? 'input-error' : ''}
+                  />
+                  {validationErrors.city && <span className="error-text">{validationErrors.city}</span>}
                 </div>
                 <div className="form-group">
                   <label>State<span className="asterisk">*</span></label>
-                  <input type="text" name="state" value={formData.state} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="state" 
+                    value={formData.state} 
+                    onChange={handleChange}
+                    className={validationErrors.state ? 'input-error' : ''}
+                  />
+                  {validationErrors.state && <span className="error-text">{validationErrors.state}</span>}
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>ZIP Code<span className="asterisk">*</span></label>
-                  <input type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="zipCode" 
+                    value={formData.zipCode} 
+                    onChange={handleChange}
+                    className={validationErrors.zipCode ? 'input-error' : ''}
+                    placeholder="6-digit PIN code"
+                  />
+                  {validationErrors.zipCode && <span className="error-text">{validationErrors.zipCode}</span>}
                 </div>
                 <div className="form-group">
                   <label>Country<span className="asterisk">*</span></label>
-                  <input type="text" name="country" value={formData.country} onChange={handleChange} required />
+                  <input 
+                    type="text" 
+                    name="country" 
+                    value={formData.country} 
+                    onChange={handleChange}
+                    className={validationErrors.country ? 'input-error' : ''}
+                  />
+                  {validationErrors.country && <span className="error-text">{validationErrors.country}</span>}
                 </div>
               </div>
             </div>

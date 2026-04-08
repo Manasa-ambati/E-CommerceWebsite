@@ -321,18 +321,18 @@ line-height: 1.6 ;
   right: var(--spacing-sm);
   width: 32px;
   height: 32px;
-  background: transparent;
+  background: white;
   border: none;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 5;
   transition: all var(--transition-base);
-  opacity: 0;
-  transform: translateX(10px);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .cart-icon-btn {
@@ -347,13 +347,6 @@ line-height: 1.6 ;
   top: var(--spacing-sm);
 }
 
-.product-card:hover .cart-icon-btn,
-.product-card:hover .share-icon-btn,
-.product-card:hover .wishlist-icon-btn {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 /* Icon button SVG styles */
 .cart-icon-btn svg,
 .wishlist-icon-btn svg,
@@ -364,25 +357,25 @@ line-height: 1.6 ;
   transition: all var(--transition-fast);
 }
 
-/* Cart button hover effects */
+/* Cart button - no hover effect */
 .cart-icon-btn:hover {
-  background: linear-gradient(135deg, #2874f0 0%, #1e5fc2 100%); /* Flipkart blue */
-  transform: scale(1.15);
-  box-shadow: var(--shadow-blue);
+  background: white;
+  transform: scale(1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .cart-icon-btn:hover svg {
-  color: white;
+  color: var(--gray-600);
 }
 
-/* Wishlist button hover effects */
+/* Wishlist button - no hover effect */
 .wishlist-icon-btn:hover {
   background: white;
-  transform: scale(1.15);
+  transform: scale(1);
 }
 
 .wishlist-icon-btn:hover svg {
-  color: var(--primary-pink);
+  color: var(--gray-600);
 }
 
 .wishlist-icon-btn.active svg {
@@ -390,15 +383,15 @@ line-height: 1.6 ;
   color: var(--primary-pink);
 }
 
-/* Share button hover effects */
+/* Share button - no hover effect */
 .share-icon-btn:hover {
-  background: var(--secondary-blue);
-  transform: scale(1.15);
-  box-shadow: var(--shadow-blue);
+  background: white;
+  transform: scale(1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .share-icon-btn:hover svg {
-  color: white;
+  color: var(--gray-600);
 }
 
 .product-badge {
@@ -1043,22 +1036,25 @@ line-height: 1.6 ;
     gap: 16px;
   }
   
-  /* Show icons always on mobile */
+  /* Show icons always on mobile - same as desktop */
   .cart-icon-btn,
   .share-icon-btn,
   .wishlist-icon-btn {
     opacity: 1;
     transform: translateX(0);
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    right: 6px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
   
   .cart-icon-btn {
-    top: 70px;
+    top: 55px;
   }
   
   .share-icon-btn {
-    top: 38px;
+    top: 32px;
   }
   
   .wishlist-icon-btn {
@@ -1066,10 +1062,25 @@ line-height: 1.6 ;
   }
   
   .cart-icon-btn svg,
-  .share-icon-btn svg,
-  .wishlist-icon-btn svg {
-    width: 16px;
-    height: 16px;
+  .wishlist-icon-btn svg,
+  .share-icon-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* Remove all hover effects on mobile */
+  .cart-icon-btn:hover,
+  .share-icon-btn:hover,
+  .wishlist-icon-btn:hover {
+    background: white;
+    transform: scale(1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  .cart-icon-btn:hover svg,
+  .wishlist-icon-btn:hover svg,
+  .share-icon-btn:hover svg {
+    color: var(--gray-600);
   }
   
   .hero-slider {
