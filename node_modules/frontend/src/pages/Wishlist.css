@@ -576,10 +576,10 @@
 
 /* Left Section - Product Image */
 .product-image-section {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   background: #fff;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -726,8 +726,8 @@
   }
   
   .product-image-section {
-    width: 180px;
-    height: 180px;
+    width: 140px;
+    height: 140px;
   }
 }
 

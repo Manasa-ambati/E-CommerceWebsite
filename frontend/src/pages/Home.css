@@ -319,8 +319,8 @@ line-height: 1.6 ;
 .share-icon-btn {
   position: absolute;
   right: var(--spacing-sm);
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: white;
   border: none;
   border-radius: var(--radius-full);
@@ -336,11 +336,11 @@ line-height: 1.6 ;
 }
 
 .cart-icon-btn {
-  top: 80px;
+  top: 65px;
 }
 
 .share-icon-btn {
-  top: 45px;
+  top: 38px;
 }
 
 .wishlist-icon-btn {

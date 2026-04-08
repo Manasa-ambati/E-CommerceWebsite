@@ -932,9 +932,22 @@ button:focus,
     font-size: 20px !important;
   }
   
-  /* Hide search bar on mobile navbar */
+  /* Show search bar on mobile - compact version */
   .search-form {
-    display: none !important;
+    display: flex !important;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0;
+    padding: 4px 8px;
+    order: 2;
+  }
+  
+  /* Adjust navbar layout for mobile with search */
+  .navbar-main-content {
+    flex-wrap: wrap;
+    height: auto !important;
+    min-height: 60px;
+    padding: 8px 12px !important;
   }
   
   /* Hide desktop nav links */
@@ -1171,6 +1184,52 @@ button:focus,
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   margin-bottom: 20px;
   flex-shrink: 0;
+}
+
+/* Mobile Search Form */
+.mobile-search-form {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  gap: 8px;
+}
+
+.mobile-search-form input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.mobile-search-form input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-search-form input:focus {
+  border-color: #2874f0;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.mobile-search-btn {
+  padding: 10px 14px;
+  background: #2874f0;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.mobile-search-btn:hover {
+  background: #1e5fc2;
 }
 
 .mobile-logo {
