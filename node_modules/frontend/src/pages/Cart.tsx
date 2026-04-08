@@ -227,24 +227,7 @@ export const Cart: React.FC = () => {
       await removeFromCartContext(productId);
       console.log('✅ removeFromCartContext completed');
       
-      // Save to recently removed list for "Put Back" functionality
-      const removedItem = {
-        productId: itemToRemove.productId,
-        productName: itemToRemove.productName,
-        productImage: itemToRemove.productImage,
-        productPrice: itemToRemove.productPrice || itemToRemove.price,
-        productDiscountPrice: itemToRemove.discountPrice,
-        quantity: itemToRemove.quantity,
-        removedAt: Date.now()
-      };
-      
-      console.log('💾 Saving to recently removed:', removedItem);
-      
-      // Dispatch custom event to notify RecentlyRemoved component
-      window.dispatchEvent(new CustomEvent('itemRemovedFromCart', { 
-        detail: removedItem 
-      }));
-      console.log('📢 Dispatched itemRemovedFromCart event');
+      console.log('💾 Item removed successfully');
       
       toast.addToast('Item removed from cart', 'success');
     } catch (error: any) {
