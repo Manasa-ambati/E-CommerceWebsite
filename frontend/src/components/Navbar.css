@@ -797,6 +797,21 @@ button:focus,
     margin-left: auto;
   }
   
+  /* Show mobile profile icon on mobile devices only */
+  .mobile-profile-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  
+  .mobile-profile-icon:hover {
+    opacity: 0.8;
+  }
+  
   /* Search bar on row 2 */
   .search-form {
     display: flex !important;

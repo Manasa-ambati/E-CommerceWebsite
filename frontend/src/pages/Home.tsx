@@ -197,13 +197,6 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        {/* Hero Slider Dots */}
-        <div className="hero-dots">
-          <span className="dot active"></span>
-          <span className="dot"></span>
-          <span className="dot"></span>
-        </div>
       </section>
 
       {/* Features Bar - Flipkart Style */}
