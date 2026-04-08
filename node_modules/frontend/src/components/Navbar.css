@@ -58,6 +58,11 @@
   gap: 0;
 }
 
+/* Mobile Profile Icon - Hidden on desktop/laptop by default */
+.mobile-profile-icon {
+  display: none;
+}
+
 /* ===== NAVBAR CONTAINER ===== */
 .navbar-container {
   max-width:1600px;
