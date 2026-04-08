@@ -979,9 +979,14 @@ button:focus,
     display: none;
   }
   
-  /* Show hamburger menu toggle on mobile */
+  /* Hide hamburger menu toggle on mobile */
   .mobile-toggle {
-    display: flex !important;
+    display: none !important;
+  }
+  
+  /* Hide mobile menu overlay since toggle is removed */
+  .mobile-menu-overlay {
+    display: none !important;
   }
   
   /* Simplified logo */

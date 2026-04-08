@@ -586,3 +586,74 @@ label.required::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ========================================
+   MOBILE VIEW - GLOBAL FIXES
+   ======================================== */
+
+@media (max-width: 767px) {
+  /* Hide mobile menu toggle button globally */
+  .mobile-toggle {
+    display: none !important;
+  }
+  
+  /* Add gap between navbar and content sections on all pages */
+  main,
+  .container,
+  .page-content,
+  .home-page,
+  .products-page,
+  .cart-page,
+  .wishlist-page,
+  .checkout-page,
+  .orders-page,
+  .profile-page,
+  .categories-page,
+  [class*="-page"],
+  [class*="container"] {
+    padding-top: 20px !important;
+    margin-top: 10px !important;
+  }
+  
+  /* Ensure back buttons have proper spacing */
+  .back-button {
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  /* Fix hero section spacing */
+  .hero-section {
+    margin-top: 10px !important;
+  }
+  
+  /* Fix product grid spacing */
+  .products-grid,
+  .product-grid {
+    padding-top: 10px !important;
+  }
+  
+  /* Fix cart page spacing */
+  .cart-page {
+    padding-top: 15px !important;
+  }
+  
+  /* Fix checkout page spacing */
+  .checkout-container {
+    padding-top: 15px !important;
+  }
+  
+  /* Fix orders page spacing */
+  .orders-container {
+    padding-top: 15px !important;
+  }
+  
+  /* Fix profile page spacing */
+  .profile-container {
+    padding-top: 15px !important;
+  }
+  
+  /* Fix wishlist page spacing */
+  .wishlist-container {
+    padding-top: 15px !important;
+  }
+}

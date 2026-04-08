@@ -55,6 +55,7 @@ const OrdersDashboard: React.FC = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('orders');
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -167,41 +168,50 @@ const OrdersDashboard: React.FC = () => {
   ) : null;
 
   const renderSidebar = () => (
-    <div className="dashboard-sidebar">
+    <div className={`dashboard-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
       <div className="sidebar-header">
         <h2>📦 ShopEase</h2>
-        <p>Admin Panel</p>
+        {sidebarOpen && <p>Admin Panel</p>}
+        <button 
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+        >
+          {sidebarOpen ? '◀' : '▶'}
+        </button>
       </div>
       
-      <nav className="sidebar-nav">
-        <button 
-          className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-          onClick={() => setActiveTab('dashboard')}
-        >
-          <span className="nav-icon">📊</span>
-          <span className="nav-label">Dashboard</span>
-        </button>
-        
-        <button 
-          className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-        >
-          <span className="nav-icon">🛒</span>
-          <span className="nav-label">Orders</span>
-          <span className="nav-badge">{totalOrders}</span>
-        </button>
-        
-        <button 
-          className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('customers')}
-        >
-          <span className="nav-icon">👥</span>
-          <span className="nav-label">Customers</span>
-        </button>
-      </nav>
+      {sidebarOpen && (
+        <nav className="sidebar-nav">
+          <button 
+            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            <span className="nav-icon">📊</span>
+            <span className="nav-label">Dashboard</span>
+          </button>
+          
+          <button 
+            className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            <span className="nav-icon">🛒</span>
+            <span className="nav-label">Orders</span>
+            <span className="nav-badge">{totalOrders}</span>
+          </button>
+          
+          <button 
+            className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('customers')}
+          >
+            <span className="nav-icon">👥</span>
+            <span className="nav-label">Customers</span>
+          </button>
+        </nav>
+      )}
       
       <div className="sidebar-footer">
-        <Link to="/" className="back-link">← Back to Store</Link>
+        <Link to="/" className="back-link">{sidebarOpen ? '← Back to Store' : '←'}</Link>
       </div>
     </div>
   );
@@ -546,7 +556,7 @@ const OrdersDashboard: React.FC = () => {
     <div className="orders-dashboard">
       {renderSidebar()}
       
-      <div className="dashboard-main">
+      <div className={`dashboard-main ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
         <BackButton fallbackPath="/" />
         
         {activeTab === 'dashboard' && (

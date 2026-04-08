@@ -325,16 +325,16 @@ export const Cart: React.FC = () => {
                       </div>
                       
                       <div className="price-section">
-                        {item.discountPrice ? (
+                        {getItemPrice(item) < (item.productPrice || item.price) ? (
                           <>
-                            <span className="current-price">₹{item.discountPrice.toFixed(2)}</span>
-                            <span className="original-price">₹{item.productPrice?.toFixed(2) || item.price.toFixed(2)}</span>
+                            <span className="current-price">₹{getItemPrice(item).toFixed(2)}</span>
+                            <span className="original-price">₹{(item.productPrice || item.price).toFixed(2)}</span>
                             <span className="discount-badge">
-                              {Math.round((1 - item.discountPrice / (item.productPrice || item.price)) * 100)}% OFF
+                              {Math.round((1 - getItemPrice(item) / (item.productPrice || item.price)) * 100)}% OFF
                             </span>
                           </>
                         ) : (
-                          <span className="current-price">₹{item.price.toFixed(2)}</span>
+                          <span className="current-price">₹{getItemPrice(item).toFixed(2)}</span>
                         )}
                       </div>
                     </div>
@@ -402,69 +402,12 @@ export const Cart: React.FC = () => {
                   <div className="item-subtotal-section">
                     <span className="subtotal-label">Subtotal:</span>
                     <span className="subtotal-amount">
-                      ₹{(Number(item.discountPrice || item.productPrice || item.price) * item.quantity).toFixed(2)}
+                      ₹{(getItemPrice(item) * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-          
-          {/* Cart Summary Box */}
-          <div className="cart-summary-box">
-            <h2>Order Summary</h2>
-            
-            <div className="summary-details">
-              <div className="summary-row">
-                <span>Subtotal ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
-                <span>₹{cart.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0).toFixed(2)}</span>
-              </div>
-              
-              <div className="summary-row">
-                <span>Shipping</span>
-                <span className="free-shipping">FREE</span>
-              </div>
-              
-              <div className="summary-row discount-row">
-                <span>GST</span>
-                <span>Included in MRPs</span>
-              </div>
-            </div>
-            
-            <div className="summary-total">
-              <div className="total-row">
-                <span>Total Amount</span>
-                <span>₹{cart.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0).toFixed(2)}</span>
-              </div>
-            </div>
-            
-            <button className="checkout-btn-flipkart" onClick={() => navigate('/checkout')}>
-              Place Order
-            </button>
-            
-            <div className="features-list">
-              <div className="feature-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <span>Secure Checkout</span>
-              </div>
-              <div className="feature-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                <span>Easy Returns</span>
-              </div>
-            </div>
-            
-            <Link to="/products" className="continue-shopping-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                <line x1="19" y1="12" x2="5" y2="12"/>
-                <polyline points="12 19 5 12 12 5"/>
-              </svg>
-              Continue Shopping
-            </Link>
           </div>
         </div>
       </div>
