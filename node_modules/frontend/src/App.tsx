@@ -25,6 +25,7 @@ const OrderTracking = lazy(() => import('./pages/OrderTracking'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const Login = lazy(() => import('./pages/LoginSplitPanel'));
 const Signup = lazy(() => import('./pages/SignupSplitPanel'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 // Loading component
@@ -100,6 +101,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </Layout>

@@ -7,7 +7,6 @@ import com.ecommerce.service.EmailService;
 import com.ecommerce.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+     @Autowired
     private JwtUtil jwtUtil;
     
     @Autowired
@@ -295,6 +294,111 @@ public class AuthController {
             System.err.println("Error in resendOtp: " + e.getMessage());
             e.printStackTrace();
             return badRequest("Failed to resend OTP: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            
+            System.out.println("=== POST /api/auth/forgot-password ===");
+            System.out.println("Email: " + email);
+            
+            if (email == null || email.trim().isEmpty()) {
+                return badRequest("Email is required");
+            }
+            
+            // Find user by email
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (!userOpt.isPresent()) {
+                System.out.println("❌ User not found with email: " + email);
+                return badRequest("No account found with this email address");
+            }
+            
+            User user = userOpt.get();
+            System.out.println("✅ User found: " + user.getFirstName() + " " + user.getLastName());
+            
+            // Generate OTP (6 digits) and store in-memory
+            String otp = String.format("%06d", (int)(Math.random() * 1000000));
+            otpService.storeOtp(email, otp, 10); // Store for 10 minutes
+            
+            System.out.println("🔐 Generated OTP for password reset: " + otp);
+            
+            // Send OTP via email
+            emailService.sendOtpEmail(email, user.getFirstName(), otp);
+            System.out.println("📧 Password reset OTP sent to: " + email);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "OTP sent to your email. Please check your inbox.");
+            response.put("email", email);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("Error in forgotPassword: " + e.getMessage());
+            e.printStackTrace();
+            return badRequest("Failed to process forgot password request: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String otp = request.get("otp");
+            String newPassword = request.get("newPassword");
+            
+            System.out.println("=== POST /api/auth/reset-password ===");
+            System.out.println("Email: " + email);
+            
+            // Validation
+            if (email == null || email.trim().isEmpty()) {
+                return badRequest("Email is required");
+            }
+            if (otp == null || otp.trim().isEmpty()) {
+                return badRequest("OTP is required");
+            }
+            if (newPassword == null || newPassword.length() < 6) {
+                return badRequest("Password must be at least 6 characters");
+            }
+            
+            // Find user by email
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (!userOpt.isPresent()) {
+                return badRequest("User not found");
+            }
+            
+            User user = userOpt.get();
+            
+            // Verify OTP
+            if (!otpService.verifyOtp(email, otp)) {
+                System.out.println("❌ Invalid or expired OTP for: " + email);
+                return badRequest("Invalid or expired OTP. Please request a new one.");
+            }
+            
+            System.out.println("✅ OTP verified for: " + email);
+            
+            // Update password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            
+            // Remove OTP after successful verification
+            otpService.removeOtp(email);
+            
+            System.out.println("✅ Password reset successful for: " + email);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Password reset successful. You can now login with your new password.");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("Error in resetPassword: " + e.getMessage());
+            e.printStackTrace();
+            return badRequest("Failed to reset password: " + e.getMessage());
         }
     }
 

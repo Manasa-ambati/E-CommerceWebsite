@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
-import { validateSignupForm, getPasswordStrength } from '../utils/validation';
+import { validateSignupForm, getPasswordStrength, validateEmail, validatePassword, validateFirstName, validateLastName, validatePhone } from '../utils/validation';
 import './SignupSplitPanel.css';
 
 interface SignupData {
@@ -11,6 +11,14 @@ interface SignupData {
   email: string;
   password: string;
   phone: string;
+}
+
+interface ValidationErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
 }
 
 const SignupSplitPanel: React.FC = () => {
@@ -30,6 +38,8 @@ const SignupSplitPanel: React.FC = () => {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [touched, setTouched] = useState<{[key: string]: boolean}>({});
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   // Countdown timer for resend OTP
@@ -47,33 +57,73 @@ const SignupSplitPanel: React.FC = () => {
     setPasswordStrength(getPasswordStrength(formData.password));
   }, [formData.password]);
 
+  // Real-time validation for individual fields
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    
+    switch (name) {
+      case 'firstName':
+        error = validateFirstName(value);
+        break;
+      case 'lastName':
+        error = validateLastName(value);
+        break;
+      case 'email':
+        error = validateEmail(value);
+        break;
+      case 'password':
+        const pwdResult = validatePassword(value);
+        error = pwdResult.errors[0] || '';
+        break;
+      case 'phone':
+        error = validatePhone(value);
+        break;
+    }
+    
+    setErrors(prev => ({ ...prev, [name]: error || undefined }));
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Validate on change if field was touched
+    if (touched[name]) {
+      validateField(name, value);
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    validateField(name, value);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
-    // Quick validation
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.phone) {
-      toast.addToast('Please fill in all required fields', 'error');
-      return;
-    }
+    // Mark all fields as touched
+    const allTouched = {
+      firstName: true,
+      lastName: true,
+      email: true,
+      password: true,
+      phone: true
+    };
+    setTouched(allTouched);
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.addToast('Please enter a valid email address', 'error');
-      return;
-    }
-    
-    if (formData.password.length < 8) {
-      toast.addToast('Password must be at least 8 characters', 'error');
+    // Validate all fields
+    const validationErrors = validateSignupForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      const firstError = Object.values(validationErrors)[0];
+      toast.addToast(firstError as string, 'error');
       return;
     }
 
     setLoading(true);
+    setErrors({});
 
     const signupPayload = {
       name: `${formData.firstName} ${formData.lastName}`.trim(),
@@ -99,6 +149,11 @@ const SignupSplitPanel: React.FC = () => {
       const errorMessage = err.response?.data?.message || 'Signup failed. Please try again.';
       setError(errorMessage);
       toast.addToast(errorMessage, 'error');
+      
+      // Handle specific error cases
+      if (err.response?.status === 409 || errorMessage.includes('already exists')) {
+        setErrors({ email: 'This email is already registered' });
+      }
     } finally {
       setLoading(false);
     }
@@ -206,9 +261,14 @@ const SignupSplitPanel: React.FC = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
+                        onBlur={handleBlur}
                         placeholder="First Name"
+                        className={errors.firstName && touched.firstName ? 'input-error' : ''}
                         required
                       />
+                      {errors.firstName && touched.firstName && (
+                        <span className="field-error">{errors.firstName}</span>
+                      )}
                     </div>
                     <div className="input-group">
                       <input
@@ -216,9 +276,14 @@ const SignupSplitPanel: React.FC = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
+                        onBlur={handleBlur}
                         placeholder="Last Name"
+                        className={errors.lastName && touched.lastName ? 'input-error' : ''}
                         required
                       />
+                      {errors.lastName && touched.lastName && (
+                        <span className="field-error">{errors.lastName}</span>
+                      )}
                     </div>
                   </div>
 
@@ -228,9 +293,14 @@ const SignupSplitPanel: React.FC = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       placeholder="Email Address"
+                      className={errors.email && touched.email ? 'input-error' : ''}
                       required
                     />
+                    {errors.email && touched.email && (
+                      <span className="field-error">{errors.email}</span>
+                    )}
                   </div>
 
                   <div className="input-group">
@@ -239,9 +309,14 @@ const SignupSplitPanel: React.FC = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       placeholder="Phone Number"
+                      className={errors.phone && touched.phone ? 'input-error' : ''}
                       required
                     />
+                    {errors.phone && touched.phone && (
+                      <span className="field-error">{errors.phone}</span>
+                    )}
                   </div>
 
                   <div className="input-group password-group">
@@ -250,7 +325,9 @@ const SignupSplitPanel: React.FC = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
+                      onBlur={handleBlur}
                       placeholder="Password"
+                      className={errors.password && touched.password ? 'input-error' : ''}
                       required
                       minLength={8}
                     />
@@ -271,6 +348,9 @@ const SignupSplitPanel: React.FC = () => {
                         </svg>
                       )}
                     </button>
+                    {errors.password && touched.password && (
+                      <span className="field-error">{errors.password}</span>
+                    )}
                   </div>
 
                   {formData.password && (

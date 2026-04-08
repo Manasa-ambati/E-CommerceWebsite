@@ -143,6 +143,38 @@
   font-size: 13px;
 }
 
+/* Error State */
+.input-group input.input-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.input-group input.input-error:focus {
+  border-color: #ef4444;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.field-error {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Password Group with Toggle */
 .password-group {
   position: relative;
