@@ -137,20 +137,6 @@ const Profile: React.FC = () => {
           </div>
           
           <div className="profile-actions">
-            <button 
-              className="refresh-profile-btn"
-              onClick={() => {
-                const userData = localStorage.getItem('user');
-                if (userData) {
-                  const parsed = JSON.parse(userData);
-                  setUser(parsed);
-                  toast.addToast('Profile refreshed!', 'success');
-                  console.log('Profile refreshed:', parsed);
-                }
-              }}
-            >
-        
-            </button>
             {user?.emailVerified !== true && (
               <p className="verification-note">
                 ℹ️ If you've verified your email, please logout and login again to see the updated status.

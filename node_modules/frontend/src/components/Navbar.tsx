@@ -405,34 +405,6 @@ useEffect(() => {
               </button>
             </div>
           </form>
-          
-          {/* Mobile Icons Row - Profile (Left), Wishlist & Cart (Right) */}
-          <div className="mobile-icons-row">
-            <Link to="/profile" className="mobile-icon-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </Link>
-            
-            <div className="mobile-right-icons">
-              <Link to="/wishlist" className="mobile-icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-                {wishlistCount > 0 && <span className="mobile-icon-badge">{wishlistCount}</span>}
-              </Link>
-              
-              <Link to="/cart" className="mobile-icon-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="9" cy="21" r="1"/>
-                  <circle cx="20" cy="21" r="1"/>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.57l1.65-7.43H5.12"/>
-                </svg>
-                {cartCount > 0 && <span className="mobile-icon-badge">{cartCount}</span>}
-              </Link>
-            </div>
-          </div>
 
           {/* NAV LINKS */}
           <div className="navbar-nav">
@@ -536,32 +508,20 @@ useEffect(() => {
           <span className="mobile-nav-label">Home</span>
         </Link>
         
-        <Link to="/categories" className="mobile-nav-item">
+        <button className="mobile-nav-item" onClick={() => {
+          const searchInput = document.querySelector('.search-form input') as HTMLInputElement;
+          if (searchInput) {
+            searchInput.focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }}>
           <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7"/>
-            <rect x="14" y="3" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/>
-            <rect x="3" y="14" width="7" height="7"/>
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
           </svg>
-          <span className="mobile-nav-label">Categories</span>
-        </Link>
-        
-        <button className="mobile-nav-item menu-toggle-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-          <span className="mobile-nav-label">Menu</span>
+          <span className="mobile-nav-label">Search</span>
         </button>
         
-        <Link to="/products" className="mobile-nav-item">
-          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-          </svg>
-          <span className="mobile-nav-label">Products</span>
-        </Link>
-        
         <Link to="/categories" className="mobile-nav-item">
           <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="3" y="3" width="7" height="7"/>
@@ -572,12 +532,22 @@ useEffect(() => {
           <span className="mobile-nav-label">Categories</span>
         </Link>
         
-        <Link to="/profile" className="mobile-nav-item">
+        <Link to="/wishlist" className="mobile-nav-item">
           <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
-          <span className="mobile-nav-label">Profile</span>
+          <span className="mobile-nav-label">Wishlist</span>
+          {wishlistCount > 0 && <span className="mobile-nav-badge">{wishlistCount}</span>}
+        </Link>
+        
+        <Link to="/cart" className="mobile-nav-item">
+          <svg className="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.57l1.65-7.43H5.12"/>
+          </svg>
+          <span className="mobile-nav-label">Cart</span>
+          {cartCount > 0 && <span className="mobile-nav-badge">{cartCount}</span>}
         </Link>
       </div>
     </>
