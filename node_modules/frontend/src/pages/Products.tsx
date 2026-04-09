@@ -34,8 +34,12 @@ const Products: React.FC = () => {
   const [expandedSections, setExpandedSections] = useState({
     categories: true,
     priceRange: true,
+    discount: true,
+    rating: true,
+    availability: true,
     sortBy: true
   });
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const { addToCart: addCart, fetchCart } = useCart();
   const toast = useToast();
   
@@ -44,6 +48,9 @@ const Products: React.FC = () => {
   const categoryId = searchParams.get('category') || '';
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
+  const minDiscount = searchParams.get('minDiscount') || '';
+  const minRating = searchParams.get('minRating') || '';
+  const inStock = searchParams.get('inStock') || '';
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDir = searchParams.get('sortDir') || 'desc';
   
@@ -97,15 +104,36 @@ const Products: React.FC = () => {
         console.log('Products response:', productsRes.data);
         console.log('Categories response:', categoriesRes.data);
         
-        const productsData = productsRes.data.data;
+        let productsData = productsRes.data.data;
         const categoriesData = categoriesRes.data.data;
         
-        if (!productsData) {
+        // Client-side filtering for discount, rating, and stock
+        if (productsData && productsData.content) {
+          let filteredProducts = [...productsData.content];
+          
+          // Filter by minimum discount
+          if (minDiscount) {
+            filteredProducts = filteredProducts.filter(p => {
+              if (!p.discountPrice) return false;
+              const discountPercent = Math.round((1 - p.discountPrice / p.price) * 100);
+              return discountPercent >= parseInt(minDiscount);
+            });
+          }
+          
+          // Filter by minimum rating
+          if (minRating) {
+            filteredProducts = filteredProducts.filter(p => p.rating >= parseFloat(minRating));
+          }
+          
+          // Filter by stock availability
+          // Note: This would require stock data in the product response
+          // For now, we'll skip this filter or implement it when stock data is available
+          
+          setProducts(filteredProducts);
+          setTotalPages(productsData.totalPages || 0);
+        } else {
           console.error('No products data in response!');
           setProducts([]);
-        } else {
-          setProducts(productsData.content || []);
-          setTotalPages(productsData.totalPages || 0);
         }
         
         if (!categoriesData) {
@@ -146,6 +174,16 @@ const Products: React.FC = () => {
     }
     newParams.set('page', '0');
     setSearchParams(newParams);
+  };
+
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (categoryId) count++;
+    if (minPrice || maxPrice) count++;
+    if (minDiscount) count++;
+    if (minRating) count++;
+    if (inStock) count++;
+    return count;
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -229,13 +267,27 @@ const Products: React.FC = () => {
     <div className="products-page">
       <BackButton fallbackPath="/" />
       
+      {/* Mobile Filter Toggle Button */}
+      <button 
+        className="mobile-filter-toggle"
+        onClick={() => setShowMobileFilters(!showMobileFilters)}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+          <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
+        </svg>
+        Filters
+        {getActiveFilterCount() > 0 && (
+          <span className="filter-badge">{getActiveFilterCount()}</span>
+        )}
+      </button>
+      
       {/* Page Header */}
       <div className="products-header">
         <h1>Shop All Products</h1>
         <p>Discover amazing deals on top-quality products</p>
       </div>
 
-      <div className="products-container">
+      <div className={`products-container ${showMobileFilters ? 'show-filters' : ''}`}>
         {/* Sidebar Filters - Enhanced Flipkart Style */}
         <aside className="filters-sidebar">
           <div className="filter-header">
@@ -486,6 +538,123 @@ const Products: React.FC = () => {
                 <option value="name-desc">🔠 Name: Z to A</option>
                 <option value="rating-desc">⭐ Rating: High to Low</option>
               </select>
+            )}
+          </div>
+
+          {/* Discount Filter - Meesho Style */}
+          <div className="filter-section">
+            <div 
+              className="filter-title accordion-header" 
+              onClick={() => toggleSection('discount')}
+              style={{ cursor: 'pointer' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" strokeWidth="2" width="18" height="18"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                Discount
+              </div>
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                width="20" 
+                height="20"
+                style={{ 
+                  transform: expandedSections.discount ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            {expandedSections.discount && (
+              <div className="discount-options">
+                {[
+                  { label: '10% or more', value: '10' },
+                  { label: '20% or more', value: '20' },
+                  { label: '30% or more', value: '30' },
+                  { label: '40% or more', value: '40' },
+                  { label: '50% or more', value: '50' },
+                  { label: '60% or more', value: '60' },
+                  { label: '70% or more', value: '70' },
+                ].map(option => (
+                  <label 
+                    key={option.value} 
+                    className={`discount-option ${minDiscount === option.value ? 'active' : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="discount"
+                      value={option.value}
+                      checked={minDiscount === option.value}
+                      onChange={(e) => updateFilter('minDiscount', e.target.value)}
+                    />
+                    <span>{option.label}</span>
+                    {minDiscount === option.value && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" width="16" height="16">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    )}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Customer Rating Filter - Meesho Style */}
+          <div className="filter-section">
+            <div 
+              className="filter-title accordion-header" 
+              onClick={() => toggleSection('rating')}
+              style={{ cursor: 'pointer' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <svg viewBox="0 0 24 24" fill="#ffd700" stroke="#ffd700" strokeWidth="2" width="18" height="18"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Customer Rating
+              </div>
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                width="20" 
+                height="20"
+                style={{ 
+                  transform: expandedSections.rating ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            {expandedSections.rating && (
+              <div className="rating-options">
+                {[
+                  { label: '4★ & above', value: '4' },
+                  { label: '3★ & above', value: '3' },
+                  { label: '2★ & above', value: '2' },
+                  { label: '1★ & above', value: '1' },
+                ].map(option => (
+                  <label 
+                    key={option.value} 
+                    className={`rating-option ${minRating === option.value ? 'active' : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="rating"
+                      value={option.value}
+                      checked={minRating === option.value}
+                      onChange={(e) => updateFilter('minRating', e.target.value)}
+                    />
+                    <span className="rating-label">{option.label}</span>
+                    {minRating === option.value && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" width="16" height="16">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    )}
+                  </label>
+                ))}
+              </div>
             )}
           </div>
 
