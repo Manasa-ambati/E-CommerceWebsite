@@ -147,13 +147,8 @@ const Checkout: React.FC = () => {
         notes: formData.notes,
       });
       
-      // If Buy Now, remove only that item from cart
-      if (buyNowProductId) {
-        await removeFromCart(buyNowProductId);
-      } else {
-        // Otherwise clear entire cart
-        await clearCart();
-      }
+      // Don't remove items from cart - keep them for future purchases
+      // Users can manually remove items if they want
       
       navigate(`/track-order/${response.data.data.orderNumber}`);
     } catch (err: any) {

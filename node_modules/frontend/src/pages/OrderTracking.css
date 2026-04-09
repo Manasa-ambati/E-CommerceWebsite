@@ -2,6 +2,19 @@
   padding: 20px 0;
 }
 
+/* Mobile view - proper gap from navbar */
+@media (max-width: 768px) {
+  .order-tracking-page {
+    margin-top: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-tracking-page {
+    margin-top: 75px;
+  }
+}
+
 .tracking-container {
   max-width: 900px;
   margin: 0 auto;
