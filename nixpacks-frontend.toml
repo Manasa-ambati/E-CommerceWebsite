@@ -1,0 +1,18 @@
+# Nixpacks Configuration for Frontend ONLY
+# React Build Configuration
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = [
+  "cd frontend && npm install --legacy-peer-deps"
+]
+
+[phases.build]
+cmds = [
+  "cd frontend && CI=false npm run build"
+]
+
+[start]
+cmd = "cd frontend && npx serve -s build -l $PORT"
