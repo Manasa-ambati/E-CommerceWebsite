@@ -1,17 +1,20 @@
 .order-tracking-page {
-  padding: 20px 0;
+  padding: 40px 0;
+  min-height: calc(100vh - 70px);
 }
 
 /* Mobile view - proper gap from navbar */
 @media (max-width: 768px) {
   .order-tracking-page {
     margin-top: 70px;
+    padding-top: 30px;
   }
 }
 
 @media (max-width: 480px) {
   .order-tracking-page {
     margin-top: 75px;
+    padding-top: 25px;
   }
 }
 
