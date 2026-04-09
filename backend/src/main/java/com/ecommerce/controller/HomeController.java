@@ -34,7 +34,10 @@ public class HomeController {
     }
     
     // Catch-all route for React Router - serves index.html for all non-API routes
-    @RequestMapping(value = {"/{path:[^\\.]*}", "/{anyPaths:(?:.*)}"})
+    @RequestMapping(value = {
+        "/{path:[^\\.]*}",
+        "/{anyPaths:(?!api\\/)(?:.*)}"
+    })
     public ResponseEntity<Resource> forwardToIndex() {
         ClassPathResource resource = new ClassPathResource("static/index.html");
         return ResponseEntity.ok()
