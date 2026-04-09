@@ -148,11 +148,18 @@ const Home: React.FC = () => {
           setCategories([]);
         }
         
-        const productsData =
-          productsRes?.data?.data?.content ||
-          productsRes?.data?.content ||
-          productsRes?.data?.data ||
-          [];
+        // Handle both featured (array) and getAll (paginated) responses
+        let productsData = [];
+        const responseData = productsRes?.data?.data || productsRes?.data || [];
+        
+        if (Array.isArray(responseData)) {
+          // Featured products returns a direct array
+          productsData = responseData;
+        } else if (responseData.content) {
+          // getAll returns a paginated response
+          productsData = responseData.content;
+        }
+        
         setFeaturedProducts(productsData);
         console.log('Featured products loaded:', productsData.length);
 
