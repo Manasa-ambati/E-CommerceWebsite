@@ -79,10 +79,6 @@ public class OrderService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
         
-        if (cart.getItems().isEmpty()) {
-            throw new RuntimeException("Cart is empty");
-        }
-        
         // Filter cart items if productIds are provided (Buy Now functionality)
         List<CartItem> itemsToOrder;
         if (productIds != null && !productIds.isEmpty()) {
@@ -131,6 +127,10 @@ public class OrderService {
             System.out.println("Ordering " + itemsToOrder.size() + " specific item(s)");
         } else {
             // Order all items in cart
+            if (cart.getItems().isEmpty()) {
+                throw new RuntimeException("Cart is empty. Add items before checkout.");
+            }
+            
             itemsToOrder = new java.util.ArrayList<>(cart.getItems());
             System.out.println("=== FULL CART ORDER ===");
             System.out.println("Ordering all " + itemsToOrder.size() + " item(s) from cart");
