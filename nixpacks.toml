@@ -1,20 +1,18 @@
 # Nixpacks Configuration for E-Commerce App
-# Java + Node.js Full Stack Build
+# Backend Only - Spring Boot Java Application
 # Updated: 2026-04-09
 
 [phases.setup]
-nixPkgs = ["jdk17", "maven", "nodejs_20"]
+nixPkgs = ["jdk17", "maven"]
 
 [phases.install]
 cmds = [
-  "cd backend && mvn dependency:go-offline -q",
-  "cd frontend && npm install --legacy-peer-deps"
+  "cd backend && mvn dependency:go-offline -q"
 ]
 
 [phases.build]
 cmds = [
-  "cd backend && mvn clean package -DskipTests -q",
-  "cd frontend && CI=false npm run build"
+  "cd backend && mvn clean package -DskipTests -q"
 ]
 
 [start]
