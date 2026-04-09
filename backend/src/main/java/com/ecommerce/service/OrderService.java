@@ -72,7 +72,7 @@ public class OrderService {
     }
     
     @Transactional
-    public OrderDTO createOrder(Long userId, ShippingAddressDTO shippingAddressDTO, String paymentMethod, String notes) {
+    public OrderDTO createOrder(Long userId, ShippingAddressDTO shippingAddressDTO, String paymentMethod, String notes, List<Integer> productIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
@@ -83,8 +83,28 @@ public class OrderService {
             throw new RuntimeException("Cart is empty");
         }
         
+        // Filter cart items if productIds are provided (Buy Now functionality)
+        List<CartItem> itemsToOrder;
+        if (productIds != null && !productIds.isEmpty()) {
+            itemsToOrder = cart.getItems().stream()
+                    .filter(item -> productIds.contains(item.getProduct().getId()))
+                    .collect(java.util.stream.Collectors.toList());
+            
+            if (itemsToOrder.isEmpty()) {
+                throw new RuntimeException("Selected products not found in cart");
+            }
+            
+            System.out.println("=== BUY NOW MODE ===");
+            System.out.println("Ordering " + itemsToOrder.size() + " specific item(s)");
+        } else {
+            // Order all items in cart
+            itemsToOrder = new java.util.ArrayList<>(cart.getItems());
+            System.out.println("=== FULL CART ORDER ===");
+            System.out.println("Ordering all " + itemsToOrder.size() + " item(s) from cart");
+        }
+        
         // Validate stock
-        for (CartItem cartItem : cart.getItems()) {
+        for (CartItem cartItem : itemsToOrder) {
             Product product = cartItem.getProduct();
             if (product.getStockQuantity() < cartItem.getQuantity()) {
                 throw new RuntimeException("Insufficient stock for: " + product.getName());
@@ -92,7 +112,9 @@ public class OrderService {
         }
         
         // Calculate totals - No tax, no shipping (FREE delivery)
-        BigDecimal subtotal = cart.getTotalPrice();
+        BigDecimal subtotal = itemsToOrder.stream()
+                .map(CartItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal tax = BigDecimal.ZERO; // No tax
         BigDecimal shippingCost = BigDecimal.ZERO; // Free shipping
         BigDecimal total = subtotal; // Total equals subtotal
@@ -118,7 +140,7 @@ public class OrderService {
         order.setPaymentStatus(Order.PaymentStatus.PENDING);
         
         // Create order items and update stock
-        for (CartItem cartItem : cart.getItems()) {
+        for (CartItem cartItem : itemsToOrder) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(cartItem.getProduct());

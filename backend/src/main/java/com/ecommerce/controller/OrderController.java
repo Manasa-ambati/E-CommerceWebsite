@@ -124,7 +124,13 @@ public class OrderController {
             String paymentMethod = (String) request.get("paymentMethod");
             String notes = (String) request.get("notes");
             
-            OrderDTO order = orderService.createOrder(userId, addressDTO, paymentMethod, notes);
+            // Optional: Get product IDs for "Buy Now" functionality
+            List<Integer> productIds = null;
+            if (request.containsKey("productIds")) {
+                productIds = (List<Integer>) request.get("productIds");
+            }
+            
+            OrderDTO order = orderService.createOrder(userId, addressDTO, paymentMethod, notes, productIds);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Order placed successfully");

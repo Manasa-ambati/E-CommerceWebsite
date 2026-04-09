@@ -132,7 +132,7 @@ const Checkout: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await orderAPI.create({
+      const orderData: any = {
         shippingAddress: {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -145,7 +145,17 @@ const Checkout: React.FC = () => {
         },
         paymentMethod: formData.paymentMethod,
         notes: formData.notes,
-      });
+      };
+      
+      // If Buy Now, send only that product ID
+      if (buyNowProductId) {
+        orderData.productIds = [buyNowProductId];
+        console.log('🛒 Buy Now - Ordering only product ID:', buyNowProductId);
+      } else {
+        console.log('🛒 Regular checkout - Ordering all cart items');
+      }
+      
+      const response = await orderAPI.create(orderData);
       
       // Don't remove items from cart - keep them for future purchases
       // Users can manually remove items if they want
