@@ -1,5 +1,5 @@
 // src/pages/Cart.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { cartAPI, wishlistAPI } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -13,8 +13,8 @@ interface CartItem {
   productImage: string;
   quantity: number;
   price: number;
-  productPrice?: number;  // Backend might return this
-  discountPrice?: number; // Or this
+  productPrice?: number;
+  discountPrice?: number;
 }
 
 export const Cart: React.FC = () => {
@@ -25,56 +25,24 @@ export const Cart: React.FC = () => {
     clearCart: clearCartContext, 
     removeFromCart: removeFromCartContext,
     loading: contextLoading 
-  } = useCart(); // Use CartContext
+  } = useCart();
   const toast = useToast();
   
-  // Use CartContext's cart data, transform to match Cart.tsx interface
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const hasInitialized = React.useRef(false); // Track if we've loaded cart initially
+  // Direct mapping from context - no local state needed
+  const cartItems: CartItem[] = contextCart?.items?.map((item: any) => ({
+    productId: item.productId,
+    productName: item.productName,
+    productImage: item.productImage,
+    quantity: item.quantity,
+    price: item.productDiscountPrice || item.productPrice || item.price || 0,
+    productPrice: item.productPrice,
+    discountPrice: item.discountPrice
+  })) || [];
 
   // Helper function to get the correct price for an item
   const getItemPrice = (item: CartItem): number => {
     return item.price || item.discountPrice || item.productPrice || 0;
   };
-
-  // Initial load only - fetch cart from context ONCE
-  useEffect(() => {
-    if (!hasInitialized.current && contextCart && contextCart.items) {
-      const items = Array.isArray(contextCart.items) ? contextCart.items : [];
-      const mappedItems = items.map((item: any) => ({
-        productId: item.productId,
-        productName: item.productName,
-        productImage: item.productImage,
-        quantity: item.quantity,
-        price: item.productDiscountPrice || item.productPrice || item.price || 0,
-        productPrice: item.productPrice,
-        discountPrice: item.discountPrice
-      }));
-      setCart(mappedItems);
-      hasInitialized.current = true; // Mark as initialized
-    } else if (!contextCart && !hasInitialized.current) {
-      setCart([]);
-      hasInitialized.current = true;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run once on mount
-
-  // Listen for cart updates from context (when items are removed/added)
-  useEffect(() => {
-    if (hasInitialized.current && contextCart && contextCart.items) {
-      const items = Array.isArray(contextCart.items) ? contextCart.items : [];
-      const mappedItems = items.map((item: any) => ({
-        productId: item.productId,
-        productName: item.productName,
-        productImage: item.productImage,
-        quantity: item.quantity,
-        price: item.productDiscountPrice || item.productPrice || item.price || 0,
-        productPrice: item.productPrice,
-        discountPrice: item.discountPrice
-      }));
-      setCart(mappedItems);
-    }
-  }, [contextCart]); // Update when context cart changes
 
   useEffect(() => {
     // Cart data is already loaded from context in the initial useEffect
@@ -133,9 +101,6 @@ export const Cart: React.FC = () => {
       // Remove from cart using CartContext
       await removeFromCartContext(productId);
       
-      // Update local state
-      setCart((prev) => prev.filter((item) => item.productId !== productId));
-      
       toast.addToast('Moved to wishlist successfully!', 'success');
       
       // Dispatch event to update navbar wishlist count
@@ -151,9 +116,6 @@ export const Cart: React.FC = () => {
       // Use CartContext's clearCart function which handles both backend and localStorage
       await clearCartContext();
       
-      // Update local state
-      setCart([]);
-      
       toast.addToast('Cart cleared successfully!', 'success');
     } catch (err: any) {
       console.error(err);
@@ -165,13 +127,6 @@ export const Cart: React.FC = () => {
     if (newQuantity < 1) return;
     
     const token = localStorage.getItem('token');
-    
-    // Update local state immediately for better UX - no loading state
-    setCart((prev) =>
-      prev.map((item) =>
-        item.productId === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
     
     try {
       if (token) {
@@ -210,23 +165,9 @@ export const Cart: React.FC = () => {
     console.log('🗑️ Removing product ID:', productId);
     
     try {
-      // Find the item before removing to save its details
-      const itemToRemove = cart.find(item => item.productId === productId);
-      console.log('📦 Item to remove:', itemToRemove);
-      
-      if (!itemToRemove) {
-        toast.addToast('Item not found in cart', 'error');
-        return;
-      }
-      
-      // Optimistically update UI immediately
-      setCart((prev) => prev.filter((item) => item.productId !== productId));
-      console.log('✅ Local state updated immediately');
-      
       // Call context to persist removal (backend + localStorage)
       await removeFromCartContext(productId);
       console.log('✅ removeFromCartContext completed');
-      
       console.log('💾 Item removed successfully');
       
       toast.addToast('Item removed from cart', 'success');
@@ -234,21 +175,6 @@ export const Cart: React.FC = () => {
       console.error('❌ Failed to remove item:', error);
       console.error('Error details:', error.response?.data || error.message);
       toast.addToast(error.response?.data?.message || 'Failed to remove item. Please try again.', 'error');
-      
-      // Revert the UI update if removal failed
-      if (contextCart && contextCart.items) {
-        const items = Array.isArray(contextCart.items) ? contextCart.items : [];
-        const mappedItems = items.map((item: any) => ({
-          productId: item.productId,
-          productName: item.productName,
-          productImage: item.productImage,
-          quantity: item.quantity,
-          price: item.productDiscountPrice || item.productPrice || item.price || 0,
-          productPrice: item.productPrice,
-          discountPrice: item.discountPrice
-        }));
-        setCart(mappedItems);
-      }
     }
   };
 
@@ -264,7 +190,7 @@ export const Cart: React.FC = () => {
   }
   
   // Empty cart check
-  if (!cart || cart.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return (
       <div className="cart-page">
         <div className="cart-container">
@@ -284,7 +210,7 @@ export const Cart: React.FC = () => {
       
       <div className="cart-header">
         <h1>My Cart</h1>
-        <p className="cart-items-count">{cart.length} Items</p>
+        <p className="cart-items-count">{cartItems.length} Items</p>
       </div>
       
       <div className="cart-container">
@@ -302,7 +228,7 @@ export const Cart: React.FC = () => {
             </div>
             
             <div className="cart-items-list">
-              {Array.isArray(cart) && cart.map((item) => (
+              {cartItems.map((item) => (
                 <div key={item.productId} className="cart-item-flipkart">
                   <div className="item-row">
                     {/* Left Section - Image */}
