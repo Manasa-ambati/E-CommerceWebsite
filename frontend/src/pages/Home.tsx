@@ -269,28 +269,44 @@ const Home: React.FC = () => {
         </div>
         <div className="categories-grid">
           {categories.length > 0 ? (
-            categories.map((category) => (
-              <Link 
-                key={category.id} 
-                to={`/products?category=${category.id}`} 
-                className="category-card"
-              >
-                <div className="category-image-container">
-                  <img 
-                    src={category.image || 'https://via.placeholder.com/300x300?text=' + category.name} 
-                    alt={category.name} 
-                    className="category-image"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=' + category.name;
-                    }}
-                  />
-                  <div className="category-overlay"></div>
-                </div>
-                <div className="category-info">
-                  <span>{category.name}</span>
-                </div>
-              </Link>
-            ))
+            categories.map((category) => {
+              // Map category names to images
+              const categoryImages: {[key: string]: string} = {
+                'Electronics': 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=300&fit=crop&q=80',
+                'Fashion': 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop&q=80',
+                'Home & Furniture': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop&q=80',
+                'Appliances': 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=300&h=300&fit=crop&q=80',
+                'Beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop&q=80',
+                'Sports': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=300&h=300&fit=crop&q=80',
+                'Books': 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=300&h=300&fit=crop&q=80',
+                'Toys': 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=300&h=300&fit=crop&q=80',
+              };
+              
+              const categoryImage = category.image || categoryImages[category.name] || 'https://via.placeholder.com/300x300?text=' + category.name;
+              
+              return (
+                <Link 
+                  key={category.id} 
+                  to={`/products?category=${category.id}`} 
+                  className="category-card"
+                >
+                  <div className="category-image-container">
+                    <img 
+                      src={categoryImage} 
+                      alt={category.name} 
+                      className="category-image"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=' + category.name;
+                      }}
+                    />
+                    <div className="category-overlay"></div>
+                  </div>
+                  <div className="category-info">
+                    <span>{category.name}</span>
+                  </div>
+                </Link>
+              );
+            })
           ) : (
             // Fallback to hardcoded categories if API fails
             <>
@@ -406,7 +422,9 @@ const Home: React.FC = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="rating-count">({Math.floor(Math.random() * 200 + 50)})</span>
+                  {product.rating > 0 && (
+                    <span className="rating-count">({Math.floor(Math.random() * 200 + 50)})</span>
+                  )}
                 </div>
                 <div className="product-price">
                   {product.discountPrice ? (
