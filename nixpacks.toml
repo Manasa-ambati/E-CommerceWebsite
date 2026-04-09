@@ -1,5 +1,6 @@
 # Nixpacks Configuration for E-Commerce App
 # Java + Node.js Full Stack Build
+# Updated: 2026-04-09
 
 [phases.setup]
 nixPkgs = ["jdk17", "maven", "nodejs_20"]
