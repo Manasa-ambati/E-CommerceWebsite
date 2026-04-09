@@ -194,6 +194,18 @@
 .star-rating-display {
   display: flex;
   gap: 4px;
+  color: #d0d0d0; /* Light gray for empty stars */
+}
+
+.star-rating-display svg[filled="true"],
+.star-rating-display svg[fill="currentColor"] {
+  color: #ffd700; /* Gold for filled stars */
+}
+
+.no-rating {
+  color: #999;
+  font-size: 14px;
+  font-style: italic;
 }
 
 .product-rating span {
