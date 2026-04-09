@@ -275,11 +275,17 @@ const Home: React.FC = () => {
                 'Electronics': 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=300&fit=crop&q=80',
                 'Fashion': 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop&q=80',
                 'Home & Furniture': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop&q=80',
+                'Home': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop&q=80',
                 'Appliances': 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=300&h=300&fit=crop&q=80',
                 'Beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop&q=80',
                 'Sports': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=300&h=300&fit=crop&q=80',
                 'Books': 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=300&h=300&fit=crop&q=80',
                 'Toys': 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=300&h=300&fit=crop&q=80',
+                'Clothing': 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop&q=80',
+                'Smartphones': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop&q=80',
+                'Laptops': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop&q=80',
+                'Men Wear': 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=300&fit=crop&q=80',
+                'Women Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80',
               };
               
               const categoryImage = category.image || categoryImages[category.name] || 'https://via.placeholder.com/300x300?text=' + category.name;
