@@ -17,8 +17,11 @@ import java.util.Map;
 @CrossOrigin(
     origins = {
         "http://localhost:3000",
+        "https://e-commercewebsite-production-f9f6.up.railway.app",
         "https://e-commercewebsite-production-40de.up.railway.app",
-        "https://web-production-bef07.up.railway.app"
+        "https://e-commercewebsite-production-73fb.up.railway.app",
+        "https://web-production-bef07.up.railway.app",
+        "https://splendid-hope-production-fb0d.up.railway.app"
     },
     allowCredentials = "true"
 )

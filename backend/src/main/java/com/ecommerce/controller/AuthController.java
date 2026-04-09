@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "https://e-commercewebsite-production-73fb.up.railway.app")
+@CrossOrigin(origins = {"http://localhost:3000", "https://e-commercewebsite-production-f9f6.up.railway.app", "https://e-commercewebsite-production-73fb.up.railway.app", "https://e-commercewebsite-production-40de.up.railway.app"})
 public class AuthController {
 
     @Autowired
