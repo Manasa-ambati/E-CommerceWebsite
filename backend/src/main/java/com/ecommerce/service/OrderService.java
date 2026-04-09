@@ -86,15 +86,48 @@ public class OrderService {
         // Filter cart items if productIds are provided (Buy Now functionality)
         List<CartItem> itemsToOrder;
         if (productIds != null && !productIds.isEmpty()) {
+            System.out.println("=== BUY NOW MODE ===");
+            System.out.println("Product IDs to order: " + productIds);
+            
+            // Try to find products in cart first
             itemsToOrder = cart.getItems().stream()
                     .filter(item -> productIds.contains(item.getProduct().getId()))
                     .collect(java.util.stream.Collectors.toList());
             
+            // If products not in cart, create temporary cart items (direct product ordering)
             if (itemsToOrder.isEmpty()) {
-                throw new RuntimeException("Selected products not found in cart");
+                System.out.println("Products not in cart, creating temporary order items...");
+                itemsToOrder = new java.util.ArrayList<>();
+                
+                for (Integer productId : productIds) {
+                    Product product = productRepository.findById(productId.longValue())
+                            .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+                    
+                    if (!product.isActive()) {
+                        throw new RuntimeException("Product is not available: " + product.getName());
+                    }
+                    
+                    if (product.getStockQuantity() < 1) {
+                        throw new RuntimeException("Product out of stock: " + product.getName());
+                    }
+                    
+                    // Create temporary cart item
+                    CartItem tempItem = new CartItem();
+                    tempItem.setProduct(product);
+                    tempItem.setQuantity(1);
+                    tempItem.setCart(cart);
+                    itemsToOrder.add(tempItem);
+                    
+                    System.out.println("Added product: " + product.getName() + " (ID: " + productId + ")");
+                }
+            } else {
+                System.out.println("Found " + itemsToOrder.size() + " item(s) in cart");
             }
             
-            System.out.println("=== BUY NOW MODE ===");
+            if (itemsToOrder.isEmpty()) {
+                throw new RuntimeException("Selected products not found");
+            }
+            
             System.out.println("Ordering " + itemsToOrder.size() + " specific item(s)");
         } else {
             // Order all items in cart
