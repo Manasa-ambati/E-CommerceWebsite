@@ -111,26 +111,76 @@ public class OrderController {
     public ResponseEntity<?> createOrder(Authentication authentication,
                                          @RequestBody Map<String, Object> request) {
         try {
-            Long userId = getUserIdFromAuthentication(authentication);
+            System.out.println("=== CREATE ORDER REQUEST ===");
+            System.out.println("Request body: " + request);
             
+            Long userId = getUserIdFromAuthentication(authentication);
+            System.out.println("User ID: " + userId);
+            
+            // Validate shipping address
             Map<String, Object> addressMap = (Map<String, Object>) request.get("shippingAddress");
+            if (addressMap == null) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("success", false);
+                error.put("message", "Shipping address is required");
+                return ResponseEntity.badRequest().body(error);
+            }
+            
+            // Validate required address fields
+            String firstName = (String) addressMap.get("firstName");
+            String lastName = (String) addressMap.get("lastName");
+            String phone = (String) addressMap.get("phone");
+            String street = (String) addressMap.get("street");
+            String city = (String) addressMap.get("city");
+            String state = (String) addressMap.get("state");
+            String zipCode = (String) addressMap.get("zipCode");
+            String country = (String) addressMap.get("country");
+            
+            if (firstName == null || firstName.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "First name is required"));
+            }
+            if (lastName == null || lastName.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Last name is required"));
+            }
+            if (phone == null || phone.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Phone number is required"));
+            }
+            if (street == null || street.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Street address is required"));
+            }
+            if (city == null || city.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "City is required"));
+            }
+            if (state == null || state.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "State is required"));
+            }
+            if (zipCode == null || zipCode.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "ZIP code is required"));
+            }
+            
             ShippingAddressDTO addressDTO = new ShippingAddressDTO();
-            addressDTO.setFirstName((String) addressMap.get("firstName"));
-            addressDTO.setLastName((String) addressMap.get("lastName"));
-            addressDTO.setPhone((String) addressMap.get("phone"));
-            addressDTO.setStreet((String) addressMap.get("street"));
-            addressDTO.setCity((String) addressMap.get("city"));
-            addressDTO.setState((String) addressMap.get("state"));
-            addressDTO.setZipCode((String) addressMap.get("zipCode"));
-            addressDTO.setCountry((String) addressMap.get("country"));
+            addressDTO.setFirstName(firstName);
+            addressDTO.setLastName(lastName);
+            addressDTO.setPhone(phone);
+            addressDTO.setStreet(street);
+            addressDTO.setCity(city);
+            addressDTO.setState(state);
+            addressDTO.setZipCode(zipCode);
+            addressDTO.setCountry(country != null ? country : "India");
             
             String paymentMethod = (String) request.get("paymentMethod");
             String notes = (String) request.get("notes");
+            
+            System.out.println("Payment method: " + paymentMethod);
+            System.out.println("Address: " + firstName + " " + lastName + ", " + city);
             
             // Optional: Get product IDs for "Buy Now" functionality
             List<Integer> productIds = null;
             if (request.containsKey("productIds")) {
                 productIds = (List<Integer>) request.get("productIds");
+                System.out.println("Buy Now - Product IDs: " + productIds);
+            } else {
+                System.out.println("Regular cart checkout");
             }
             
             OrderDTO order = orderService.createOrder(userId, addressDTO, paymentMethod, notes, productIds);
@@ -138,8 +188,11 @@ public class OrderController {
             response.put("success", true);
             response.put("message", "Order placed successfully");
             response.put("data", order);
+            System.out.println("Order created successfully: " + order.getOrderNumber());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            System.err.println("❌ Order creation failed: " + e.getMessage());
+            e.printStackTrace();
             Map<String, Object> error = new HashMap<>();
             error.put("success", false);
             error.put("message", e.getMessage());
