@@ -155,7 +155,7 @@ const Checkout: React.FC = () => {
         console.log('🛒 Regular checkout - Ordering all cart items');
       }
       
-      console.log('📦 Sending order data:', orderData);
+      console.log('📦 Sending order data:', JSON.stringify(orderData, null, 2));
       const response = await orderAPI.create(orderData);
       console.log('✅ Order placed successfully:', response.data);
       
@@ -165,9 +165,10 @@ const Checkout: React.FC = () => {
       navigate(`/track-order/${response.data.data.orderNumber}`);
     } catch (err: any) {
       console.error('❌ Order placement failed:', err);
-      console.error('Error response:', err.response?.data);
+      console.error('Error response:', JSON.stringify(err.response?.data, null, 2));
       console.error('Error status:', err.response?.status);
-      setError(err.response?.data?.message || err.message || 'Failed to place order. Please try again.');
+      console.error('Error message:', err.response?.data?.message);
+      setError(err.response?.data?.message || 'Failed to place order. Please try again.');
     } finally {
       setLoading(false);
     }
