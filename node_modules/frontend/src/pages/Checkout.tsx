@@ -155,14 +155,19 @@ const Checkout: React.FC = () => {
         console.log('🛒 Regular checkout - Ordering all cart items');
       }
       
+      console.log('📦 Sending order data:', orderData);
       const response = await orderAPI.create(orderData);
+      console.log('✅ Order placed successfully:', response.data);
       
       // Don't remove items from cart - keep them for future purchases
       // Users can manually remove items if they want
       
       navigate(`/track-order/${response.data.data.orderNumber}`);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to place order. Please try again.');
+      console.error('❌ Order placement failed:', err);
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+      setError(err.response?.data?.message || err.message || 'Failed to place order. Please try again.');
     } finally {
       setLoading(false);
     }

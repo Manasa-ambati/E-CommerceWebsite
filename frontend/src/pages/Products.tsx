@@ -46,6 +46,17 @@ const Products: React.FC = () => {
   const maxPrice = searchParams.get('maxPrice') || '';
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDir = searchParams.get('sortDir') || 'desc';
+  
+  // Debounce search to prevent loading on every keystroke
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500); // Wait 500ms after user stops typing
+    
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     // Load wishlist on mount
@@ -67,7 +78,7 @@ const Products: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching products with params:', { page, search, categoryId, minPrice, maxPrice, sortBy, sortDir });
+        console.log('Fetching products with params:', { page, search: debouncedSearch, categoryId, minPrice, maxPrice, sortBy, sortDir });
         
         const [productsRes, categoriesRes] = await Promise.all([
           productAPI.filter({
@@ -76,7 +87,7 @@ const Products: React.FC = () => {
             categoryId: categoryId ? Number(categoryId) : undefined,
             minPrice: minPrice ? Number(minPrice) : undefined,
             maxPrice: maxPrice ? Number(maxPrice) : undefined,
-            search: search || undefined,
+            search: debouncedSearch || undefined,
             sortBy,
             sortDir,
           }),
@@ -124,7 +135,7 @@ const Products: React.FC = () => {
     };
 
     fetchData();
-  }, [page, search, categoryId, minPrice, maxPrice, sortBy, sortDir]);
+  }, [page, debouncedSearch, categoryId, minPrice, maxPrice, sortBy, sortDir]);
 
   const updateFilter = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);

@@ -19,6 +19,7 @@ const Home: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const { addToCart } = useCart();
   const toast = useToast();
 
@@ -136,12 +137,15 @@ const Home: React.FC = () => {
         console.log("FULL RESPONSE:", productsRes);
         console.log("DATA:", productsRes?.data);
 
-        // Fetch categories - fallback if getRoot fails
+        // Fetch categories
         try {
-          await categoryAPI.getRoot();
+          const categoriesRes = await categoryAPI.getAll();
+          const categoriesData = categoriesRes?.data?.data || categoriesRes?.data || [];
+          setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+          console.log('Categories loaded:', categoriesData.length);
         } catch (error) {
-          console.log('getRoot failed, using getAll instead...');
-          await categoryAPI.getAll();
+          console.log('Failed to load categories:', error);
+          setCategories([]);
         }
         
         const productsData =
@@ -247,115 +251,76 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Categories Section - New Addition */}
+      {/* Categories Section - Dynamic */}
       <section className="categories-section">
         <div className="section-header">
           <div>
             <span className="section-tag">SHOP BY CATEGORY</span>
             <h2>Top Categories</h2>
           </div>
+          <Link to="/categories" className="view-all-link">View All →</Link>
         </div>
         <div className="categories-grid">
-          <Link to="/products?category=1" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=300&fit=crop&q=80" 
-                alt="Electronics" 
-                className="category-image"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Electronics';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Electronics</span>
-            </div>
-          </Link>
-          <Link to="/products?category=2" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop&q=80" 
-                alt="Fashion" 
-                className="category-image"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Fashion';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Fashion</span>
-            </div>
-          </Link>
-          <Link to="/products?category=3" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300&h=300&fit=crop&q=80" 
-                alt="Home & Living" 
-                className="category-image"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Home+%26+Living';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Home & Living</span>
-            </div>
-          </Link>
-          <Link to="/products?category=4" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.pexels.com/photos/2071953/pexels-photo-2071953.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" 
-                alt="Beauty" 
-                className="category-image"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.background = 'linear-gradient(135deg, #ff69b4 0%, #ff1493 100%)';
-                  target.alt = '💄 Beauty';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Beauty</span>
-            </div>
-          </Link>
-          <Link to="/products?category=5" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=300&h=300&fit=crop&q=80" 
-                alt="Sports" 
-                className="category-image"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Sports';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Sports</span>
-            </div>
-          </Link>
-          <Link to="/products?category=6" className="category-card">
-            <div className="category-image-container">
-              <img 
-                src="https://images.pexels.com/photos/356508/pexels-photo-356508.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" 
-                alt="Toys & Games" 
-                className="category-image"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.background = 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)';
-                  target.alt = '🎮 Toys & Games';
-                }}
-              />
-              <div className="category-overlay"></div>
-            </div>
-            <div className="category-info">
-              <span>Toys & Games</span>
-            </div>
-          </Link>
+          {categories.length > 0 ? (
+            categories.map((category) => (
+              <Link 
+                key={category.id} 
+                to={`/products?category=${category.id}`} 
+                className="category-card"
+              >
+                <div className="category-image-container">
+                  <img 
+                    src={category.image || 'https://via.placeholder.com/300x300?text=' + category.name} 
+                    alt={category.name} 
+                    className="category-image"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=' + category.name;
+                    }}
+                  />
+                  <div className="category-overlay"></div>
+                </div>
+                <div className="category-info">
+                  <span>{category.name}</span>
+                </div>
+              </Link>
+            ))
+          ) : (
+            // Fallback to hardcoded categories if API fails
+            <>
+              <Link to="/products?category=1" className="category-card">
+                <div className="category-image-container">
+                  <img 
+                    src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=300&fit=crop&q=80" 
+                    alt="Electronics" 
+                    className="category-image"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Electronics';
+                    }}
+                  />
+                  <div className="category-overlay"></div>
+                </div>
+                <div className="category-info">
+                  <span>Electronics</span>
+                </div>
+              </Link>
+              <Link to="/products?category=2" className="category-card">
+                <div className="category-image-container">
+                  <img 
+                    src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&h=300&fit=crop&q=80" 
+                    alt="Fashion" 
+                    className="category-image"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Fashion';
+                    }}
+                  />
+                  <div className="category-overlay"></div>
+                </div>
+                <div className="category-info">
+                  <span>Fashion</span>
+                </div>
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
