@@ -15,7 +15,8 @@ public class CorsConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
-            "https://e-commercewebsite-production-73fb.up.railway.app"
+            "https://e-commercewebsite-production-f9f6.up.railway.app",
+            "http://localhost:3000"
         ));
 
         config.setAllowedHeaders(List.of("*"));
