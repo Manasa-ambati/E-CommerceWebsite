@@ -298,14 +298,31 @@ const ProductDetail: React.FC = () => {
       setUserRating(0);
       setReviewComment('');
       setShowReviewForm(false);
+      setHasUserReviewed(true);
       
       // Reload reviews
       const reviewsRes = await reviewAPI.getByProduct(Number(id));
-      setReviews(reviewsRes.data.data || []);
+      const reviewsData = reviewsRes.data?.data || [];
+      setReviews(reviewsData);
+      
+      // Calculate average rating and distribution
+      if (reviewsData.length > 0) {
+        const totalRating = reviewsData.reduce((sum: number, r: Review) => sum + r.rating, 0);
+        setAverageRating(totalRating / reviewsData.length);
+        
+        const distribution: {[key: number]: number} = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+        reviewsData.forEach((r: Review) => {
+          distribution[r.rating] = (distribution[r.rating] || 0) + 1;
+        });
+        setRatingDistribution(distribution);
+      }
       
       // Reload product to get updated rating
       const productRes = await productAPI.getById(Number(id));
-      setProduct(productRes.data.data);
+      const updatedProduct = productRes.data?.data || productRes.data;
+      setProduct(updatedProduct);
+      
+      console.log('Review submitted successfully, product updated:', updatedProduct);
       
     } catch (error: any) {
       toast.addToast(error.response?.data?.message || 'Failed to submit review', 'error');
