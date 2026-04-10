@@ -13,6 +13,7 @@ interface Product {
   discountPrice?: number;
   images: string[];
   rating: number;
+  reviewCount?: number;
 }
 
 const Home: React.FC = () => {
@@ -430,7 +431,7 @@ const Home: React.FC = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="rating-count">({Math.floor(Math.random() * 200 + 50)})</span>
+                  <span className="rating-count">({product.reviewCount || 0})</span>
                 </div>
                 <div className="product-price">
                   {product.discountPrice ? (

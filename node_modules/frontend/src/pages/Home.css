@@ -4,10 +4,19 @@
   margin-top: 0; /* BackButton handles spacing */
 }
 
+/* Add padding to hero section to create gap from navbar */
+.hero-section {
+  padding-top: 20px;
+}
+
 /* Mobile Responsive - Enhanced gap for all mobile dimensions */
 @media (max-width: 767px) {
   .home {
     margin-top: 0; /* BackButton handles spacing */
+  }
+  
+  .hero-section {
+    padding-top: 15px;
   }
 }
 
@@ -15,11 +24,19 @@
   .home {
     margin-top: 0; /* BackButton handles spacing */
   }
+  
+  .hero-section {
+    padding-top: 10px;
+  }
 }
 
 @media (max-width: 375px) {
   .home {
     margin-top: 0; /* BackButton handles spacing */
+  }
+  
+  .hero-section {
+    padding-top: 10px;
   }
 }
 
