@@ -709,7 +709,15 @@
 .star-rating svg {
   width: 16px;
   height: 16px;
-  color: #ffd700;
+  color: #d0d0d0; /* Light gray for empty stars */
+  transition: all 0.2s ease;
+}
+
+/* Green filled stars - Meesho style */
+.star-rating svg[fill="#22c55e"] {
+  color: #22c55e !important;
+  fill: #22c55e !important;
+  stroke: #22c55e !important;
 }
 
 .rating-text {

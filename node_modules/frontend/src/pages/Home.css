@@ -4,9 +4,18 @@
   margin-top: 0; /* BackButton handles spacing */
 }
 
-/* Add padding to hero section to create gap from navbar */
+/* Add padding to hero section to create gap from navbar - LAPTOP/DESKTOP */
 .hero-section {
-  padding-top: 20px !important;
+  padding-top: 25px !important;
+  margin-top: 5px !important;
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding-top: 22px !important;
+    margin-top: 5px !important;
+  }
 }
 
 /* Mobile Responsive - Enhanced gap for all mobile dimensions */
@@ -17,6 +26,7 @@
   
   .hero-section {
     padding-top: 15px !important;
+    margin-top: 5px !important;
   }
 }
 
@@ -27,6 +37,7 @@
   
   .hero-section {
     padding-top: 10px !important;
+    margin-top: 5px !important;
   }
 }
 
@@ -37,6 +48,7 @@
   
   .hero-section {
     padding-top: 10px !important;
+    margin-top: 5px !important;
   }
 }
 
@@ -486,11 +498,14 @@ line-height: 1.6 ;
 .star-rating svg {
   width: 14px;
   height: 14px;
+  transition: all 0.2s ease;
 }
 
-.star-rating svg[filled="true"],
-.star-rating svg[fill="currentColor"] {
-  color: #22c55e; /* Green for filled stars */
+/* Green filled stars - Meesho style */
+.star-rating svg[fill="#22c55e"] {
+  color: #22c55e !important;
+  fill: #22c55e !important;
+  stroke: #22c55e !important;
 }
 
 .no-rating {
