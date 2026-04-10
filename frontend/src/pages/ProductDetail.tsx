@@ -75,6 +75,17 @@ const ProductDetail: React.FC = () => {
         
         setProduct(productData);
         
+        // Check if we need to scroll to reviews section
+        const hash = window.location.hash;
+        if (hash === '#reviews') {
+          setTimeout(() => {
+            const reviewsSection = document.querySelector('.reviews-section');
+            if (reviewsSection) {
+              reviewsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 1000);
+        }
+        
         // Check wishlist status if user is authenticated
         const token = localStorage.getItem('token');
         if (token) {
@@ -323,6 +334,7 @@ const ProductDetail: React.FC = () => {
       setProduct(updatedProduct);
       
       console.log('Review submitted successfully, product updated:', updatedProduct);
+      console.log('New rating:', updatedProduct.rating, 'New review count:', updatedProduct.reviewCount);
       
     } catch (error: any) {
       toast.addToast(error.response?.data?.message || 'Failed to submit review', 'error');
@@ -393,8 +405,8 @@ const ProductDetail: React.FC = () => {
                 <svg
                   key={star}
                   viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
+                  fill={star <= Math.round(product.rating || 0) ? "#22c55e" : "none"}
+                  stroke={star <= Math.round(product.rating || 0) ? "#22c55e" : "currentColor"}
                   strokeWidth="2"
                 >
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -415,8 +427,8 @@ const ProductDetail: React.FC = () => {
                       <svg
                         key={star}
                         viewBox="0 0 24 24"
-                        fill={star <= Math.round(averageRating) ? "currentColor" : "none"}
-                        stroke="currentColor"
+                        fill={star <= Math.round(averageRating) ? "#22c55e" : "none"}
+                        stroke={star <= Math.round(averageRating) ? "#22c55e" : "currentColor"}
                         strokeWidth="2"
                       >
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
