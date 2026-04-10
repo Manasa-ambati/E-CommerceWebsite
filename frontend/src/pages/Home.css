@@ -473,7 +473,7 @@ line-height: 1.6 ;
 
 .star-rating svg[filled="true"],
 .star-rating svg[fill="currentColor"] {
-  color: #ffd700; /* Gold for filled stars */
+  color: #22c55e; /* Green for filled stars */
 }
 
 .no-rating {
