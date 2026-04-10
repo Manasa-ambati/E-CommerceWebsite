@@ -344,11 +344,13 @@
 }
 
 .star-rating-input svg {
-  color: #f97316;
-  transition: transform 0.2s;
+  color: #d0d0d0; /* Gray for empty stars */
+  transition: transform 0.2s, color 0.2s;
 }
 
-.star-rating-input svg:hover {
+.star-rating-input svg:hover,
+.star-rating-input svg[fill="currentColor"] {
+  color: #22c55e; /* Green for filled/hovered stars */
   transform: scale(1.2);
 }
 

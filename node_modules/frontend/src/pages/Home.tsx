@@ -285,7 +285,9 @@ const Home: React.FC = () => {
                 'Smartphones': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop&q=80',
                 'Laptops': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop&q=80',
                 'Men Wear': 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=300&fit=crop&q=80',
+                'Men\'s Wear': 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=300&fit=crop&q=80',
                 'Women Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80',
+                'Women\'s Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80',
               };
               
               const categoryImage = category.image || categoryImages[category.name] || 'https://via.placeholder.com/300x300?text=' + category.name;

@@ -43,7 +43,9 @@ const Categories: React.FC = () => {
     'Sports': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=300&h=300&fit=crop',
     'Toys': 'https://images.pexels.com/photos/356508/pexels-photo-356508.jpeg?auto=compress&cs=tinysrgb&w=300',
     'Men Wear': 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=300&fit=crop&q=80',
-    'Women Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80'
+    'Men\'s Wear': 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=300&fit=crop&q=80',
+    'Women Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80',
+    'Women\'s Wear': 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop&q=80'
   };
 
   if (loading) {
