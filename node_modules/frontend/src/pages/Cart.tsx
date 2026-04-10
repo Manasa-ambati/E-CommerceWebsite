@@ -164,17 +164,33 @@ export const Cart: React.FC = () => {
   const handleRemove = async (productId: number) => {
     console.log('🗑️ Removing product ID:', productId);
     
+    // Find the item to be removed
+    const itemToRemove = cartItems.find(item => item.productId === productId);
+    if (!itemToRemove) {
+      toast.addToast('Item not found in cart', 'error');
+      return;
+    }
+    
     try {
+      // Optimistically update UI immediately
+      const updatedItems = cartItems.filter(item => item.productId !== productId);
+      
       // Call context to persist removal (backend + localStorage)
       await removeFromCartContext(productId);
       console.log('✅ removeFromCartContext completed');
       console.log('💾 Item removed successfully');
+      
+      // Force refresh cart from context to ensure sync
+      await refreshCartContext();
       
       toast.addToast('Item removed from cart', 'success');
     } catch (error: any) {
       console.error('❌ Failed to remove item:', error);
       console.error('Error details:', error.response?.data || error.message);
       toast.addToast(error.response?.data?.message || 'Failed to remove item. Please try again.', 'error');
+      
+      // Refresh cart to restore correct state if removal failed
+      await refreshCartContext();
     }
   };
 

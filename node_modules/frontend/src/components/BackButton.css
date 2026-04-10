@@ -13,7 +13,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin: 15px 12px;
+  margin: 25px 12px;
   max-width: calc(100% - 24px);
   z-index: 100;
   visibility: visible !important;
@@ -48,7 +48,7 @@
 /* Mobile view - proper gap from navbar */
 @media (max-width: 768px) {
   .back-button {
-    margin: 115px 12px 12px 12px;
+    margin: 130px 12px 12px 12px !important;
     padding: 9px 15px;
     font-size: 14px;
     display: inline-flex !important;
@@ -65,7 +65,7 @@
     padding: 8px 14px;
     font-size: 13px;
     gap: 6px;
-    margin: 125px 8px 8px 8px;
+    margin: 140px 8px 8px 8px !important;
   }
   
   .back-button svg {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -23,6 +23,7 @@ const Home: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const { addToCart } = useCart();
   const toast = useToast();
+  const location = useLocation();
 
   useEffect(() => {
     const savedWishlist = localStorage.getItem('wishlist');
@@ -174,7 +175,7 @@ const Home: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [location.pathname]); // Re-fetch when navigating to home page
 
   if (loading) {
     return <div className="loading">Loading...</div>;
