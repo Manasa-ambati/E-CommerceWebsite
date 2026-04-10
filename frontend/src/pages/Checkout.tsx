@@ -43,6 +43,15 @@ const Checkout: React.FC = () => {
     paymentMethod: 'CREDIT_CARD',
     notes: '',
   });
+  
+  // Card details state
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: '',
+    cardHolderName: '',
+    expiryDate: '',
+    cvv: '',
+  });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -57,6 +66,44 @@ const Checkout: React.FC = () => {
       setValidationErrors(prev => {
         const newErrors = { ...prev };
         delete newErrors[e.target.name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let formattedValue = value;
+    
+    // Format card number with spaces
+    if (name === 'cardNumber') {
+      formattedValue = value.replace(/\D/g, '').substring(0, 16);
+      formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, '$1 ');
+    }
+    
+    // Format expiry date
+    if (name === 'expiryDate') {
+      formattedValue = value.replace(/\D/g, '').substring(0, 4);
+      if (formattedValue.length >= 2) {
+        formattedValue = formattedValue.substring(0, 2) + '/' + formattedValue.substring(2);
+      }
+    }
+    
+    // Limit CVV to 3-4 digits
+    if (name === 'cvv') {
+      formattedValue = value.replace(/\D/g, '').substring(0, 4);
+    }
+    
+    setCardDetails({
+      ...cardDetails,
+      [name]: formattedValue,
+    });
+    
+    // Clear validation error
+    if (validationErrors[name]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
         return newErrors;
       });
     }
@@ -113,6 +160,33 @@ const Checkout: React.FC = () => {
     // Country validation
     if (!formData.country.trim()) {
       errors.country = 'Country is required';
+    }
+
+    // Card details validation (only for credit/debit card)
+    if (formData.paymentMethod === 'CREDIT_CARD' || formData.paymentMethod === 'DEBIT_CARD') {
+      if (!cardDetails.cardNumber.trim()) {
+        errors.cardNumber = 'Card number is required';
+      } else if (cardDetails.cardNumber.replace(/\s/g, '').length !== 16) {
+        errors.cardNumber = 'Card number must be 16 digits';
+      }
+
+      if (!cardDetails.cardHolderName.trim()) {
+        errors.cardHolderName = 'Card holder name is required';
+      } else if (cardDetails.cardHolderName.trim().length < 3) {
+        errors.cardHolderName = 'Please enter a valid name';
+      }
+
+      if (!cardDetails.expiryDate.trim()) {
+        errors.expiryDate = 'Expiry date is required';
+      } else if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(cardDetails.expiryDate)) {
+        errors.expiryDate = 'Invalid format (MM/YY)';
+      }
+
+      if (!cardDetails.cvv.trim()) {
+        errors.cvv = 'CVV is required';
+      } else if (!/^[0-9]{3,4}$/.test(cardDetails.cvv)) {
+        errors.cvv = 'Invalid CVV';
+      }
     }
 
     setValidationErrors(errors);
@@ -335,6 +409,77 @@ const Checkout: React.FC = () => {
                   <span>Cash on Delivery</span>
                 </label>
               </div>
+
+              {/* Card Details Form - Shows only for Credit/Debit Card */}
+              {(formData.paymentMethod === 'CREDIT_CARD' || formData.paymentMethod === 'DEBIT_CARD') && (
+                <div className="card-details-form">
+                  <h3>Card Details</h3>
+                  
+                  <div className="form-group">
+                    <label>Card Number<span className="asterisk">*</span></label>
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={cardDetails.cardNumber}
+                      onChange={handleCardChange}
+                      placeholder="1234 5678 9012 3456"
+                      maxLength={19}
+                      className={validationErrors.cardNumber ? 'input-error' : ''}
+                    />
+                    {validationErrors.cardNumber && <span className="error-text">{validationErrors.cardNumber}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Card Holder Name<span className="asterisk">*</span></label>
+                    <input
+                      type="text"
+                      name="cardHolderName"
+                      value={cardDetails.cardHolderName}
+                      onChange={handleCardChange}
+                      placeholder="Name on card"
+                      className={validationErrors.cardHolderName ? 'input-error' : ''}
+                    />
+                    {validationErrors.cardHolderName && <span className="error-text">{validationErrors.cardHolderName}</span>}
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Expiry Date<span className="asterisk">*</span></label>
+                      <input
+                        type="text"
+                        name="expiryDate"
+                        value={cardDetails.expiryDate}
+                        onChange={handleCardChange}
+                        placeholder="MM/YY"
+                        maxLength={5}
+                        className={validationErrors.expiryDate ? 'input-error' : ''}
+                      />
+                      {validationErrors.expiryDate && <span className="error-text">{validationErrors.expiryDate}</span>}
+                    </div>
+                    <div className="form-group">
+                      <label>CVV<span className="asterisk">*</span></label>
+                      <input
+                        type="password"
+                        name="cvv"
+                        value={cardDetails.cvv}
+                        onChange={handleCardChange}
+                        placeholder="123"
+                        maxLength={4}
+                        className={validationErrors.cvv ? 'input-error' : ''}
+                      />
+                      {validationErrors.cvv && <span className="error-text">{validationErrors.cvv}</span>}
+                    </div>
+                  </div>
+
+                  <div className="card-security-info">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0110 0v4"></path>
+                    </svg>
+                    <span>Your card details are secure and encrypted</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="form-section">

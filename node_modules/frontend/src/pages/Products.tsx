@@ -54,6 +54,16 @@ const Products: React.FC = () => {
   const sortBy = searchParams.get('sortBy') || 'createdAt';
   const sortDir = searchParams.get('sortDir') || 'desc';
   
+  // Local state for price inputs to prevent filtering on every keystroke
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice);
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
+  
+  // Update local state when URL params change
+  useEffect(() => {
+    setLocalMinPrice(minPrice);
+    setLocalMaxPrice(maxPrice);
+  }, [minPrice, maxPrice]);
+  
   // Debounce search to prevent loading on every keystroke
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   
@@ -173,6 +183,31 @@ const Products: React.FC = () => {
       newParams.delete(key);
     }
     newParams.set('page', '0');
+    setSearchParams(newParams);
+  };
+
+  const applyPriceFilter = () => {
+    const newParams = new URLSearchParams(searchParams);
+    if (localMinPrice) {
+      newParams.set('minPrice', localMinPrice);
+    } else {
+      newParams.delete('minPrice');
+    }
+    if (localMaxPrice) {
+      newParams.set('maxPrice', localMaxPrice);
+    } else {
+      newParams.delete('maxPrice');
+    }
+    newParams.set('page', '0');
+    setSearchParams(newParams);
+  };
+
+  const clearPriceFilter = () => {
+    setLocalMinPrice('');
+    setLocalMaxPrice('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('minPrice');
+    newParams.delete('maxPrice');
     setSearchParams(newParams);
   };
 
@@ -400,16 +435,11 @@ const Products: React.FC = () => {
                       type="text"
                       inputMode="numeric"
                       placeholder="Min"
-                      value={minPrice}
+                      value={localMinPrice}
                       onChange={(e) => {
                         // Allow only digits, no limit on length
                         const value = e.target.value.replace(/\D/g, '');
-                        console.log('Min price input:', value);
-                        if (value && maxPrice && parseInt(value) > parseInt(maxPrice)) {
-                          toast.addToast('Minimum price cannot be greater than maximum price', 'warning');
-                          return;
-                        }
-                        updateFilter('minPrice', value);
+                        setLocalMinPrice(value);
                       }}
                       onFocus={(e) => e.target.select()}
                       onClick={(e) => {
@@ -437,16 +467,11 @@ const Products: React.FC = () => {
                       type="text"
                       inputMode="numeric"
                       placeholder="Max"
-                      value={maxPrice}
+                      value={localMaxPrice}
                       onChange={(e) => {
                         // Allow only digits, no limit on length
                         const value = e.target.value.replace(/\D/g, '');
-                        console.log('Max price input:', value);
-                        if (value && minPrice && parseInt(value) < parseInt(minPrice)) {
-                          toast.addToast('Maximum price cannot be less than minimum price', 'warning');
-                          return;
-                        }
-                        updateFilter('maxPrice', value);
+                        setLocalMaxPrice(value);
                       }}
                       onFocus={(e) => e.target.select()}
                       onClick={(e) => {
@@ -463,6 +488,46 @@ const Products: React.FC = () => {
                       }}
                     />
                   </div>
+                </div>
+
+                {/* Apply and Clear Buttons */}
+                <div className="price-filter-actions" style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button 
+                    className="apply-price-btn" 
+                    onClick={applyPriceFilter}
+                    style={{
+                      flex: 1,
+                      padding: '8px 16px',
+                      background: 'linear-gradient(135deg, #2874f0 0%, #1e5fc2 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    Apply
+                  </button>
+                  <button 
+                    className="clear-price-btn" 
+                    onClick={clearPriceFilter}
+                    style={{
+                      flex: 1,
+                      padding: '8px 16px',
+                      background: '#f5f5f5',
+                      color: '#666',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    Clear
+                  </button>
                 </div>
 
                 {/* Price Range Slider Visualization */}
@@ -776,7 +841,7 @@ const Products: React.FC = () => {
                             <svg
                               key={star}
                               viewBox="0 0 24 24"
-                              fill={star <= Math.floor(product.rating || 0) ? "currentColor" : "none"}
+                              fill="none"
                               stroke="currentColor"
                               strokeWidth="2"
                             >
