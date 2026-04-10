@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { productAPI, categoryAPI, wishlistAPI } from '../services/api';
+import { productAPI, categoryAPI, wishlistAPI, reviewAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import BackButton from '../components/BackButton';
@@ -16,11 +16,24 @@ interface Product {
   reviewCount?: number;
 }
 
+interface Review {
+  id: number;
+  productId: number;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 const Home: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [showReviewModal, setShowReviewModal] = useState<number | null>(null);
+  const [userRating, setUserRating] = useState<number>(0);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [reviewComment, setReviewComment] = useState('');
   const { addToCart } = useCart();
   const toast = useToast();
   const location = useLocation();
@@ -115,6 +128,62 @@ const Home: React.FC = () => {
     } catch (error: any) {
       console.error('Add to cart error:', error);
       toast.addToast(error.response?.data?.message || 'Failed to add to cart', 'error');
+    }
+  };
+
+  const handleOpenReviewModal = (productId: number) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.addToast('Please login to write a review', 'warning');
+      return;
+    }
+    setShowReviewModal(productId);
+    setUserRating(0);
+    setReviewComment('');
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!showReviewModal) return;
+    
+    if (!userRating || userRating === 0) {
+      toast.addToast('Please select a rating', 'warning');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.addToast('Please login to submit a review', 'warning');
+        return;
+      }
+
+      await reviewAPI.create(showReviewModal, {
+        rating: userRating,
+        comment: reviewComment
+      });
+
+      toast.addToast('Thank you for your review!', 'success');
+      setShowReviewModal(null);
+      setUserRating(0);
+      setReviewComment('');
+      
+      // Reload products to get updated ratings
+      try {
+        const productsRes = await productAPI.getFeatured();
+        let productsData = productsRes?.data?.data || productsRes?.data || [];
+        if (Array.isArray(productsData)) {
+          setFeaturedProducts(productsData);
+        } else if (productsData.content) {
+          setFeaturedProducts(productsData.content);
+        }
+      } catch (error) {
+        console.log('Failed to reload products:', error);
+      }
+      
+    } catch (error: any) {
+      toast.addToast(error.response?.data?.message || 'Failed to submit review', 'error');
     }
   };
 
@@ -434,6 +503,22 @@ const Home: React.FC = () => {
                   </div>
                   <span className="rating-count">({product.reviewCount || 0})</span>
                 </div>
+                <button 
+                  className="write-review-btn-small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleOpenReviewModal(product.id);
+                  }}
+                  title="Write a Review"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    <line x1="12" y1="6" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12" y2="16"/>
+                  </svg>
+                  Review
+                </button>
                 <div className="product-price">
                   {product.discountPrice ? (
                     <>
@@ -618,6 +703,60 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="review-modal-overlay" onClick={() => setShowReviewModal(null)}>
+          <div className="review-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="review-modal-header">
+              <h3>Write a Review</h3>
+              <button className="close-modal-btn" onClick={() => setShowReviewModal(null)}>
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleSubmitReview} className="review-modal-form">
+              <div className="star-rating-input">
+                <p>Rate this product:</p>
+                <div className="stars-container">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                      key={star}
+                      viewBox="0 0 24 24"
+                      fill={star <= (hoverRating || userRating) ? "#22c55e" : "none"}
+                      stroke={star <= (hoverRating || userRating) ? "#22c55e" : "currentColor"}
+                      strokeWidth="2"
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      onClick={() => setUserRating(star)}
+                      style={{ cursor: 'pointer', width: '36px', height: '36px' }}
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  ))}
+                </div>
+                {userRating > 0 && (
+                  <p className="selected-rating-text">You selected: {userRating} star{userRating > 1 ? 's' : ''}</p>
+                )}
+              </div>
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                placeholder="Write your review (optional)"
+                rows={4}
+                className="review-comment-input"
+              />
+              <div className="review-modal-actions">
+                <button type="button" className="cancel-review-btn" onClick={() => setShowReviewModal(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className="submit-review-modal-btn">
+                  Submit Review
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
