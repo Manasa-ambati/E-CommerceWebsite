@@ -115,7 +115,7 @@ export const categoryAPI = {
 // Wishlist API
 export const wishlistAPI = {
   get: () => api.get('/wishlist'),
-  check: (productId: number) => api.get(`/wishlist/check/${productId}`),
+  check: (productId: number) => api.get(`/wishlist/check?productId=${productId}`),
   add: (productId: number) => api.post(`/wishlist/add?productId=${productId}`),
   remove: (productId: number) => api.delete(`/wishlist/remove?productId=${productId}`),
 };
