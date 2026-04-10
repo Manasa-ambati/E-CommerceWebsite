@@ -7,7 +7,7 @@
   padding: 20px 40px;
   min-height: calc(100vh - 70px);
   background: #f3f3f3;
-  margin-top: 70px;
+  margin-top: 0; /* BackButton handles spacing */
   position: relative;
   overflow-y: auto;
   height: 100%;

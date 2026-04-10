@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: #f3f3f3;
   padding: 20px;
-  margin-top: 70px;
+  margin-top: 0; /* BackButton handles spacing */
 }
 
 .categories-header {
@@ -121,7 +121,7 @@
 /* Mobile - 3 columns */
 @media (max-width: 768px) {
   .categories-page {
-    margin-top: 110px;
+    margin-top: 0; /* BackButton handles spacing */
     padding: 12px;
   }
 
@@ -188,7 +188,7 @@
 /* Desktop - 6 columns */
 @media (min-width: 1025px) {
   .categories-page {
-    margin-top: 80px;
+    margin-top: 0; /* BackButton handles spacing */
     padding: 30px;
   }
 

@@ -1,25 +1,25 @@
 .home {
   padding: 0;
   background-color: #ffffff; /* Clean white background */
-  margin-top: 70px; /* Account for fixed navbar height */
+  margin-top: 0; /* BackButton handles spacing */
 }
 
 /* Mobile Responsive - Enhanced gap for all mobile dimensions */
 @media (max-width: 767px) {
   .home {
-    margin-top: 110px; /* Increased gap for mobile - navbar wraps to 2 rows */
+    margin-top: 0; /* BackButton handles spacing */
   }
 }
 
 @media (max-width: 480px) {
   .home {
-    margin-top: 120px; /* Extra large gap for smallest devices */
+    margin-top: 0; /* BackButton handles spacing */
   }
 }
 
 @media (max-width: 375px) {
   .home {
-    margin-top: 125px; /* Maximum gap for very small screens */
+    margin-top: 0; /* BackButton handles spacing */
   }
 }
 

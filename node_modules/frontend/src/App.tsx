@@ -62,6 +62,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const showFooter = location.pathname === '/'; // Only show footer on home page
   
+  // Scroll to top on every route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  
   // Cache busting - clear cache on app mount (development only)
   useEffect(() => {
     console.log('🔄 Clearing application cache...');

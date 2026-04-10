@@ -6,7 +6,7 @@
 /* Mobile view - proper gap from navbar */
 @media (max-width: 768px) {
   .order-tracking-page {
-    margin-top: 70px;
+    margin-top: 0; /* BackButton handles spacing */
     padding-top: 30px;
   }
 }
