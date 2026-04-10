@@ -424,7 +424,7 @@ const Home: React.FC = () => {
                           <svg
                             key={star}
                             viewBox="0 0 24 24"
-                            fill={star <= Math.floor(product.rating || 0) ? "currentColor" : "none"}
+                            fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
                           >
