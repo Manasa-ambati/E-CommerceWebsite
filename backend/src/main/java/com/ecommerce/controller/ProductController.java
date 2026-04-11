@@ -103,10 +103,12 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String tag,
+            @RequestParam(required = false) Integer minDiscount,
+            @RequestParam(required = false) Double minRating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
         
-        Page<ProductDTO> products = productService.filterProducts(categoryId, minPrice, maxPrice, search, tag, page, size);
+        Page<ProductDTO> products = productService.filterProducts(categoryId, minPrice, maxPrice, search, tag, minDiscount, minRating, page, size);
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("data", products);

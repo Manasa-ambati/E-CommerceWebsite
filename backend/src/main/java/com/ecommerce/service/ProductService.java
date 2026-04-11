@@ -57,10 +57,10 @@ public class ProductService {
         return productRepository.searchProducts(query, pageable).map(ProductDTO::fromProduct);
     }
     
-    public Page<ProductDTO> filterProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, 
-                                            String search, String tag, int page, int size) {
+    public Page<ProductDTO> filterProducts(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice,
+                                            String search, String tag, Integer minDiscount, Double minRating, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return productRepository.findProductsWithFilters(categoryId, minPrice, maxPrice, search, tag, pageable)
+        return productRepository.findProductsWithFilters(categoryId, minPrice, maxPrice, search, tag, minDiscount, minRating, pageable)
                 .map(ProductDTO::fromProduct);
     }
     

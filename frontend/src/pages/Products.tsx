@@ -104,6 +104,8 @@ const Products: React.FC = () => {
             categoryId: categoryId ? Number(categoryId) : undefined,
             minPrice: minPrice ? Number(minPrice) : undefined,
             maxPrice: maxPrice ? Number(maxPrice) : undefined,
+            minDiscount: minDiscount ? Number(minDiscount) : undefined,
+            minRating: minRating ? Number(minRating) : undefined,
             search: debouncedSearch || undefined,
             sortBy,
             sortDir,
@@ -117,39 +119,9 @@ const Products: React.FC = () => {
         let productsData = productsRes.data.data;
         const categoriesData = categoriesRes.data.data;
         
-        // Client-side filtering for discount, rating, and stock
         if (productsData && productsData.content) {
-          let filteredProducts = [...productsData.content];
-          
-          console.log('Before filtering - Total products:', filteredProducts.length);
-          
-          // Filter by minimum discount
-          if (minDiscount) {
-            const discountValue = parseInt(minDiscount);
-            filteredProducts = filteredProducts.filter(p => {
-              if (!p.discountPrice) return false;
-              const discountPercent = Math.round((1 - p.discountPrice / p.price) * 100);
-              return discountPercent >= discountValue;
-            });
-            console.log(`After discount filter (${discountValue}%+):`, filteredProducts.length, 'products');
-          }
-          
-          // Filter by minimum rating
-          if (minRating) {
-            const ratingValue = parseFloat(minRating);
-            filteredProducts = filteredProducts.filter(p => {
-              console.log(`Product: ${p.name}, Rating: ${p.rating}, Required: ${ratingValue}`);
-              return p.rating >= ratingValue;
-            });
-            console.log(`After rating filter (${ratingValue}★+):`, filteredProducts.length, 'products');
-          }
-          
-          // Filter by stock availability
-          // Note: This would require stock data in the product response
-          // For now, we'll skip this filter or implement it when stock data is available
-          
-          console.log('Final filtered products:', filteredProducts.length);
-          setProducts(filteredProducts);
+          console.log('Server returned:', productsData.content.length, 'products');
+          setProducts(productsData.content);
           setTotalPages(productsData.totalPages || 0);
         } else {
           console.error('No products data in response!');

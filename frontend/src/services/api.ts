@@ -88,7 +88,7 @@ export  const productAPI = {
   getAll: (page = 0, size = 10) => api.get(`/products?page=${page}&size=${size}`),
   getById: (id: number) => api.get(`/products/${id}`),
   getFeatured: () => api.get('/products/featured'),
-  filter: (params: { page?: number; size?: number; categoryId?: number; minPrice?: number; maxPrice?: number; search?: string; sortBy?: string; sortDir?: string }) => {
+  filter: (params: { page?: number; size?: number; categoryId?: number; minPrice?: number; maxPrice?: number; search?: string; sortBy?: string; sortDir?: string; minDiscount?: number; minRating?: number }) => {
     const queryParams = new URLSearchParams();
     if (params.page !== undefined) queryParams.append('page', String(params.page));
     if (params.size !== undefined) queryParams.append('size', String(params.size));
@@ -98,6 +98,8 @@ export  const productAPI = {
     if (params.search !== undefined) queryParams.append('search', params.search);
     if (params.sortBy !== undefined) queryParams.append('sortBy', params.sortBy);
     if (params.sortDir !== undefined) queryParams.append('sortDir', params.sortDir);
+    if (params.minDiscount !== undefined) queryParams.append('minDiscount', String(params.minDiscount));
+    if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
     return api.get(`/products/filter?${queryParams.toString()}`);
   },
   search: (keyword: string) => api.get(`/products/search?keyword=${keyword}`),
