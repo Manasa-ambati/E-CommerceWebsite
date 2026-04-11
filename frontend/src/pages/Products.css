@@ -8,6 +8,7 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   min-height: 100vh;
   position: relative;
+  padding-top: 40px !important;
 }
 
 /* Mobile Filter Toggle Button */
@@ -1102,6 +1103,20 @@
   
   .products-page {
     margin-top: 0; /* BackButton handles spacing */
-    padding: 0;
+    padding: 20px 0 0 0 !important;
+  }
+}
+
+/* Tablet spacing */
+@media (max-width: 1024px) {
+  .products-page {
+    padding-top: 35px !important;
+  }
+}
+
+/* Small mobile spacing */
+@media (max-width: 480px) {
+  .products-page {
+    padding-top: 15px !important;
   }
 }

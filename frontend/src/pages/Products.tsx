@@ -95,7 +95,7 @@ const Products: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching products with params:', { page, search: debouncedSearch, categoryId, minPrice, maxPrice, sortBy, sortDir });
+        console.log('Fetching products with params:', { page, search: debouncedSearch, categoryId, minPrice, maxPrice, minDiscount, minRating, sortBy, sortDir });
         
         const [productsRes, categoriesRes] = await Promise.all([
           productAPI.filter({
@@ -121,24 +121,34 @@ const Products: React.FC = () => {
         if (productsData && productsData.content) {
           let filteredProducts = [...productsData.content];
           
+          console.log('Before filtering - Total products:', filteredProducts.length);
+          
           // Filter by minimum discount
           if (minDiscount) {
+            const discountValue = parseInt(minDiscount);
             filteredProducts = filteredProducts.filter(p => {
               if (!p.discountPrice) return false;
               const discountPercent = Math.round((1 - p.discountPrice / p.price) * 100);
-              return discountPercent >= parseInt(minDiscount);
+              return discountPercent >= discountValue;
             });
+            console.log(`After discount filter (${discountValue}%+):`, filteredProducts.length, 'products');
           }
           
           // Filter by minimum rating
           if (minRating) {
-            filteredProducts = filteredProducts.filter(p => p.rating >= parseFloat(minRating));
+            const ratingValue = parseFloat(minRating);
+            filteredProducts = filteredProducts.filter(p => {
+              console.log(`Product: ${p.name}, Rating: ${p.rating}, Required: ${ratingValue}`);
+              return p.rating >= ratingValue;
+            });
+            console.log(`After rating filter (${ratingValue}★+):`, filteredProducts.length, 'products');
           }
           
           // Filter by stock availability
           // Note: This would require stock data in the product response
           // For now, we'll skip this filter or implement it when stock data is available
           
+          console.log('Final filtered products:', filteredProducts.length);
           setProducts(filteredProducts);
           setTotalPages(productsData.totalPages || 0);
         } else {
@@ -724,7 +734,7 @@ const Products: React.FC = () => {
           </div>
 
           {/* Active Filters Summary */}
-          {(categoryId || minPrice || maxPrice) && (
+          {(categoryId || minPrice || maxPrice || minDiscount || minRating) && (
             <div className="filter-summary">
               <h4>Active Filters:</h4>
               <div className="summary-list">
@@ -736,6 +746,16 @@ const Products: React.FC = () => {
                 {(minPrice || maxPrice) && (
                   <div className="summary-item">
                     Price: <strong>₹{minPrice || '0'} - ₹{maxPrice || '∞'}</strong>
+                  </div>
+                )}
+                {minDiscount && (
+                  <div className="summary-item">
+                    Discount: <strong>{minDiscount}% or more</strong>
+                  </div>
+                )}
+                {minRating && (
+                  <div className="summary-item">
+                    Rating: <strong>{minRating}★ & above</strong>
                   </div>
                 )}
               </div>

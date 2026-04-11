@@ -441,10 +441,7 @@ const Home: React.FC = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="rating-count">({product.reviewCount || 0})</span>
-                  <Link to={`/product/${product.id}#reviews`} className="write-review-link">
-                    Write Review
-                  </Link>
+                  <span className="rating-count">({product.reviewCount || 0} reviews)</span>
                 </div>
                 <div className="product-price">
                   {product.discountPrice ? (
