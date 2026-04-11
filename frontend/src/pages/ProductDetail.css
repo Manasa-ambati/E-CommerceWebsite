@@ -331,6 +331,57 @@
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
+/* Login to Review Message */
+.login-to-review-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px;
+  text-align: center;
+}
+
+.login-to-review-message svg {
+  opacity: 0.7;
+}
+
+.login-to-review-message p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+}
+
+.login-to-review-message a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s;
+}
+
+.login-to-review-message a:hover {
+  color: #5568d3;
+  text-decoration: underline;
+}
+
+/* Already Reviewed Message */
+.already-reviewed-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: #f0fdf4;
+  border: 2px solid #22c55e;
+  border-radius: 8px;
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.already-reviewed-message svg {
+  flex-shrink: 0;
+}
+
 .review-form h3 {
   margin-bottom: 15px;
   color: #333;
@@ -338,14 +389,21 @@
 }
 
 .star-rating-input {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
   gap: 8px;
   margin-bottom: 15px;
+  align-items: center;
+  justify-content: center;
 }
 
 .star-rating-input svg {
   color: #d0d0d0; /* Gray for empty stars */
   transition: transform 0.2s, color 0.2s;
+  width: 30px !important;
+  height: 30px !important;
+  display: inline-block !important;
+  flex-shrink: 0;
 }
 
 .star-rating-input svg:hover,

@@ -155,6 +155,18 @@ const Products: React.FC = () => {
     };
 
     fetchData();
+    
+    // Reload products when review is submitted
+    const handleReviewSubmitted = () => {
+      console.log('Review submitted event received on Products page, reloading...');
+      fetchData();
+    };
+    
+    window.addEventListener('reviewSubmitted', handleReviewSubmitted);
+    
+    return () => {
+      window.removeEventListener('reviewSubmitted', handleReviewSubmitted);
+    };
   }, [page, debouncedSearch, categoryId, minPrice, maxPrice, sortBy, sortDir]);
 
   const updateFilter = (key: string, value: string) => {
@@ -842,6 +854,9 @@ const Products: React.FC = () => {
                           ))}
                         </div>
                         <span className="rating-text">({product.reviewCount})</span>
+                        <Link to={`/product/${product.id}#reviews`} className="write-review-link-products">
+                          Write Review
+                        </Link>
                       </div>
                       <div className="product-price-section">
                         {product.discountPrice ? (

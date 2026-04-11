@@ -184,6 +184,26 @@ const Home: React.FC = () => {
     };
 
     fetchData();
+    
+    // Reload products when window gets focus (user comes back from product page)
+    const handleFocus = () => {
+      console.log('Window focused, reloading products...');
+      fetchData();
+    };
+    
+    // Reload products when review is submitted (custom event)
+    const handleReviewSubmitted = () => {
+      console.log('Review submitted event received, reloading products...');
+      fetchData();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('reviewSubmitted', handleReviewSubmitted);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('reviewSubmitted', handleReviewSubmitted);
+    };
   }, [location.pathname]); // Re-fetch when navigating to home page
 
   if (loading) {

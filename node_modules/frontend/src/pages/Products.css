@@ -727,6 +727,29 @@
   font-weight: 500;
 }
 
+/* Write Review Link on Products Page */
+.write-review-link-products {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
+}
+
+.write-review-link-products:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  color: white;
+  text-decoration: none;
+}
+
 .product-price-section {
   display: flex;
   align-items: center;

@@ -48,6 +48,7 @@ const ProductDetail: React.FC = () => {
   const [reviewComment, setReviewComment] = useState('');
   const [hasUserReviewed, setHasUserReviewed] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [averageRating, setAverageRating] = useState<number>(0);
   const [ratingDistribution, setRatingDistribution] = useState<{[key: number]: number}>({1: 0, 2: 0, 3: 0, 4: 0, 5: 0});
 
@@ -88,6 +89,7 @@ const ProductDetail: React.FC = () => {
         
         // Check wishlist status if user is authenticated
         const token = localStorage.getItem('token');
+        setIsLoggedIn(!!token);
         if (token) {
           try {
             const wishlistRes = await wishlistAPI.check(Number(id));
@@ -312,29 +314,47 @@ const ProductDetail: React.FC = () => {
       setHasUserReviewed(true);
       
       // Reload reviews
+      console.log('Reloading reviews...');
       const reviewsRes = await reviewAPI.getByProduct(Number(id));
       const reviewsData = reviewsRes.data?.data || [];
+      console.log('Reviews loaded:', reviewsData.length);
       setReviews(reviewsData);
       
-      // Calculate average rating and distribution
+      // Recalculate average rating and distribution
       if (reviewsData.length > 0) {
         const totalRating = reviewsData.reduce((sum: number, r: Review) => sum + r.rating, 0);
-        setAverageRating(totalRating / reviewsData.length);
+        const newAverage = totalRating / reviewsData.length;
+        console.log('New average rating:', newAverage);
+        setAverageRating(newAverage);
         
         const distribution: {[key: number]: number} = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
         reviewsData.forEach((r: Review) => {
           distribution[r.rating] = (distribution[r.rating] || 0) + 1;
         });
+        console.log('New rating distribution:', distribution);
         setRatingDistribution(distribution);
       }
       
-      // Reload product to get updated rating
+      // Reload product to get updated rating from backend
+      console.log('Reloading product data...');
       const productRes = await productAPI.getById(Number(id));
       const updatedProduct = productRes.data?.data || productRes.data;
-      setProduct(updatedProduct);
+      if (updatedProduct) {
+        console.log('Updated product received:', updatedProduct);
+        console.log('Old rating:', product?.rating, 'New rating:', updatedProduct.rating);
+        console.log('Old review count:', product?.reviewCount, 'New review count:', updatedProduct.reviewCount);
+        
+        // Force update by creating a new object reference to trigger re-render
+        setProduct({...updatedProduct});
+      }
       
-      console.log('Review submitted successfully, product updated:', updatedProduct);
-      console.log('New rating:', updatedProduct.rating, 'New review count:', updatedProduct.reviewCount);
+      console.log('Review submission complete - all data updated');
+      
+      // Dispatch custom event to notify other pages (homepage) that a review was submitted
+      window.dispatchEvent(new CustomEvent('reviewSubmitted', {
+        detail: { productId: Number(id), newRating: updatedProduct?.rating, newReviewCount: updatedProduct?.reviewCount }
+      }));
+      console.log('Dispatched reviewSubmitted event');
       
     } catch (error: any) {
       toast.addToast(error.response?.data?.message || 'Failed to submit review', 'error');
@@ -460,52 +480,68 @@ const ProductDetail: React.FC = () => {
           )}
 
           {/* Review Submission Form */}
-          {!hasUserReviewed && (
-            <div className="review-form-section">
-              <button 
-                className="write-review-btn"
-                onClick={() => setShowReviewForm(!showReviewForm)}
-              >
-                {showReviewForm ? 'Cancel' : 'Write a Review'}
-              </button>
-              
-              {showReviewForm && (
-                <form onSubmit={handleSubmitReview} className="review-form">
-                  <h3>Rate this product</h3>
-                  <div className="star-rating-input">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg
-                        key={star}
-                        viewBox="0 0 24 24"
-                        fill={star <= (hoverRating || userRating) ? "currentColor" : "none"}
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        onMouseEnter={() => setHoverRating(star)}
-                        onMouseLeave={() => setHoverRating(0)}
-                        onClick={() => setUserRating(star)}
-                        style={{ cursor: 'pointer', width: '30px', height: '30px' }}
-                      >
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    ))}
-                  </div>
-                  {userRating > 0 && (
-                    <p className="selected-rating">You selected: {userRating} star{userRating > 1 ? 's' : ''}</p>
-                  )}
-                  <textarea
-                    value={reviewComment}
-                    onChange={(e) => setReviewComment(e.target.value)}
-                    placeholder="Write your review (optional)"
-                    rows={4}
-                    className="review-comment"
-                  />
-                  <button type="submit" className="submit-review-btn">
-                    Submit Review
-                  </button>
-                </form>
-              )}
-            </div>
-          )}
+          <div className="review-form-section">
+            {!isLoggedIn ? (
+              <div className="login-to-review-message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#667eea" strokeWidth="2" width="32" height="32">
+                  <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <p>Please <a href="/login">login</a> to write a review</p>
+              </div>
+            ) : !hasUserReviewed ? (
+              <>
+                <button 
+                  className="write-review-btn"
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                >
+                  {showReviewForm ? 'Cancel' : 'Write a Review'}
+                </button>
+                
+                {showReviewForm && (
+                  <form onSubmit={handleSubmitReview} className="review-form">
+                    <h3>Rate this product</h3>
+                    <div className="star-rating-input">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <svg
+                          key={star}
+                          viewBox="0 0 24 24"
+                          fill={star <= (hoverRating || userRating) ? "currentColor" : "none"}
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => setUserRating(star)}
+                          style={{ cursor: 'pointer', width: '30px', height: '30px' }}
+                        >
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ))}
+                    </div>
+                    {userRating > 0 && (
+                      <p className="selected-rating">You selected: {userRating} star{userRating > 1 ? 's' : ''}</p>
+                    )}
+                    <textarea
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      placeholder="Write your review (optional)"
+                      rows={4}
+                      className="review-comment"
+                    />
+                    <button type="submit" className="submit-review-btn">
+                      Submit Review
+                    </button>
+                  </form>
+                )}
+              </>
+            ) : (
+              <div className="already-reviewed-message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" width="24" height="24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p>You have already reviewed this product</p>
+              </div>
+            )}
+          </div>
 
           {/* Reviews List */}
           {reviews.length > 0 && (
